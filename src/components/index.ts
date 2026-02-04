@@ -6,7 +6,7 @@
 export { default as Contact } from "./Contact";
 export { default as Footer } from "./Footer";
 export { default as Gallery } from "./Gallery";
-export type { GalleryItem, GalleryProps } from "./Gallery";
+export type { GalleryItem } from "./Gallery";
 export { default as Hero } from "./Hero";
 export type { HeroProps } from "./Hero";
 export { SectionEntrance } from "./MotionSection";
