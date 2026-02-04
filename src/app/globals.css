@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-premium-black text-text-primary antialiased;
+  }
+}
+
+/* Section spacing (design system) */
+@layer utilities {
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-20 lg:py-28;
+  }
+  .section-padding-y {
+    @apply py-20 lg:py-28;
+  }
+  .section-padding-x {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  .container-narrow {
+    @apply max-w-6xl mx-auto;
+  }
+  .content-gap {
+    @apply gap-6 lg:gap-8;
+  }
+  .title-margin {
+    @apply mb-12 lg:mb-16;
+  }
+}
+
+/* Button styles (design system) */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-7 py-3.5 rounded-sharp font-semibold text-premium-black bg-premium-accent transition-all duration-ui;
+    @apply hover:bg-premium-accent-hover hover:scale-[1.02] active:scale-[0.98];
+    @apply focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black;
+    font-size: 0.875rem;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-7 py-3.5 rounded-sharp font-semibold border-2 border-premium-graphite text-text-primary transition-all duration-ui;
+    @apply hover:border-premium-accent hover:text-premium-accent;
+    @apply focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black;
+    font-size: 0.875rem;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-7 py-3.5 rounded-sharp font-medium text-text-secondary transition-all duration-ui;
+    @apply hover:bg-premium-accent-muted hover:text-premium-accent;
+    @apply focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black;
+    font-size: 0.875rem;
+  }
+}
