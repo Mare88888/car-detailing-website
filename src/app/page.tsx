@@ -19,7 +19,7 @@ export const metadata = {
 export default function Home() {
   return (
     <>
-      <Hero backgroundImage="/Logo.jpg" />
+      <Hero backgroundVideo="/0205-web.mp4" />
       <Services />
       <Gallery />
       <Pricing />

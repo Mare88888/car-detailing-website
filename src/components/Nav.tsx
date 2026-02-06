@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-
+import Image from 'next/image'
 const sectionIds = ['services', 'gallery', 'pricing', 'testimonials', 'contact'] as const
 
 const navLinks = [
@@ -70,7 +70,7 @@ export default function Nav() {
         className="container-narrow px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4"
         aria-label="Main navigation"
       >
-        {/* Logo — left; smooth scroll to top and clear active section */}
+        {/* Logo + brand — left; smooth scroll to top and clear active section */}
         <Link
           href="/"
           onClick={(e) => {
@@ -80,10 +80,18 @@ export default function Nav() {
               setActiveSection(null)
             }
           }}
-          className="text-h3 text-text-primary tracking-tight shrink-0 focus:outline-none focus:ring-0"
+          className="flex items-center gap-3 text-h3 text-text-primary tracking-tight shrink-0 focus:outline-none focus:ring-0"
           aria-label="Home"
         >
-          Detailing<span className="text-premium-accent">.</span>
+          <Image
+            src="/NavBarLogo.jpg"
+            alt="AShineMobile Logo"
+            width={100}
+            height={100}
+            className="h-30 w-30 object-contain"
+            priority
+          />
+          <span>AShineMobile</span>
         </Link>
 
         {/* Desktop: center links + right CTA */}

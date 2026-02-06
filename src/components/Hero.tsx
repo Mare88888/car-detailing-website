@@ -8,6 +8,8 @@ import { buttonHover, buttonTap } from '@/lib/motion'
 export interface HeroProps {
   /** Optional background image path (e.g. /hero-bg.jpg). If not set, gradient only. */
   backgroundImage?: string
+  /** Optional background video path (e.g. /hero.mp4). If set, video takes precedence over image. */
+  backgroundVideo?: string
   /** Overline text above the headline */
   overline?: string
   /** Main headline */
@@ -21,13 +23,16 @@ export interface HeroProps {
 }
 
 export default function Hero({
-  backgroundImage = "/Logo.jpg",
+  backgroundImage,
+  backgroundVideo = "/0205.mp4",
   overline = 'Professional car care',
   headline = 'Premium car detailing & valeting',
   subheadline = 'Showroom finish. Ceramic coatings. Paint correction. We come to you.',
   primaryCtaLabel = 'Book Now',
   secondaryCtaLabel = 'View Services',
 }: HeroProps) {
+  const hasMedia = Boolean(backgroundVideo || backgroundImage)
+
   return (
     <section
       id="hero"
@@ -35,13 +40,29 @@ export default function Hero({
       aria-label="Hero"
     >
       <div className="absolute inset-0 bg-premium-black" aria-hidden />
-      {backgroundImage && (
-        <div className="absolute inset-0">
+      {backgroundVideo ? (
+        <div className="absolute inset-0" aria-hidden>
+          <video
+            className="h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          >
+            <source src={backgroundVideo} type="video/mp4" />
+          </video>
+        </div>
+      ) : backgroundImage ? (
+        <div className="absolute inset-0" aria-hidden>
           <Image src={backgroundImage} alt="" fill className="object-cover object-center" priority sizes="100vw" />
         </div>
-      )}
+      ) : null}
       <div
-        className={`absolute inset-0 bg-gradient-to-b from-premium-charcoal/90 via-premium-black/85 to-premium-black ${backgroundImage ? '' : 'from-premium-charcoal via-premium-black to-premium-black'}`}
+        className={`absolute inset-0 bg-gradient-to-b ${hasMedia
+          ? 'from-premium-charcoal/60 via-premium-black/70 to-premium-black/95'
+          : 'from-premium-charcoal via-premium-black to-premium-black'
+          }`}
         aria-hidden
       />
       <div
