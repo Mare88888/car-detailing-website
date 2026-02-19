@@ -29,6 +29,8 @@ const inputDefault = 'border-border-default'
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [errors, setErrors] = useState<FormErrors>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [values, setValues] = useState({
@@ -48,8 +50,16 @@ export default function Contact() {
         return !trimmed ? 'Please enter your car type or model' : undefined
       case 'service':
         return !trimmed ? 'Please select a service' : undefined
-      case 'date':
-        return !trimmed ? 'Please choose a preferred date' : undefined
+      case 'date': {
+        if (!trimmed) return 'Please choose a preferred date'
+        const match = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
+        if (!match) return 'Use DD/MM/YYYY (e.g. 25/03/2025)'
+        const [, d, m, y] = match.map(Number)
+        if (m < 1 || m > 12) return 'Month must be 01–12'
+        if (d < 1 || d > 31) return 'Day must be 01–31'
+        if (y < 2020 || y > 2040) return 'Enter a valid year'
+        return undefined
+      }
       case 'message':
         return trimmed.length < 10 ? 'Please add a few more details (min 10 characters)' : undefined
       default:
@@ -69,11 +79,33 @@ export default function Contact() {
     return next
   }
 
+  function formatDateInput(value: string): string {
+    const digits = value.replace(/\D/g, '').slice(0, 8)
+    const monthFirst = digits[2]
+    const singleDigitMonth = monthFirst >= '2' && monthFirst <= '9' // month 02–09: next digits are year
+
+    if (digits.length <= 2) return digits
+    if (digits.length === 3) {
+      if (singleDigitMonth) return `${digits.slice(0, 2)}/${digits.slice(2)}/`
+      return `${digits.slice(0, 2)}/${digits.slice(2)}`
+    }
+    // Once we added DD/M/, further digits go to year (so 4th digit isn’t second digit of month)
+    if (singleDigitMonth) {
+      const day = digits.slice(0, 2)
+      const month = digits.slice(2, 3)
+      const year = digits.slice(3, 7) // max 4 digits for year
+      return `${day}/${month}/${year}`
+    }
+    if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`
+    return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`
+  }
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value } = e.target
-    setValues((prev) => ({ ...prev, [name]: value }))
+    const nextValue = name === 'date' ? formatDateInput(value) : value
+    setValues((prev) => ({ ...prev, [name]: nextValue }))
     if (errors[name as keyof FormErrors]) {
-      setErrors((prev) => ({ ...prev, [name]: validateField(name as keyof FormErrors, value) }))
+      setErrors((prev) => ({ ...prev, [name]: validateField(name as keyof FormErrors, nextValue) }))
     }
   }
 
@@ -83,12 +115,30 @@ export default function Contact() {
     setErrors((prev) => ({ ...prev, [name]: validateField(name as keyof FormErrors, value) }))
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setSubmitError(null)
     setTouched({ name: true, carType: true, service: true, date: true, message: true })
     const nextErrors = validateAll()
     if (Object.keys(nextErrors).length > 0) return
-    setSubmitted(true)
+    setSending(true)
+    try {
+      const res = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setSubmitError(data.error ?? 'Something went wrong. Please try again.')
+        return
+      }
+      setSubmitted(true)
+    } catch {
+      setSubmitError('Failed to send. Please check your connection and try again.')
+    } finally {
+      setSending(false)
+    }
   }
 
   function getInputClass(name: keyof FormErrors) {
@@ -128,6 +178,11 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+                {submitError && (
+                  <p className="text-body-sm text-error bg-error/10 border border-error/30 rounded-sharp px-4 py-3" role="alert">
+                    {submitError}
+                  </p>
+                )}
                 <div>
                   <label htmlFor="contact-name" className="block text-body-sm font-medium text-text-secondary mb-2">
                     Name <span className="text-error">*</span>
@@ -209,10 +264,13 @@ export default function Contact() {
                   <input
                     id="contact-date"
                     name="date"
-                    type="date"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
                     value={values.date}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    placeholder="DD/MM/YYYY"
                     className={getInputClass('date')}
                     aria-invalid={!!errors.date}
                     aria-describedby={errors.date ? 'contact-date-error' : undefined}
@@ -249,10 +307,11 @@ export default function Contact() {
 
                 <motion.button
                   type="submit"
-                  whileTap={buttonTap}
-                  className="btn-primary w-full py-4 text-body-sm font-semibold"
+                  disabled={sending}
+                  whileTap={sending ? undefined : buttonTap}
+                  className="btn-primary w-full py-4 text-body-sm font-semibold disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Request booking
+                  {sending ? 'Sending…' : 'Request booking'}
                 </motion.button>
               </form>
             )}
