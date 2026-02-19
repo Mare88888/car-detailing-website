@@ -92,7 +92,7 @@ function PricingCard({
     >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <span className="inline-block px-4 py-1 bg-premium-accent text-premium-black text-caption font-bold uppercase tracking-wider rounded-full">
+          <span className="inline-block px-4 py-1 bg-premium-accent text-white text-caption font-bold uppercase tracking-wider rounded-full">
             Most Popular
           </span>
         </div>

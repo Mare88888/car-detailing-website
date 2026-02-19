@@ -16,11 +16,11 @@ const config: Config = {
           slate: "#16161a",
           zinc: "#1e1e24",
           graphite: "#27272d",
-          // Accent: electric green (default)
-          accent: "#00ff88",
-          "accent-hover": "#00e67a",
-          "accent-muted": "rgba(0, 255, 136, 0.2)",
-          "accent-glow": "rgba(0, 255, 136, 0.25)",
+          // Accent: cyan (#00b8db)
+          accent: "#00b8db",
+          "accent-hover": "#00a2c4",
+          "accent-muted": "rgba(0, 184, 219, 0.2)",
+          "accent-glow": "rgba(0, 184, 219, 0.25)",
           // Alternate accents (use in components if needed)
           "accent-red": "#ff2e2e",
           "accent-red-hover": "#e62828",
@@ -84,8 +84,8 @@ const config: Config = {
         card: "6px",
       },
       boxShadow: {
-        "accent-glow": "0 0 24px rgba(0, 255, 136, 0.25)",
-        "accent-glow-sm": "0 0 12px rgba(0, 255, 136, 0.2)",
+        "accent-glow": "0 0 24px rgba(0, 184, 219, 0.25)",
+        "accent-glow-sm": "0 0 12px rgba(0, 184, 219, 0.2)",
       },
       transitionDuration: {
         fast: "150ms",
@@ -104,8 +104,8 @@ const config: Config = {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         glowPulse: {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(0, 255, 136, 0.2)" },
-          "50%": { boxShadow: "0 0 28px rgba(0, 255, 136, 0.35)" },
+          "0%, 100%": { boxShadow: "0 0 20px rgba(0, 184, 219, 0.2)" },
+          "50%": { boxShadow: "0 0 28px rgba(0, 184, 219, 0.35)" },
         },
       },
     },

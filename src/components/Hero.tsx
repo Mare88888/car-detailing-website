@@ -66,7 +66,7 @@ export default function Hero({
         aria-hidden
       />
       <div
-        className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(0,255,136,0.08),transparent)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(0,184,219,0.08),transparent)]"
         aria-hidden
       />
       <div className="relative z-10 w-full px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-28">

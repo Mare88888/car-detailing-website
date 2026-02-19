@@ -65,7 +65,7 @@ const categories = [
     bgClass:
       'bg-gradient-to-br from-premium-slate via-premium-charcoal to-premium-black',
     patternClass:
-      'before:content-[""] before:absolute before:inset-0 before:opacity-[0.03] before:bg-[radial-gradient(circle_at_30%_20%,rgba(0,255,136,0.4),transparent_50%)]',
+      'before:content-[""] before:absolute before:inset-0 before:opacity-[0.03] before:bg-[radial-gradient(circle_at_30%_20%,rgba(0,184,219,0.4),transparent_50%)]',
   },
   {
     id: 'detailing',
@@ -77,7 +77,7 @@ const categories = [
     bgClass:
       'bg-gradient-to-br from-premium-charcoal via-premium-slate to-premium-black',
     patternClass:
-      'before:content-[""] before:absolute before:inset-0 before:opacity-[0.03] before:bg-[radial-gradient(circle_at_70%_80%,rgba(0,255,136,0.4),transparent_50%)]',
+      'before:content-[""] before:absolute before:inset-0 before:opacity-[0.03] before:bg-[radial-gradient(circle_at_70%_80%,rgba(0,184,219,0.4),transparent_50%)]',
   },
 ]
 
