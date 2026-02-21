@@ -60,7 +60,7 @@ const categories = [
     description:
       'Keep your car looking fresh with our valeting and deep-cleaning services. Exterior wash, interior vacuum, engine bay clean, and full valet packages.',
     icon: CleaningIcon,
-    href: '#pricing',
+    href: '#car-cleaning',
     /* Subtle background: soft gradient + low-opacity pattern */
     bgClass:
       'bg-gradient-to-br from-premium-slate via-premium-charcoal to-premium-black',
@@ -73,7 +73,7 @@ const categories = [
     description:
       'Restore gloss and protect with paint correction, ceramic coatings, and full-detail packages. Showroom finish and long-lasting protection.',
     icon: DetailingIcon,
-    href: '#pricing',
+    href: '#car-detailing',
     bgClass:
       'bg-gradient-to-br from-premium-charcoal via-premium-slate to-premium-black',
     patternClass:
