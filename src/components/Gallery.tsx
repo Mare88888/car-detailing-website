@@ -70,10 +70,10 @@ function ComparisonCard({
         />
       </div>
 
-      {/* Labels overlay */}
+      {/* Labels overlay — on hover, accent moves from After to Before */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-between p-3 bg-gradient-to-t from-black/80 to-transparent text-white/90">
-        <span className="text-overline uppercase">Before</span>
-        <span className="text-overline uppercase text-premium-accent">After</span>
+        <span className={`text-overline uppercase ${isHovered ? 'text-premium-accent' : ''}`}>Before</span>
+        <span className={`text-overline uppercase ${isHovered ? '' : 'text-premium-accent'}`}>After</span>
       </div>
 
     </motion.button>
