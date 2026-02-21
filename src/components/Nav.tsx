@@ -1,14 +1,14 @@
 'use client'
-
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-const sectionIds = ['services', 'gallery', 'pricing', 'testimonials', 'contact'] as const
+const sectionIds = ['services', 'gallery', 'pricing', 'map', 'testimonials', 'contact'] as const
 
 const navLinks = [
   { href: '#services', label: 'Services', id: 'services' },
   { href: '#gallery', label: 'Gallery', id: 'gallery' },
   { href: '#pricing', label: 'Pricing', id: 'pricing' },
+  { href: '#map', label: 'Map', id: 'map' },
   { href: '#testimonials', label: 'Testimonials', id: 'testimonials' },
 ] as const
 
@@ -84,11 +84,12 @@ export default function Nav() {
           aria-label="Home"
         >
           <Image
-            src="/NavBarLogo.jpg"
+            src="/NavigationBarLogo.png"
             alt="AShineMobile Logo"
             width={100}
             height={100}
             className="h-30 w-30 object-contain"
+            style={{ borderRadius: '5px' }}
             priority
           />
           <span>AShineMobile</span>
@@ -102,7 +103,7 @@ export default function Nav() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className={`text-body-sm font-medium transition-colors duration-200 hover:text-premium-accent ${isActive ? 'text-premium-accent' : 'text-text-secondary'
+                  className={`text-body font-medium transition-colors duration-200 hover:text-premium-accent-light ${isActive ? 'text-premium-accent' : 'text-text-secondary'
                     }`}
                 >
                   {link.label}
@@ -156,9 +157,9 @@ export default function Nav() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={`block py-3 px-2 rounded-sharp text-body-sm font-medium transition-colors ${isActive
+                    className={`block py-3 px-2 rounded-sharp text-body font-medium transition-colors ${isActive
                       ? 'text-premium-accent bg-premium-accent-muted'
-                      : 'text-text-secondary hover:text-premium-accent hover:bg-premium-slate'
+                      : 'text-text-secondary hover:text-premium-accent-light hover:bg-premium-slate'
                       }`}
                     onClick={() => setMobileOpen(false)}
                   >

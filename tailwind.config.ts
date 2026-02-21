@@ -19,6 +19,7 @@ const config: Config = {
           // Accent: cyan (#00b8db)
           accent: "#00b8db",
           "accent-hover": "#00a2c4",
+          "accent-light": "#4dd4f0",
           "accent-muted": "rgba(0, 184, 219, 0.2)",
           "accent-glow": "rgba(0, 184, 219, 0.25)",
           // Alternate accents (use in components if needed)
