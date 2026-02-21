@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
 import { SectionEntrance } from '@/components/MotionSection'
 
-const MAP_CENTER = { lat: 46.552, lng: 15.634 } // Celestrina 19, Malečnik, Slovenia
-// Smallest = green, middle = blue, largest = purple (drawn largest first so smallest is on top)
+const MAP_CENTER = { lat: 46.56174661845999, lng: 15.717263781943037 } // Celestrina 19, Malečnik, Slovenia (fallback)
+// Largest first so smallest is on top: red 200km, blue 100km, green 50km
 const CIRCLE_CONFIGS = [
-  { radius: 200000, fillColor: '#FC3912' }, // purple – largest (200 km)
-  { radius: 100000, fillColor: '#1A67FF' }, // blue – middle (100 km)
-  { radius: 50000, fillColor: '#0BFF00' }, // green – smallest (50 km)
+  { radius: 200000, fillColor: '#e53935', km: 200, price: '50€' },   // red – 200 km
+  { radius: 100000, fillColor: '#1e88e5', km: 100, price: '30€' },   // blue – 100 km
+  { radius: 50000, fillColor: '#43a047', km: 50, price: 'Free' },    // green – 50 km
 ]
 const FILL_OPACITY = 0.2
 
@@ -37,26 +37,41 @@ export default function MapSection() {
     })
     mapRef.current = map
 
-    // Marker at center (Celestrina 19, Malečnik)
-    new google.maps.Marker({
-      position: MAP_CENTER,
-      map,
-      title: 'Celestrina 19, Malečnik',
-    })
-
-    // Multiple circles: largest first (purple, blue), smallest on top (green)
-    CIRCLE_CONFIGS.forEach(({ radius, fillColor }) => {
-      new google.maps.Circle({
+    const placeMarkerAndCircles = (center: { lat: number; lng: number }) => {
+      new google.maps.Marker({
+        position: center,
         map,
-        center: MAP_CENTER,
-        radius,
-        fillColor,
-        fillOpacity: FILL_OPACITY,
-        strokeColor: fillColor,
-        strokeOpacity: 0.4,
-        strokeWeight: 1,
+        title: 'Celestrina 19, Malečnik',
       })
-    })
+      CIRCLE_CONFIGS.forEach(({ radius, fillColor }) => {
+        new google.maps.Circle({
+          map,
+          center,
+          radius,
+          fillColor,
+          fillOpacity: FILL_OPACITY,
+          strokeColor: fillColor,
+          strokeOpacity: 0.4,
+          strokeWeight: 1,
+        })
+      })
+      map.setCenter(center)
+    }
+
+    // Geocode address so marker is exactly at Celestrina 19, Malečnik (requires Geocoding API enabled)
+    const geocoder = new (google.maps as unknown as { Geocoder: new () => { geocode: (r: { address: string }, cb: (r: unknown[], s: string) => void) => void } }).Geocoder()
+    geocoder.geocode(
+      { address: 'Celestrina 19, Malečnik, Slovenia' },
+      (results: unknown[], status: string) => {
+        const first = results?.[0] as { geometry: { location: { lat: () => number; lng: () => number } } } | undefined
+        if (status === 'OK' && first?.geometry?.location) {
+          const loc = first.geometry.location
+          placeMarkerAndCircles({ lat: loc.lat(), lng: loc.lng() })
+        } else {
+          placeMarkerAndCircles(MAP_CENTER)
+        }
+      }
+    )
 
     return () => {
       mapRef.current = null
@@ -103,6 +118,27 @@ export default function MapSection() {
             className="w-full h-[400px] sm:h-[480px] rounded-card overflow-hidden border border-border-default bg-premium-slate"
             aria-hidden
           />
+
+          {/* Legend: color = distance + pricing */}
+          <div className="mt-6 rounded-card border border-border-default bg-premium-slate/80 p-4 sm:p-5">
+            <p className="text-body-sm font-semibold text-text-primary mb-3">Service area & travel costs</p>
+            <ul className="flex flex-wrap gap-x-6 gap-y-2 sm:gap-x-8 text-body-sm text-text-secondary" role="list">
+              {[...CIRCLE_CONFIGS].reverse().map(({ fillColor, km, price }) => (
+                <li key={km} className="flex items-center gap-2">
+                  <span
+                    className="h-4 w-4 rounded-full shrink-0 border border-white/20"
+                    style={{ backgroundColor: fillColor, opacity: 0.9 }}
+                    aria-hidden
+                  />
+                  <span>
+                    <strong className="text-text-primary">{km} km</strong>
+                    <span className="mx-1.5 text-text-muted">—</span>
+                    <span className={price === 'Free' ? 'text-premium-accent font-medium' : ''}>{price}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </SectionEntrance>
     </>
