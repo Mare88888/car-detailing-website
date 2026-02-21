@@ -145,7 +145,12 @@ export default function Services() {
                   <div className="mt-6 sm:mt-8">
                     <motion.div whileTap={buttonTap}>
                       <Link
-                        href={category.href}
+                        href="/"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          const id = category.href.replace(/^#/, '')
+                          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+                        }}
                         className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-body-sm transition-all duration-ui group-hover:border-premium-accent group-hover:text-premium-accent"
                       >
                         View Packages

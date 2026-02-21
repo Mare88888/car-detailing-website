@@ -128,7 +128,11 @@ function PricingCard({
       <div className="mt-8">
         <motion.div whileTap={buttonTap}>
           <Link
-            href={ctaHref}
+            href={ctaHref.startsWith('#') ? '/' : ctaHref}
+            onClick={ctaHref.startsWith('#') ? (e) => {
+              e.preventDefault()
+              document.getElementById(ctaHref.slice(1))?.scrollIntoView({ behavior: 'smooth' })
+            } : undefined}
             className={`block w-full text-center py-3.5 px-6 rounded-sharp font-semibold text-body-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-slate ${isPopular
               ? 'btn-primary w-full'
               : 'btn-secondary w-full'

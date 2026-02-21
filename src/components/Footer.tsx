@@ -33,11 +33,11 @@ function FacebookIcon({ className }: { className?: string }) {
 }
 
 const navLinks = [
-  { href: '#services', label: 'Services' },
-  { href: '#gallery', label: 'Gallery' },
-  { href: '#pricing', label: 'Pricing' },
-  { href: '#testimonials', label: 'Testimonials' },
-  { href: '#contact', label: 'Book Now' },
+  { sectionId: 'services', label: 'Services' },
+  { sectionId: 'gallery', label: 'Gallery' },
+  { sectionId: 'pricing', label: 'Pricing' },
+  { sectionId: 'testimonials', label: 'Testimonials' },
+  { sectionId: 'contact', label: 'Book Now' },
 ]
 
 const socialLinks = [
@@ -71,8 +71,15 @@ export default function Footer() {
             <h4 className="text-body-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Quick links</h4>
             <ul className="space-y-2">
               {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-text-muted hover:text-premium-accent transition-colors duration-ui text-body-sm">
+                <li key={link.sectionId}>
+                  <Link
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      document.getElementById(link.sectionId)?.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    className="text-text-muted hover:text-premium-accent transition-colors duration-ui text-body-sm"
+                  >
                     {link.label}
                   </Link>
                 </li>

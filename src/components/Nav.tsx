@@ -100,9 +100,13 @@ export default function Nav() {
           {navLinks.map((link) => {
             const isActive = activeSection === link.id
             return (
-              <li key={link.href}>
+              <li key={link.id}>
                 <Link
-                  href={link.href}
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    document.getElementById(link.id)?.scrollIntoView({ behavior: 'smooth' })
+                  }}
                   className={`text-body font-medium transition-colors duration-200 hover:text-premium-accent-light ${isActive ? 'text-premium-accent' : 'text-text-secondary'
                     }`}
                 >
@@ -116,7 +120,11 @@ export default function Nav() {
         {/* Desktop: Book Now CTA — right */}
         <div className="hidden md:block shrink-0">
           <Link
-            href="#contact"
+            href="/"
+            onClick={(e) => {
+              e.preventDefault()
+              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+            }}
             className="btn-primary inline-flex items-center justify-center px-6 py-3 text-body-sm"
           >
             Book Now
@@ -154,14 +162,18 @@ export default function Nav() {
             {navLinks.map((link) => {
               const isActive = activeSection === link.id
               return (
-                <li key={link.href}>
+                <li key={link.id}>
                   <Link
-                    href={link.href}
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      document.getElementById(link.id)?.scrollIntoView({ behavior: 'smooth' })
+                      setMobileOpen(false)
+                    }}
                     className={`block py-3 px-2 rounded-sharp text-body font-medium transition-colors ${isActive
                       ? 'text-premium-accent bg-premium-accent-muted'
                       : 'text-text-secondary hover:text-premium-accent-light hover:bg-premium-slate'
                       }`}
-                    onClick={() => setMobileOpen(false)}
                   >
                     {link.label}
                   </Link>
@@ -170,9 +182,13 @@ export default function Nav() {
             })}
             <li className="mt-2 pt-2 border-t border-border-default">
               <Link
-                href="#contact"
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault()
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+                  setMobileOpen(false)
+                }}
                 className="btn-primary flex items-center justify-center w-full py-3.5"
-                onClick={() => setMobileOpen(false)}
               >
                 Book Now
               </Link>
