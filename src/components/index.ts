@@ -12,6 +12,6 @@ export type { HeroProps } from "./Hero";
 export { SectionEntrance } from "./MotionSection";
 export { default as Nav } from "./Nav";
 export { default as Pricing } from "./Pricing";
-export type { PricingPackage, PricingProps } from "./Pricing";
+export type { PricingPackage } from "./Pricing";
 export { default as Services } from "./Services";
 export { default as Testimonials } from "./Testimonials";
