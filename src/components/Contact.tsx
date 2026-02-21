@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
 import { buttonTap } from '@/lib/motion'
+import { EmailIcon, PhoneIcon } from './Footer'
 
 const serviceOptions = [
   'Quick valet',
@@ -15,6 +16,8 @@ const serviceOptions = [
 
 interface FormErrors {
   name?: string
+  email?: string
+  phone?: string
   carType?: string
   service?: string
   date?: string
@@ -35,6 +38,8 @@ export default function Contact() {
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [values, setValues] = useState({
     name: '',
+    email: '',
+    phone: '',
     carType: '',
     service: '',
     date: '',
@@ -46,6 +51,13 @@ export default function Contact() {
     switch (name) {
       case 'name':
         return trimmed.length < 2 ? 'Please enter your name' : undefined
+      case 'email': {
+        if (!trimmed) return 'Please enter your email'
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return !emailRegex.test(trimmed) ? 'Please enter a valid email address' : undefined
+      }
+      case 'phone':
+        return undefined // optional
       case 'carType':
         return !trimmed ? 'Please enter your car type or model' : undefined
       case 'service':
@@ -70,7 +82,7 @@ export default function Contact() {
   function validateAll(): FormErrors {
     const next: FormErrors = {}
       ; (Object.keys(values) as (keyof FormErrors)[]).forEach((key) => {
-        if (key === 'name' || key === 'carType' || key === 'service' || key === 'date' || key === 'message') {
+        if (key === 'name' || key === 'email' || key === 'phone' || key === 'carType' || key === 'service' || key === 'date' || key === 'message') {
           const err = validateField(key, values[key])
           if (err) next[key] = err
         }
@@ -118,7 +130,7 @@ export default function Contact() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitError(null)
-    setTouched({ name: true, carType: true, service: true, date: true, message: true })
+    setTouched({ name: true, email: true, phone: true, carType: true, service: true, date: true, message: true })
     const nextErrors = validateAll()
     if (Object.keys(nextErrors).length > 0) return
     setSending(true)
@@ -195,13 +207,59 @@ export default function Contact() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={getInputClass('name')}
-                    placeholder="Your name"
+                    placeholder="John Doe"
                     aria-invalid={!!errors.name}
                     aria-describedby={errors.name ? 'contact-name-error' : undefined}
                   />
                   {errors.name && touched.name && (
                     <p id="contact-name-error" className="mt-1.5 text-body-sm text-error" role="alert">
                       {errors.name}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="contact-email" className="block text-body-sm font-medium text-text-secondary mb-2">
+                    Email <span className="text-error">*</span>
+                  </label>
+                  <input
+                    id="contact-email"
+                    name="email"
+                    type="email"
+                    value={values.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={getInputClass('email')}
+                    placeholder="john.doe@gmail.com"
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                  />
+                  {errors.email && touched.email && (
+                    <p id="contact-email-error" className="mt-1.5 text-body-sm text-error" role="alert">
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="contact-phone" className="block text-body-sm font-medium text-text-secondary mb-2">
+                    Phone number
+                  </label>
+                  <input
+                    id="contact-phone"
+                    name="phone"
+                    type="tel"
+                    value={values.phone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={getInputClass('phone')}
+                    placeholder="e.g. +386 70 123 456"
+                    aria-invalid={!!errors.phone}
+                    aria-describedby={errors.phone ? 'contact-phone-error' : undefined}
+                  />
+                  {errors.phone && touched.phone && (
+                    <p id="contact-phone-error" className="mt-1.5 text-body-sm text-error" role="alert">
+                      {errors.phone}
                     </p>
                   )}
                 </div>
@@ -329,10 +387,11 @@ export default function Contact() {
                     Phone
                   </span>
                   <a
-                    href="tel:+440000000000"
-                    className="text-text-primary hover:text-premium-accent transition-colors font-medium"
+                    href="tel:+38670742363"
+                    className="inline-flex items-center gap-2 text-text-primary hover:text-premium-accent transition-colors font-medium"
                   >
-                    00000 000000
+                    <PhoneIcon className="shrink-0" />
+                    <span>+386 70 742 363</span>
                   </a>
                 </li>
                 <li>
@@ -340,10 +399,11 @@ export default function Contact() {
                     Email
                   </span>
                   <a
-                    href="mailto:hello@example.com"
-                    className="text-text-primary hover:text-premium-accent transition-colors font-medium break-all"
+                    href="mailto:AShineMobile@gmail.com"
+                    className="inline-flex items-center gap-2 text-text-primary hover:text-premium-accent transition-colors font-medium break-all"
                   >
-                    hello@example.com
+                    <EmailIcon className="shrink-0" />
+                    <span>AShineMobile@gmail.com</span>
                   </a>
                 </li>
               </ul>

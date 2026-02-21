@@ -7,6 +7,8 @@ const BOOKING_EMAIL = 'marko.lempl4@gmail.com'
 
 export type BookingPayload = {
   name: string
+  email: string
+  phone?: string
   carType: string
   service: string
   date: string
@@ -16,13 +18,17 @@ export type BookingPayload = {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as BookingPayload
-    const { name, carType, service, date, message } = body
+    const { name, email, phone, carType, service, date, message } = body
 
-    if (!name?.trim() || !carType?.trim() || !service?.trim() || !date?.trim() || !message?.trim()) {
+    if (!name?.trim() || !email?.trim() || !carType?.trim() || !service?.trim() || !date?.trim() || !message?.trim()) {
       return NextResponse.json(
-        { error: 'Missing required fields: name, carType, service, date, message' },
+        { error: 'Missing required fields: name, email, carType, service, date, message' },
         { status: 400 }
       )
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.trim())) {
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
     if (!process.env.RESEND_API_KEY) {
@@ -33,9 +39,12 @@ export async function POST(request: Request) {
       )
     }
 
+    const phoneLine = phone?.trim() ? `<p><strong>Phone:</strong> ${escapeHtml(phone.trim())}</p>` : ''
     const html = `
       <h2>New booking request</h2>
       <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+      ${phoneLine}
       <p><strong>Car type / model:</strong> ${escapeHtml(carType)}</p>
       <p><strong>Service:</strong> ${escapeHtml(service)}</p>
       <p><strong>Preferred date:</strong> ${escapeHtml(date)}</p>
@@ -46,6 +55,7 @@ export async function POST(request: Request) {
     const { data, error } = await resend.emails.send({
       from: process.env.RESEND_FROM ?? 'Car Detailing Website <onboarding@resend.dev>',
       to: [BOOKING_EMAIL],
+      replyTo: email.trim(),
       subject: `Booking request from ${name.trim()} – ${service.trim()}`,
       html,
     })
