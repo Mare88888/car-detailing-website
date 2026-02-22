@@ -63,8 +63,10 @@ export async function POST(request: Request) {
       <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
     `.trim()
 
+    const fromAddress = process.env.RESEND_FROM ?? 'Car Detailing Website <onboarding@resend.dev>'
+
     const { data, error } = await resend.emails.send({
-      from: process.env.RESEND_FROM ?? 'Car Detailing Website <onboarding@resend.dev>',
+      from: fromAddress,
       to: [BOOKING_EMAIL],
       replyTo: email.trim(),
       subject: `Booking request from ${name.trim()} – ${service.trim()}`,
@@ -74,6 +76,34 @@ export async function POST(request: Request) {
     if (error) {
       console.error('Resend error:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    // Send confirmation email to the customer
+    const confirmationHtml = `
+      <h2>We received your booking request</h2>
+      <p>Hi ${escapeHtml(name.trim())},</p>
+      <p>Thank you for getting in touch. We've received your request and will get back to you soon to confirm your booking.</p>
+      <p><strong>Summary of your request:</strong></p>
+      <ul>
+        <li>Service: ${escapeHtml(service)}</li>
+        <li>Car: ${escapeHtml(carType)}</li>
+        ${locationLabel ? `<li>Location: ${escapeHtml(locationLabel)}</li>` : ''}
+        <li>Preferred date: ${escapeHtml(date)}</li>
+      </ul>
+      <p>If you have any questions in the meantime, just reply to this email or give us a call.</p>
+      <p>Best regards,<br>AShineMobile</p>
+    `.trim()
+
+    const confirmResult = await resend.emails.send({
+      from: fromAddress,
+      to: [email.trim()],
+      subject: `We received your booking request – AShineMobile`,
+      html: confirmationHtml,
+    })
+
+    if (confirmResult.error) {
+      console.error('Confirmation email error:', confirmResult.error)
+      // Still return success – the booking was received by the business
     }
 
     return NextResponse.json({ success: true, id: data?.id })
