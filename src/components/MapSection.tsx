@@ -7,8 +7,8 @@ import { SectionEntrance } from '@/components/MotionSection'
 const MAP_CENTER = { lat: 46.56174661845999, lng: 15.717263781943037 } // Celestrina 19, Malečnik, Slovenia (fallback)
 // Largest first so smallest is on top: red 200km, blue 100km, green 50km
 const CIRCLE_CONFIGS = [
-  { radius: 200000, fillColor: '#e53935', km: 200, price: '50€' },   // red – 200 km
-  { radius: 100000, fillColor: '#1e88e5', km: 100, price: '30€' },   // blue – 100 km
+  { radius: 200000, fillColor: '#e53935', km: 200, price: '0.40€ per km' },   // red – 200 km
+  { radius: 100000, fillColor: '#1e88e5', km: 100, price: '0.50€ per km' },   // blue – 100 km
   { radius: 50000, fillColor: '#43a047', km: 50, price: 'Free' },    // green – 50 km
 ]
 const FILL_OPACITY = 0.2
@@ -120,9 +120,9 @@ export default function MapSection() {
           />
 
           {/* Legend: color = distance + pricing */}
-          <div className="mt-6 rounded-card border border-border-default bg-premium-slate/80 p-4 sm:p-5">
+          <div className="mt-6 rounded-card border border-border-default bg-premium-slate/80 p-4 sm:p-5 text-center">
             <p className="text-body-sm font-semibold text-text-primary mb-3">Service area & travel costs</p>
-            <ul className="flex flex-wrap gap-x-6 gap-y-2 sm:gap-x-8 text-body-sm text-text-secondary" role="list">
+            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-x-8 text-body-sm text-text-secondary" role="list">
               {[...CIRCLE_CONFIGS].reverse().map(({ fillColor, km, price }) => (
                 <li key={km} className="flex items-center gap-2">
                   <span

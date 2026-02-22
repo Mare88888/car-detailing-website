@@ -5,20 +5,29 @@ import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
 import { buttonTap } from '@/lib/motion'
 import { EmailIcon, PhoneIcon } from './Footer'
+import { carCleaningPackages, carDetailingPackages } from './Pricing'
 
-const serviceOptions = [
-  'Quick valet',
-  'Full valet',
-  'Day detail',
-  'Like new',
-  'Other / Enquiry',
-]
+const SERVICE_TYPES = [
+  { value: 'cleaning', label: 'Car cleaning services' },
+  { value: 'detailing', label: 'Car detailing services' },
+  { value: 'custom', label: 'Other / Custom' },
+] as const
+
+const PACKAGE_CUSTOM_ID = 'custom'
+const PACKAGE_CUSTOM_LABEL = 'Custom / Other'
+
+function getPackagesForType(serviceType: string) {
+  if (serviceType === 'cleaning') return carCleaningPackages
+  if (serviceType === 'detailing') return carDetailingPackages
+  return [] // custom type: only "Custom / Other" option is shown in UI
+}
 
 interface FormErrors {
   name?: string
   email?: string
   phone?: string
   carType?: string
+  serviceCategory?: string
   service?: string
   date?: string
   message?: string
@@ -41,6 +50,7 @@ export default function Contact() {
     email: '',
     phone: '',
     carType: '',
+    serviceCategory: '',
     service: '',
     date: '',
     message: '',
@@ -60,8 +70,10 @@ export default function Contact() {
         return undefined // optional
       case 'carType':
         return !trimmed ? 'Please enter your car type or model' : undefined
+      case 'serviceCategory':
+        return !trimmed ? 'Please select a service type' : undefined
       case 'service':
-        return !trimmed ? 'Please select a service' : undefined
+        return !trimmed ? 'Please select a package' : undefined
       case 'date': {
         if (!trimmed) return 'Please choose a preferred date'
         const match = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
@@ -82,7 +94,7 @@ export default function Contact() {
   function validateAll(): FormErrors {
     const next: FormErrors = {}
       ; (Object.keys(values) as (keyof FormErrors)[]).forEach((key) => {
-        if (key === 'name' || key === 'email' || key === 'phone' || key === 'carType' || key === 'service' || key === 'date' || key === 'message') {
+        if (key === 'name' || key === 'email' || key === 'phone' || key === 'carType' || key === 'serviceCategory' || key === 'service' || key === 'date' || key === 'message') {
           const err = validateField(key, values[key])
           if (err) next[key] = err
         }
@@ -115,9 +127,18 @@ export default function Contact() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value } = e.target
     const nextValue = name === 'date' ? formatDateInput(value) : value
-    setValues((prev) => ({ ...prev, [name]: nextValue }))
+    setValues((prev) => {
+      const next = { ...prev, [name]: nextValue }
+      if (name === 'serviceCategory') {
+        next.service = nextValue === 'custom' ? PACKAGE_CUSTOM_ID : ''
+      }
+      return next
+    })
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: validateField(name as keyof FormErrors, nextValue) }))
+    }
+    if (name === 'serviceCategory' && errors.service) {
+      setErrors((prev) => ({ ...prev, service: undefined }))
     }
   }
 
@@ -127,18 +148,34 @@ export default function Contact() {
     setErrors((prev) => ({ ...prev, [name]: validateField(name as keyof FormErrors, value) }))
   }
 
+  function getServiceLabel(serviceCategory: string, packageId: string): string {
+    if (serviceCategory === 'custom' || packageId === PACKAGE_CUSTOM_ID) {
+      if (serviceCategory === 'custom') return 'Other / Custom'
+      const categoryLabel = serviceCategory === 'cleaning' ? 'Car cleaning' : 'Car detailing'
+      return `${categoryLabel} – ${PACKAGE_CUSTOM_LABEL}`
+    }
+    const packages = getPackagesForType(serviceCategory)
+    const pkg = packages.find((p) => p.id === packageId)
+    const categoryLabel = serviceCategory === 'cleaning' ? 'Car cleaning' : 'Car detailing'
+    return pkg ? `${categoryLabel} – ${pkg.name}` : packageId
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitError(null)
-    setTouched({ name: true, email: true, phone: true, carType: true, service: true, date: true, message: true })
+    setTouched({ name: true, email: true, phone: true, carType: true, serviceCategory: true, service: true, date: true, message: true })
     const nextErrors = validateAll()
     if (Object.keys(nextErrors).length > 0) return
     setSending(true)
     try {
+      const payload = {
+        ...values,
+        service: getServiceLabel(values.serviceCategory, values.service),
+      }
       const res = await fetch('/api/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -288,8 +325,36 @@ export default function Contact() {
                 </div>
 
                 <div>
+                  <label htmlFor="contact-serviceCategory" className="block text-body-sm font-medium text-text-secondary mb-2">
+                    Service type <span className="text-error">*</span>
+                  </label>
+                  <select
+                    id="contact-serviceCategory"
+                    name="serviceCategory"
+                    value={values.serviceCategory}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`${getInputClass('serviceCategory')} appearance-none cursor-pointer bg-premium-slate`}
+                    aria-invalid={!!errors.serviceCategory}
+                    aria-describedby={errors.serviceCategory ? 'contact-serviceCategory-error' : undefined}
+                  >
+                    <option value="" disabled hidden>Select a service type</option>
+                    {SERVICE_TYPES.map(({ value, label }) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.serviceCategory && touched.serviceCategory && (
+                    <p id="contact-serviceCategory-error" className="mt-1.5 text-body-sm text-error" role="alert">
+                      {errors.serviceCategory}
+                    </p>
+                  )}
+                </div>
+
+                <div>
                   <label htmlFor="contact-service" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Service <span className="text-error">*</span>
+                    Package <span className="text-error">*</span>
                   </label>
                   <select
                     id="contact-service"
@@ -297,16 +362,26 @@ export default function Contact() {
                     value={values.service}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`${getInputClass('service')} appearance-none cursor-pointer bg-premium-slate`}
+                    disabled={!values.serviceCategory}
+                    className={`${getInputClass('service')} appearance-none cursor-pointer bg-premium-slate disabled:opacity-60 disabled:cursor-not-allowed`}
                     aria-invalid={!!errors.service}
                     aria-describedby={errors.service ? 'contact-service-error' : undefined}
                   >
-                    <option value="">Select a service</option>
-                    {serviceOptions.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
+                    <option value="" disabled hidden>
+                      {values.serviceCategory ? 'Select a package' : 'Select service type first'}
+                    </option>
+                    {values.serviceCategory === 'custom' ? (
+                      <option value={PACKAGE_CUSTOM_ID}>{PACKAGE_CUSTOM_LABEL}</option>
+                    ) : (
+                      <>
+                        {getPackagesForType(values.serviceCategory).map((pkg) => (
+                          <option key={pkg.id} value={pkg.id}>
+                            {pkg.name} ({pkg.price})
+                          </option>
+                        ))}
+                        <option value={PACKAGE_CUSTOM_ID}>{PACKAGE_CUSTOM_LABEL}</option>
+                      </>
+                    )}
                   </select>
                   {errors.service && touched.service && (
                     <p id="contact-service-error" className="mt-1.5 text-body-sm text-error" role="alert">

@@ -56,7 +56,7 @@ function DetailingIcon({ className }: { className?: string }) {
 const categories = [
   {
     id: 'cleaning',
-    title: 'Car Cleaning',
+    title: 'Cleaning Services',
     description:
       'Keep your car looking fresh with our valeting and deep-cleaning services. Exterior wash, interior vacuum, engine bay clean, and full valet packages.',
     icon: CleaningIcon,
@@ -69,7 +69,7 @@ const categories = [
   },
   {
     id: 'detailing',
-    title: 'Car Detailing',
+    title: 'Detailing Services',
     description:
       'Restore gloss and protect with paint correction, ceramic coatings, and full-detail packages. Showroom finish and long-lasting protection.',
     icon: DetailingIcon,

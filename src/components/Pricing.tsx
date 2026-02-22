@@ -13,7 +13,7 @@ export interface PricingPackage {
 }
 
 /** Car cleaning – service packages (prices on request) */
-const carCleaningPackages: PricingPackage[] = [
+export const carCleaningPackages: PricingPackage[] = [
   {
     id: 'cleaning-basic',
     name: 'Vehicle Refresh',
@@ -57,7 +57,7 @@ const carCleaningPackages: PricingPackage[] = [
 ]
 
 /** Car detailing – packages with prices */
-const carDetailingPackages: PricingPackage[] = [
+export const carDetailingPackages: PricingPackage[] = [
   {
     id: 'detail-basic',
     name: 'Basic Refresh',
