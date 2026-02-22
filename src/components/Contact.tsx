@@ -107,16 +107,8 @@ export default function Contact() {
         return !trimmed ? t('errors.locationType') : undefined
       case 'distance':
         return values.locationType === 'mobile' && !trimmed ? t('errors.distance') : undefined
-      case 'date': {
-        if (!trimmed) return t('errors.date')
-        const match = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
-        if (!match) return t('errors.dateFormat')
-        const [, d, m, y] = match.map(Number)
-        if (m < 1 || m > 12) return t('errors.dateMonth')
-        if (d < 1 || d > 31) return t('errors.dateDay')
-        if (y < 2020 || y > 2040) return t('errors.dateYear')
-        return undefined
-      }
+      case 'date':
+        return !trimmed ? t('errors.date') : undefined
       case 'message':
         return trimmed.length < 10 ? t('errors.message') : undefined
       default:
@@ -134,30 +126,9 @@ export default function Contact() {
     return next
   }
 
-  function formatDateInput(value: string): string {
-    const digits = value.replace(/\D/g, '').slice(0, 8)
-    const monthFirst = digits[2]
-    const singleDigitMonth = monthFirst >= '2' && monthFirst <= '9' // month 02–09: next digits are year
-
-    if (digits.length <= 2) return digits
-    if (digits.length === 3) {
-      if (singleDigitMonth) return `${digits.slice(0, 2)}/${digits.slice(2)}/`
-      return `${digits.slice(0, 2)}/${digits.slice(2)}`
-    }
-    // Once we added DD/M/, further digits go to year (so 4th digit isn’t second digit of month)
-    if (singleDigitMonth) {
-      const day = digits.slice(0, 2)
-      const month = digits.slice(2, 3)
-      const year = digits.slice(3, 7) // max 4 digits for year
-      return `${day}/${month}/${year}`
-    }
-    if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`
-    return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`
-  }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value } = e.target
-    const nextValue = name === 'date' ? formatDateInput(value) : value
+    const nextValue = value
     setValues((prev) => {
       const next = { ...prev, [name]: nextValue }
       if (name === 'serviceCategory') {
@@ -487,14 +458,12 @@ export default function Contact() {
                   <input
                     id="contact-date"
                     name="date"
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="off"
+                    type="date"
                     value={values.date}
+                    min={new Date().toISOString().slice(0, 10)}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    placeholder="DD/MM/YYYY"
-                    className={getInputClass('date')}
+                    className={`${getInputClass('date')} date-picker-white-icon`}
                     aria-invalid={!!errors.date}
                     aria-describedby={errors.date ? 'contact-date-error' : undefined}
                   />

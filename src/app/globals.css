@@ -53,4 +53,15 @@
     @apply focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black;
     font-size: 0.875rem;
   }
+
+}
+
+/* Date input: white calendar icon (outside layer so it wins over utilities) */
+.date-picker-white-icon {
+  color-scheme: dark;
+}
+.date-picker-white-icon::-webkit-calendar-picker-indicator {
+  filter: brightness(0) invert(1);
+  opacity: 1;
+  cursor: pointer;
 }
