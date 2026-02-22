@@ -252,8 +252,25 @@ interface GalleryProps {
   items?: GalleryItem[]
 }
 
+const MOBILE_BREAKPOINT = 640
+const MOBILE_INITIAL_COUNT = 2
+
 export default function Gallery({ items = defaultItems }: GalleryProps) {
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [mobileExpanded, setMobileExpanded] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  const itemsToShow =
+    isMobile && !mobileExpanded ? items.slice(0, MOBILE_INITIAL_COUNT) : items
+  const hasMoreOnMobile = isMobile && items.length > MOBILE_INITIAL_COUNT && !mobileExpanded
 
   return (
     <SectionEntrance
@@ -281,7 +298,7 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
           initial="visible"
           animate="visible"
         >
-          {items.map((item) => (
+          {itemsToShow.map((item) => (
             <motion.div key={item.id} variants={staggerItem}>
               <ComparisonCard
                 item={item}
@@ -290,6 +307,19 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
             </motion.div>
           ))}
         </motion.div>
+
+        {hasMoreOnMobile && (
+          <div className="mt-6 flex justify-center sm:hidden">
+            <motion.button
+              type="button"
+              onClick={() => setMobileExpanded(true)}
+              whileTap={{ scale: 0.98 }}
+              className="btn-primary px-8 py-3.5 text-body-sm font-semibold"
+            >
+              See more
+            </motion.button>
+          </div>
+        )}
       </div>
 
       {lightboxItem && (
