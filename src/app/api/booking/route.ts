@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { getClientIp, isRateLimited } from '@/lib/rate-limit'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -19,6 +20,14 @@ export type BookingPayload = {
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request)
+    if (isRateLimited(`booking:${ip}`)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again in a few minutes.' },
+        { status: 429 }
+      )
+    }
+
     const body = (await request.json()) as BookingPayload
     const { name, email, phone, carType, service, locationType, distance, date, message } = body
 
