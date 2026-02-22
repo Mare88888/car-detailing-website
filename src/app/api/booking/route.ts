@@ -11,6 +11,8 @@ export type BookingPayload = {
   phone?: string
   carType: string
   service: string
+  locationType?: string
+  distance?: string
   date: string
   message: string
 }
@@ -18,7 +20,7 @@ export type BookingPayload = {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as BookingPayload
-    const { name, email, phone, carType, service, date, message } = body
+    const { name, email, phone, carType, service, locationType, distance, date, message } = body
 
     if (!name?.trim() || !email?.trim() || !carType?.trim() || !service?.trim() || !date?.trim() || !message?.trim()) {
       return NextResponse.json(
@@ -40,6 +42,14 @@ export async function POST(request: Request) {
     }
 
     const phoneLine = phone?.trim() ? `<p><strong>Phone:</strong> ${escapeHtml(phone.trim())}</p>` : ''
+    const locationLabel = !locationType
+      ? ''
+      : locationType === 'our-location'
+        ? 'At our location'
+        : distance
+          ? `We come to you (−${escapeHtml(distance)} km)`
+          : 'We come to you'
+    const locationLine = locationLabel ? `<p><strong>Location:</strong> ${locationLabel}</p>` : ''
     const html = `
       <h2>New booking request</h2>
       <p><strong>Name:</strong> ${escapeHtml(name)}</p>
@@ -47,6 +57,7 @@ export async function POST(request: Request) {
       ${phoneLine}
       <p><strong>Car type / model:</strong> ${escapeHtml(carType)}</p>
       <p><strong>Service:</strong> ${escapeHtml(service)}</p>
+      ${locationLine}
       <p><strong>Preferred date:</strong> ${escapeHtml(date)}</p>
       <p><strong>Message:</strong></p>
       <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>

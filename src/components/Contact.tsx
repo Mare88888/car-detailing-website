@@ -16,6 +16,17 @@ const SERVICE_TYPES = [
 const PACKAGE_CUSTOM_ID = 'custom'
 const PACKAGE_CUSTOM_LABEL = 'Custom / Other'
 
+const LOCATION_OPTIONS = [
+  { value: 'our-location', label: 'At our location' },
+  { value: 'mobile', label: 'We come to you' },
+] as const
+
+const DISTANCE_OPTIONS = [
+  { value: '50', label: 'Up to 50 km' },
+  { value: '100', label: '50–100 km' },
+  { value: '200', label: '100–200 km' },
+] as const
+
 function getPackagesForType(serviceType: string) {
   if (serviceType === 'cleaning') return carCleaningPackages
   if (serviceType === 'detailing') return carDetailingPackages
@@ -29,6 +40,8 @@ interface FormErrors {
   carType?: string
   serviceCategory?: string
   service?: string
+  locationType?: string
+  distance?: string
   date?: string
   message?: string
 }
@@ -52,6 +65,8 @@ export default function Contact() {
     carType: '',
     serviceCategory: '',
     service: '',
+    locationType: '',
+    distance: '',
     date: '',
     message: '',
   })
@@ -74,6 +89,10 @@ export default function Contact() {
         return !trimmed ? 'Please select a service type' : undefined
       case 'service':
         return !trimmed ? 'Please select a package' : undefined
+      case 'locationType':
+        return !trimmed ? 'Please choose where the service will be' : undefined
+      case 'distance':
+        return values.locationType === 'mobile' && !trimmed ? 'Please select distance' : undefined
       case 'date': {
         if (!trimmed) return 'Please choose a preferred date'
         const match = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
@@ -94,7 +113,7 @@ export default function Contact() {
   function validateAll(): FormErrors {
     const next: FormErrors = {}
       ; (Object.keys(values) as (keyof FormErrors)[]).forEach((key) => {
-        if (key === 'name' || key === 'email' || key === 'phone' || key === 'carType' || key === 'serviceCategory' || key === 'service' || key === 'date' || key === 'message') {
+        if (key === 'name' || key === 'email' || key === 'phone' || key === 'carType' || key === 'serviceCategory' || key === 'service' || key === 'locationType' || key === 'distance' || key === 'date' || key === 'message') {
           const err = validateField(key, values[key])
           if (err) next[key] = err
         }
@@ -132,6 +151,9 @@ export default function Contact() {
       if (name === 'serviceCategory') {
         next.service = nextValue === 'custom' ? PACKAGE_CUSTOM_ID : ''
       }
+      if (name === 'locationType') {
+        next.distance = nextValue === 'mobile' ? prev.distance : ''
+      }
       return next
     })
     if (errors[name as keyof FormErrors]) {
@@ -163,7 +185,7 @@ export default function Contact() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitError(null)
-    setTouched({ name: true, email: true, phone: true, carType: true, serviceCategory: true, service: true, date: true, message: true })
+    setTouched({ name: true, email: true, phone: true, carType: true, serviceCategory: true, service: true, locationType: true, distance: true, date: true, message: true })
     const nextErrors = validateAll()
     if (Object.keys(nextErrors).length > 0) return
     setSending(true)
@@ -388,6 +410,61 @@ export default function Contact() {
                       {errors.service}
                     </p>
                   )}
+                </div>
+
+                <div>
+                  <label className="block text-body-sm font-medium text-text-secondary mb-2">
+                    Where should we do the service? <span className="text-error">*</span>
+                  </label>
+                  <div className="flex flex-wrap gap-4 items-start">
+                    <div className="flex-1 min-w-[200px]">
+                      <select
+                        id="contact-locationType"
+                        name="locationType"
+                        value={values.locationType}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`${getInputClass('locationType')} appearance-none cursor-pointer bg-premium-slate`}
+                        aria-invalid={!!errors.locationType}
+                        aria-describedby={errors.locationType ? 'contact-locationType-error' : undefined}
+                      >
+                        <option value="" disabled hidden>Choose location</option>
+                        {LOCATION_OPTIONS.map(({ value, label }) => (
+                          <option key={value} value={value}>{label}</option>
+                        ))}
+                      </select>
+                      {errors.locationType && touched.locationType && (
+                        <p id="contact-locationType-error" className="mt-1.5 text-body-sm text-error" role="alert">
+                          {errors.locationType}
+                        </p>
+                      )}
+                    </div>
+                    {values.locationType === 'mobile' && (
+                      <div className="flex-1 min-w-[140px]">
+                        <label htmlFor="contact-distance" className="sr-only">Distance</label>
+                        <select
+                          id="contact-distance"
+                          name="distance"
+                          value={values.distance}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`${getInputClass('distance')} appearance-none cursor-pointer bg-premium-slate`}
+                          aria-invalid={!!errors.distance}
+                          aria-describedby={errors.distance ? 'contact-distance-error' : undefined}
+                        >
+                          <option value="" disabled hidden>Distance</option>
+                          {DISTANCE_OPTIONS.map(({ value, label }) => (
+                            <option key={value} value={value}>−{value} km</option>
+                          ))}
+                        </select>
+                        {errors.distance && touched.distance && (
+                          <p id="contact-distance-error" className="mt-1.5 text-body-sm text-error" role="alert">
+                            {errors.distance}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div>
