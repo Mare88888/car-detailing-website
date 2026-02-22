@@ -19,8 +19,10 @@ export function EmailIcon({ className }: { className?: string }) {
 }
 function InstagramIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M12 2.16c3.2 0 3.58 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58 0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s0-3.58.07-4.85C2.38 3.92 3.9 2.38 7.16 2.23c1.27-.06 1.65-.07 4.85-.07zM12 0C8.74 0 8.33 0 7.05.07 2.7.27.27 2.69.07 7.04 0 8.33 0 8.74 0 12s0 3.67.07 4.95c.2 4.36 2.37 6.53 6.73 6.73C8.33 23 8.74 23 12 23s3.67 0 4.95-.07c4.36-.2 6.53-2.37 6.73-6.73C23 15.67 23 15.26 23 12s0-3.67-.07-4.95C22.77 2.7 20.31.27 15.96.07 14.67 0 14.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.84a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z" />
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
     </svg>
   )
 }
@@ -112,7 +114,7 @@ export default function Footer() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-text-muted hover:text-premium-accent transition-colors duration-ui text-body-sm"
+                    className="inline-flex items-center gap-2 text-text-secondary hover:text-premium-accent transition-colors duration-ui text-body-sm"
                   >
                     {s.label === 'Instagram' ? <InstagramIcon className="shrink-0" /> : <FacebookIcon className="shrink-0" />}
                     <span>{s.label}</span>
