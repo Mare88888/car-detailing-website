@@ -1,8 +1,11 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
 import { staggerContainer, staggerItem, cardHover } from '@/lib/motion'
+
+const MOBILE_BREAKPOINT = 640
 
 export interface PricingPackage {
   id: string
@@ -107,13 +110,26 @@ const detailingAddOns: { name: string; price: string }[] = [
   { name: 'Ceramic upgrade', price: 'Price after inspection' },
 ]
 
-function PricingCard({ pkg }: { pkg: PricingPackage }) {
+function PricingCard({
+  pkg,
+  isMobile,
+  isExpanded,
+  onToggle,
+}: {
+  pkg: PricingPackage
+  isMobile: boolean
+  isExpanded: boolean
+  onToggle: () => void
+}) {
+  const showFeatures = !isMobile || isExpanded
+  const showReadMoreButton = isMobile
+
   return (
     <motion.article
       variants={staggerItem}
       whileHover={cardHover}
       transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="relative flex flex-col rounded-card border border-border-default bg-premium-slate/90 p-6 sm:p-7 transition-colors duration-300 hover:border-premium-graphite hover:bg-premium-slate"
+      className="relative flex flex-col rounded-card border border-border-default bg-premium-slate/90 p-5 sm:p-7 transition-colors duration-300 hover:border-premium-graphite hover:bg-premium-slate"
     >
       <div className="flex-1">
         <h3 className="text-h4 text-text-primary font-semibold">
@@ -122,30 +138,66 @@ function PricingCard({ pkg }: { pkg: PricingPackage }) {
         <p className="mt-2 text-2xl sm:text-3xl font-bold text-premium-accent tracking-tight">
           {pkg.price}
         </p>
-        <p className="mt-4 text-body-sm text-text-secondary leading-relaxed">
+        <p className="mt-3 sm:mt-4 text-body-sm text-text-secondary leading-relaxed">
           {pkg.description}
         </p>
 
-        <ul className="mt-6 space-y-3" role="list">
-          {pkg.features.map((feature) => (
-            <li
-              key={feature}
-              className="text-body-sm text-text-secondary flex items-start gap-3"
+        {/* Feature list: on desktop always visible; on mobile visible when expanded */}
+        {showFeatures && (
+          <ul className="mt-6 space-y-3" role="list">
+            {pkg.features.map((feature) => (
+              <li
+                key={feature}
+                className="text-body-sm text-text-secondary flex items-start gap-3"
+              >
+                <span
+                  className="mt-1.5 w-1.5 h-1.5 rounded-full bg-premium-accent shrink-0"
+                  aria-hidden
+                />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {showReadMoreButton && (
+          <div className="mt-4 sm:hidden">
+            <motion.button
+              type="button"
+              onClick={onToggle}
+              whileTap={{ scale: 0.98 }}
+              className="text-body-sm font-semibold text-premium-accent hover:text-premium-accent-light transition-colors focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-slate rounded"
             >
-              <span
-                className="mt-1.5 w-1.5 h-1.5 rounded-full bg-premium-accent shrink-0"
-                aria-hidden
-              />
-              <span>{feature}</span>
-            </li>
-          ))}
-        </ul>
+              {isExpanded ? 'Read less' : 'Read more'}
+            </motion.button>
+          </div>
+        )}
       </div>
     </motion.article>
   )
 }
 
 export default function Pricing() {
+  const [isMobile, setIsMobile] = useState(false)
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  const toggleExpanded = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
   return (
     <SectionEntrance
       id="pricing"
@@ -177,7 +229,13 @@ export default function Pricing() {
             animate="visible"
           >
             {carCleaningPackages.map((pkg) => (
-              <PricingCard key={pkg.id} pkg={pkg} />
+              <PricingCard
+                key={pkg.id}
+                pkg={pkg}
+                isMobile={isMobile}
+                isExpanded={expandedIds.has(pkg.id)}
+                onToggle={() => toggleExpanded(pkg.id)}
+              />
             ))}
           </motion.div>
         </section>
@@ -194,7 +252,13 @@ export default function Pricing() {
             animate="visible"
           >
             {carDetailingPackages.map((pkg) => (
-              <PricingCard key={pkg.id} pkg={pkg} />
+              <PricingCard
+                key={pkg.id}
+                pkg={pkg}
+                isMobile={isMobile}
+                isExpanded={expandedIds.has(pkg.id)}
+                onToggle={() => toggleExpanded(pkg.id)}
+              />
             ))}
           </motion.div>
 
