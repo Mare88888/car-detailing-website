@@ -10,35 +10,58 @@ const inter = Inter({
   display: 'swap',
 })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://example.com'
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example.com'),
+  metadataBase: new URL(siteUrl),
+  applicationName: 'AShineMobile',
   title: {
-    default: 'Premium Car Detailing | Valeting & Protection',
-    template: '%s | Car Detailing',
+    default: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
+    template: '%s | AShineMobile',
   },
   description:
-    'Professional car detailing and mobile valeting. Showroom finish with ceramic coatings and paint correction.',
-  keywords: ['car detailing', 'valeting', 'ceramic coating', 'paint correction', 'mobile valet'],
-  authors: [{ name: 'Car Detailing' }],
-  creator: 'Car Detailing',
+    'Professional car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction, full detail. We come to you – Celestrina 19, Malečnik. Book online.',
+  keywords: [
+    'car detailing Slovenia',
+    'mobile valeting',
+    'ceramic coating',
+    'paint correction',
+    'avto detailing',
+    'valeting Malečnik',
+    'car detailing Maribor',
+  ],
+  authors: [{ name: 'AShineMobile', url: siteUrl }],
+  creator: 'AShineMobile',
+  publisher: 'AShineMobile',
   openGraph: {
     type: 'website',
     locale: 'en_GB',
-    siteName: 'Car Detailing',
-    title: 'Premium Car Detailing | Valeting & Protection',
-    description: 'Professional car detailing and mobile valeting. Showroom finish with ceramic coatings and paint correction.',
+    siteName: 'AShineMobile',
+    title: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
+    description: 'Professional car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction. We come to you.',
+    url: '/',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Premium Car Detailing | Valeting & Protection',
-    description: 'Professional car detailing and mobile valeting. Showroom finish with ceramic coatings and paint correction.',
+    title: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
+    description: 'Professional car detailing and mobile valeting in Slovenia. We come to you.',
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: { index: true, follow: true },
   },
   alternates: {
     canonical: '/',
+  },
+  category: 'automotive',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/apple-icon', type: 'image/png', sizes: '180x180' },
+    ],
   },
 }
 

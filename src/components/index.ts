@@ -9,6 +9,7 @@ export { default as Gallery } from "./Gallery";
 export type { GalleryItem } from "./Gallery";
 export { default as Hero } from "./Hero";
 export type { HeroProps } from "./Hero";
+export { JsonLd } from "./JsonLd";
 export { SectionEntrance } from "./MotionSection";
 export { default as Nav } from "./Nav";
 export { default as Pricing } from "./Pricing";

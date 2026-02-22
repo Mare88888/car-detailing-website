@@ -91,6 +91,7 @@ export default function Nav() {
             className="h-30 w-30 object-contain"
             style={{ borderRadius: '5px' }}
             priority
+            sizes="(max-width: 768px) 96px, 100px"
           />
           <span>AShineMobile</span>
         </Link>
@@ -131,21 +132,27 @@ export default function Nav() {
           </Link>
         </div>
 
-        {/* Mobile: hamburger */}
+        {/* Mobile: hamburger ↔ X with crossfade */}
         <button
           type="button"
-          className="md:hidden p-2 -mr-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black rounded"
+          className="md:hidden relative p-2 -mr-2 w-10 h-10 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black rounded"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-            {mobileOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
+          <svg className="w-6 h-6 absolute inset-0 m-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" aria-hidden>
+            {/* Hamburger: three lines */}
+            <g className={`transition-opacity duration-200 ease-out ${mobileOpen ? 'opacity-0' : 'opacity-100'}`}>
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="18" x2="20" y2="18" />
+            </g>
+            {/* X: two equal diagonals crossing at center */}
+            <g className={`transition-opacity duration-200 ease-out ${mobileOpen ? 'opacity-100' : 'opacity-0'}`}>
+              <line x1="6" y1="6" x2="18" y2="18" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+            </g>
           </svg>
         </button>
       </nav>
@@ -153,11 +160,11 @@ export default function Nav() {
       {/* Mobile menu */}
       <div
         id="mobile-menu"
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${mobileOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${mobileOpen ? 'max-h-[85vh] opacity-100' : 'max-h-0 opacity-0'
           }`}
         aria-hidden={!mobileOpen}
       >
-        <div className="bg-premium-charcoal border-t border-border-default px-4 py-4">
+        <div className="bg-premium-charcoal border-t border-border-default px-4 py-4 overflow-y-auto max-h-[85vh]">
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const isActive = activeSection === link.id

@@ -123,7 +123,22 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-border-default flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-text-muted text-body-sm">© {new Date().getFullYear()} Car Detailing. All rights reserved.</p>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <p className="text-text-muted text-body-sm">© {new Date().getFullYear()} AShineMobile. All rights reserved.</p>
+            <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-body-sm">
+              <Link href="/privacy" className="text-text-muted hover:text-premium-accent transition-colors">
+                Privacy
+              </Link>
+              <span className="text-text-disabled">·</span>
+              <Link href="/terms" className="text-text-muted hover:text-premium-accent transition-colors">
+                Terms
+              </Link>
+              <span className="text-text-disabled">·</span>
+              <Link href="/cookies" className="text-text-muted hover:text-premium-accent transition-colors">
+                Cookies
+              </Link>
+            </nav>
+          </div>
           <p className="text-text-muted text-body-sm">Keep your car looking its best.</p>
         </div>
       </div>
