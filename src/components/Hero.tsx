@@ -1,10 +1,15 @@
 'use client'
 
 import Image from 'next/image'
+import { useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { buttonHover, buttonTap } from '@/lib/motion'
+
+function scrollToSection(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+}
 
 export interface HeroProps {
   /** Optional background image path (e.g. /hero-bg.jpg). If not set, gradient only. */
@@ -40,6 +45,19 @@ export default function Hero({
   const primaryCta = primaryCtaLabel ?? t('primaryCta')
   const secondaryCta = secondaryCtaLabel ?? t('secondaryCta')
 
+  const handlePrimaryClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    scrollToSection('contact')
+  }, [])
+  const handleSecondaryClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    scrollToSection('services')
+  }, [])
+
+  const gradientClass = hasMedia
+    ? 'from-premium-charcoal/60 via-premium-black/70 to-premium-black/95'
+    : 'from-premium-charcoal via-premium-black to-premium-black'
+
   return (
     <section
       id="hero"
@@ -65,13 +83,7 @@ export default function Hero({
           <Image src={backgroundImage} alt="" fill className="object-cover object-center" priority sizes="100vw" />
         </div>
       ) : null}
-      <div
-        className={`absolute inset-0 bg-gradient-to-b ${hasMedia
-          ? 'from-premium-charcoal/60 via-premium-black/70 to-premium-black/95'
-          : 'from-premium-charcoal via-premium-black to-premium-black'
-          }`}
-        aria-hidden
-      />
+      <div className={`absolute inset-0 bg-gradient-to-b ${gradientClass}`} aria-hidden />
       <div
         className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(0,184,219,0.08),transparent)]"
         aria-hidden
@@ -83,26 +95,12 @@ export default function Hero({
           <p className="mt-4 text-base text-text-secondary max-w-2xl mx-auto sm:mt-6 sm:text-lg">{subheadlineText}</p>
           <div className="mt-8 flex flex-col gap-4 justify-center sm:mt-10 sm:flex-row sm:gap-5">
             <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-              <Link
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault()
-                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className="btn-primary inline-flex items-center justify-center px-7 py-3.5 sm:px-8 sm:py-4"
-              >
+              <Link href="/" onClick={handlePrimaryClick} className="btn-primary inline-flex items-center justify-center px-7 py-3.5 sm:px-8 sm:py-4">
                 {primaryCta}
               </Link>
             </motion.div>
             <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-              <Link
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault()
-                  document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className="btn-secondary inline-flex items-center justify-center px-7 py-3.5 sm:px-8 sm:py-4"
-              >
+              <Link href="/" onClick={handleSecondaryClick} className="btn-secondary inline-flex items-center justify-center px-7 py-3.5 sm:px-8 sm:py-4">
                 {secondaryCta}
               </Link>
             </motion.div>

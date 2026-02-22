@@ -1,10 +1,15 @@
 'use client'
 
+import { useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
-import { staggerContainer, staggerItem, cardHover, buttonTap } from '@/lib/motion'
+import { staggerContainer, staggerItem, cardHover, buttonTap, ease } from '@/lib/motion'
+
+function scrollToSection(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+}
 
 /* Icons as inline SVG for no asset dependency */
 function CleaningIcon({ className }: { className?: string }) {
@@ -77,8 +82,15 @@ const categories = [
   },
 ]
 
+const CARD_TRANSITION = { duration: 0.2, ease }
+
 export default function Services() {
   const t = useTranslations('services')
+  const handleViewPackages = useCallback((sectionId: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    scrollToSection(sectionId)
+  }, [])
+
   return (
     <SectionEntrance
       id="services"
@@ -114,7 +126,7 @@ export default function Services() {
                 key={category.id}
                 variants={staggerItem}
                 whileHover={cardHover}
-                transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={CARD_TRANSITION}
                 className="group relative overflow-hidden rounded-card border border-border-default bg-premium-slate transition-colors duration-300 hover:border-premium-accent/50 hover:shadow-xl hover:shadow-black/20"
               >
                 <div
@@ -140,11 +152,7 @@ export default function Services() {
                     <motion.div whileTap={buttonTap}>
                       <Link
                         href="/"
-                        onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                          e.preventDefault()
-                          const id = category.href.replace(/^#/, '')
-                          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-                        }}
+                        onClick={handleViewPackages(category.href.replace(/^#/, ''))}
                         className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-body-sm transition-all duration-ui group-hover:border-premium-accent group-hover:text-premium-accent"
                       >
                         {t(`${category.key}.viewPackages`)}

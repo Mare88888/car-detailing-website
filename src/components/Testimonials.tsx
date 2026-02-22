@@ -9,8 +9,14 @@ import type { Testimonial } from '@/data/testimonials'
 
 const SLIDES_VISIBLE = 3
 const GAP_PX = 24 // gap-6
-// Same value on server and client to avoid hydration mismatch; updated in useEffect after mount
-const INITIAL_STEP_PX = 320
+const INITIAL_STEP_PX = 320 // hydration-safe; updated in useEffect
+const TRACK_BUFFER_PX = 4
+const MIN_CARD_WIDTH_PX = 200
+
+const CAROUSEL_BTN_CLASS =
+  'absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-border-default bg-premium-charcoal text-text-primary hover:text-premium-accent hover:border-premium-accent transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black'
+const DOT_BASE_CLASS =
+  'w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black'
 
 function CarouselCard({ testimonial }: { testimonial: Testimonial }) {
   return (
@@ -37,8 +43,7 @@ export default function Testimonials() {
     if (!el) return
     const update = () => {
       const w = el.getBoundingClientRect().width
-      const buffer = 4
-      const contentWidth = Math.max(200, w - buffer)
+      const contentWidth = Math.max(MIN_CARD_WIDTH_PX, w - TRACK_BUFFER_PX)
       setStepPx((contentWidth + GAP_PX) / SLIDES_VISIBLE)
     }
     update()
@@ -75,11 +80,10 @@ export default function Testimonials() {
         </header>
 
         <div className="relative">
-          {/* Prev button */}
           <button
             type="button"
             onClick={goPrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 sm:translate-x-0 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-border-default bg-premium-charcoal text-text-primary hover:text-premium-accent hover:border-premium-accent transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black"
+            className={`left-0 -translate-x-2 sm:translate-x-0 ${CAROUSEL_BTN_CLASS}`}
             aria-label="Previous testimonials"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,11 +91,10 @@ export default function Testimonials() {
             </svg>
           </button>
 
-          {/* Next button */}
           <button
             type="button"
             onClick={goNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 sm:translate-x-0 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-border-default bg-premium-charcoal text-text-primary hover:text-premium-accent hover:border-premium-accent transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black"
+            className={`right-0 translate-x-2 sm:translate-x-0 ${CAROUSEL_BTN_CLASS}`}
             aria-label="Next testimonials"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,16 +114,16 @@ export default function Testimonials() {
                   ease: [0.32, 0.72, 0, 1],
                 }}
               >
-                {testimonials.map((t, i) => (
+                {testimonials.map((testimonial, i) => (
                   <div
-                    key={`${t.author}-${i}`}
+                    key={`${testimonial.author}-${i}`}
                     className="shrink-0"
                     style={{
                       width: stepPx - GAP_PX,
                       minWidth: stepPx - GAP_PX,
                     }}
                   >
-                    <CarouselCard testimonial={t} />
+                    <CarouselCard testimonial={testimonial} />
                   </div>
                 ))}
               </motion.div>
@@ -137,9 +140,7 @@ export default function Testimonials() {
                 role="tab"
                 aria-selected={i === index}
                 aria-label={`Go to testimonials ${i + 1}`}
-                className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black ${
-                  i === index ? 'bg-premium-accent scale-110' : 'bg-premium-graphite hover:bg-premium-zinc'
-                }`}
+                className={`${DOT_BASE_CLASS} ${i === index ? 'bg-premium-accent scale-110' : 'bg-premium-graphite hover:bg-premium-zinc'}`}
               />
             ))}
           </div>

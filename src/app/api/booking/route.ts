@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { getClientIp, isRateLimited } from '@/lib/rate-limit'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
-const BOOKING_EMAIL = 'marko.lempl4@gmail.com'
+const RESEND = new Resend(process.env.RESEND_API_KEY)
+const BOOKING_TO_EMAIL = 'marko.lempl4@gmail.com'
+const RATE_LIMIT_KEY_PREFIX = 'booking:'
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const REQUIRED_FIELDS = ['name', 'email', 'carType', 'service', 'date', 'message'] as const
 
 export type BookingPayload = {
   name: string
@@ -18,10 +20,17 @@ export type BookingPayload = {
   message: string
 }
 
+function getLocationLabel(payload: { locationType?: string; distance?: string }): string {
+  const { locationType, distance } = payload
+  if (!locationType) return ''
+  if (locationType === 'our-location') return 'At our location'
+  return distance ? `We come to you (−${distance} km)` : 'We come to you'
+}
+
 export async function POST(request: Request) {
   try {
     const ip = getClientIp(request)
-    if (isRateLimited(`booking:${ip}`)) {
+    if (isRateLimited(`${RATE_LIMIT_KEY_PREFIX}${ip}`)) {
       return NextResponse.json(
         { error: 'Too many requests. Please try again in a few minutes.' },
         { status: 429 }
@@ -31,14 +40,14 @@ export async function POST(request: Request) {
     const body = (await request.json()) as BookingPayload
     const { name, email, phone, carType, service, locationType, distance, date, message } = body
 
-    if (!name?.trim() || !email?.trim() || !carType?.trim() || !service?.trim() || !date?.trim() || !message?.trim()) {
+    const missing = REQUIRED_FIELDS.filter((field) => !body[field]?.trim())
+    if (missing.length > 0) {
       return NextResponse.json(
-        { error: 'Missing required fields: name, email, carType, service, date, message' },
+        { error: `Missing required fields: ${missing.join(', ')}` },
         { status: 400 }
       )
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email.trim())) {
+    if (!EMAIL_REGEX.test(email.trim())) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
@@ -50,14 +59,8 @@ export async function POST(request: Request) {
       )
     }
 
+    const locationLabel = getLocationLabel({ locationType, distance })
     const phoneLine = phone?.trim() ? `<p><strong>Phone:</strong> ${escapeHtml(phone.trim())}</p>` : ''
-    const locationLabel = !locationType
-      ? ''
-      : locationType === 'our-location'
-        ? 'At our location'
-        : distance
-          ? `We come to you (−${escapeHtml(distance)} km)`
-          : 'We come to you'
     const locationLine = locationLabel ? `<p><strong>Location:</strong> ${locationLabel}</p>` : ''
     const html = `
       <h2>New booking request</h2>
@@ -74,9 +77,9 @@ export async function POST(request: Request) {
 
     const fromAddress = process.env.RESEND_FROM ?? 'Car Detailing Website <onboarding@resend.dev>'
 
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await RESEND.emails.send({
       from: fromAddress,
-      to: [BOOKING_EMAIL],
+      to: [BOOKING_TO_EMAIL],
       replyTo: email.trim(),
       subject: `Booking request from ${name.trim()} – ${service.trim()}`,
       html,
@@ -103,7 +106,7 @@ export async function POST(request: Request) {
       <p>Best regards,<br>AShineMobile</p>
     `.trim()
 
-    const confirmResult = await resend.emails.send({
+    const confirmResult = await RESEND.emails.send({
       from: fromAddress,
       to: [email.trim()],
       subject: `We received your booking request – AShineMobile`,

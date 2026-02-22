@@ -1,16 +1,16 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { SITE_URL, BRAND } from '@/config/site'
 import './globals.css'
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://example.com'
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   applicationName: 'AShineMobile',
   title: {
     default: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     'valeting Malečnik',
     'car detailing Maribor',
   ],
-  authors: [{ name: 'AShineMobile', url: siteUrl }],
+  authors: [{ name: 'AShineMobile', url: SITE_URL }],
   creator: 'AShineMobile',
   publisher: 'AShineMobile',
   openGraph: {
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#08080a',
+  themeColor: BRAND.bg,
 }
 
 export default function RootLayout({

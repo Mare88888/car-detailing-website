@@ -43,10 +43,22 @@ const footerNavKeys = [
   { sectionId: 'contact' as const, key: 'bookNow' as const },
 ]
 
-const socialLinks = [
-  { href: 'https://www.instagram.com/ashinemobile/', label: 'Instagram' },
-  { href: 'https://www.facebook.com/people/A-Shine/61576376247443/#', label: 'Facebook' },
-]
+const SOCIAL_LINKS = [
+  { href: 'https://www.instagram.com/ashinemobile/', label: 'Instagram' as const, Icon: InstagramIcon },
+  { href: 'https://www.facebook.com/people/A-Shine/61576376247443/#', label: 'Facebook' as const, Icon: FacebookIcon },
+] as const
+
+function isHomePath(pathname: string): boolean {
+  return pathname === '/' || pathname === '/en' || pathname === '/sl'
+}
+
+function scrollToTop(e: React.MouseEvent<HTMLAnchorElement>) {
+  if (typeof window === 'undefined') return
+  if (isHomePath(window.location.pathname)) {
+    e.preventDefault()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
 
 export default function Footer() {
   const t = useTranslations('footer')
@@ -58,15 +70,7 @@ export default function Footer() {
           <div>
             <Link
               href="/"
-              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                if (typeof window !== 'undefined') {
-                  const path = window.location.pathname
-                  if (path === '/' || path === '/en' || path === '/sl') {
-                    e.preventDefault()
-                    window.scrollTo({ top: 0, behavior: 'smooth' })
-                  }
-                }
-              }}
+              onClick={scrollToTop}
               className="text-h4 text-text-primary hover:text-premium-accent transition-colors"
             >
               AShineMobile
@@ -114,16 +118,16 @@ export default function Footer() {
           <div>
             <h4 className="text-body-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">{t('follow')}</h4>
             <ul className="flex flex-col gap-2">
-              {socialLinks.map((s) => (
-                <li key={s.href}>
+              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <li key={href}>
                   <a
-                    href={s.href}
+                    href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-text-secondary hover:text-premium-accent transition-colors duration-ui text-body-sm"
                   >
-                    {s.label === 'Instagram' ? <InstagramIcon className="shrink-0" /> : <FacebookIcon className="shrink-0" />}
-                    <span>{s.label}</span>
+                    <Icon className="shrink-0" />
+                    <span>{label}</span>
                   </a>
                 </li>
               ))}

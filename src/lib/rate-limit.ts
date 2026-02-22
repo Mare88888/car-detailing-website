@@ -3,7 +3,8 @@
  * Use for API routes to throttle by IP. For multi-instance/serverless, consider Upstash Redis.
  */
 
-const store = new Map<string, { count: number; windowEnd: number }>()
+type RateLimitEntry = { count: number; windowEnd: number }
+const store = new Map<string, RateLimitEntry>()
 
 /** Default: 5 requests per 15 minutes per key (e.g. per IP) */
 const DEFAULT_MAX = 5

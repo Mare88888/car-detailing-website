@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
+import { SITE_URL } from '@/config/site'
 import Hero from '@/components/Hero'
 import Services from '@/components/Services'
 import Gallery from '@/components/Gallery'
@@ -9,23 +10,27 @@ import Testimonials from '@/components/Testimonials'
 import Contact from '@/components/Contact'
 import { JsonLd } from '@/components'
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://example.com'
+const PAGE_META = {
+  title: 'Car Detailing & Mobile Valeting | Slovenia',
+  description: 'Book car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction, full detail. We come to you – service area 50–200 km from Malečnik. AShineMobile.',
+  ogTitle: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
+  ogDescription: 'Professional car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction. We come to you. Book online.',
+} as const
 
 export const metadata: Metadata = {
-  title: 'Car Detailing & Mobile Valeting | Slovenia',
-  description:
-    'Book car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction, full detail. We come to you – service area 50–200 km from Malečnik. AShineMobile.',
+  title: PAGE_META.title,
+  description: PAGE_META.description,
   openGraph: {
-    title: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
-    description: 'Professional car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction. We come to you. Book online.',
-    url: siteUrl,
+    title: PAGE_META.ogTitle,
+    description: PAGE_META.ogDescription,
+    url: SITE_URL,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
-    description: 'Professional car detailing and mobile valeting in Slovenia. We come to you. Book online.',
+    title: PAGE_META.ogTitle,
+    description: PAGE_META.ogDescription,
   },
-  alternates: { canonical: siteUrl },
+  alternates: { canonical: SITE_URL },
 }
 
 type Props = { params: Promise<{ locale: string }> }

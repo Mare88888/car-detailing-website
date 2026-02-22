@@ -2,17 +2,17 @@
  * JSON-LD structured data for SEO: WebSite, Organization, LocalBusiness.
  * Rendered on the home page so search engines can show rich results.
  */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://example.com'
+import { SITE_URL, GEO } from '@/config/site'
 
-const businessDescription =
+const BUSINESS_DESCRIPTION =
   'Professional car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction, full detail. We come to you – Celestrina 19, Malečnik. Service area 50–200 km.'
 
 const localBusiness = {
   '@type': 'AutoRepair',
-  '@id': `${siteUrl}/#business`,
+  '@id': `${SITE_URL}/#business`,
   name: 'AShineMobile',
-  description: businessDescription,
-  url: siteUrl,
+  description: BUSINESS_DESCRIPTION,
+  url: SITE_URL,
   telephone: '+38670742363',
   email: 'AShineMobile@gmail.com',
   address: {
@@ -23,12 +23,12 @@ const localBusiness = {
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: 46.56174661845999,
-    longitude: 15.717263781943037,
+    latitude: GEO.latitude,
+    longitude: GEO.longitude,
   },
   areaServed: {
     '@type': 'GeoCircle',
-    geoMidpoint: { '@type': 'GeoCoordinates', latitude: 46.56174661845999, longitude: 15.717263781943037 },
+    geoMidpoint: { '@type': 'GeoCoordinates', latitude: GEO.latitude, longitude: GEO.longitude },
     geoRadius: '200000',
   },
   priceRange: '€€',
@@ -46,10 +46,10 @@ const localBusiness = {
 
 const organization = {
   '@type': 'Organization',
-  '@id': `${siteUrl}/#organization`,
+  '@id': `${SITE_URL}/#organization`,
   name: 'AShineMobile',
-  url: siteUrl,
-  description: businessDescription,
+  url: SITE_URL,
+  description: BUSINESS_DESCRIPTION,
   sameAs: localBusiness.sameAs,
   contactPoint: {
     '@type': 'ContactPoint',
@@ -62,15 +62,15 @@ const organization = {
 
 const webSite = {
   '@type': 'WebSite',
-  '@id': `${siteUrl}/#website`,
-  url: siteUrl,
+  '@id': `${SITE_URL}/#website`,
+  url: SITE_URL,
   name: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
   description: 'Book car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction, full detail. We come to you.',
-  publisher: { '@id': `${siteUrl}/#organization` },
+  publisher: { '@id': `${SITE_URL}/#organization` },
   inLanguage: 'en-GB',
   potentialAction: {
     '@type': 'ReadAction',
-    target: { '@type': 'EntryPoint', url: siteUrl },
+    target: { '@type': 'EntryPoint', url: SITE_URL },
   },
 }
 

@@ -1,12 +1,15 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslations, useMessages } from 'next-intl'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
-import { staggerContainer, staggerItem, cardHover } from '@/lib/motion'
+import { staggerContainer, staggerItem, cardHover, ease } from '@/lib/motion'
 
 const MOBILE_BREAKPOINT = 640
+const CARD_TRANSITION = { duration: 0.2, ease }
+
+type PricingPackagesMessages = Record<string, { features?: string[] }>
 
 export interface PricingPackage {
   id: string
@@ -103,14 +106,6 @@ export const carDetailingPackages: PricingPackage[] = [
   },
 ]
 
-const detailingAddOns: { name: string; price: string }[] = [
-  { name: 'Pet hair removal', price: '€20–40' },
-  { name: 'Headlight restoration', price: '€60' },
-  { name: 'Engine bay cleaning', price: '€40' },
-  { name: '2nd polish step', price: '+€100' },
-  { name: 'Ceramic upgrade', price: 'Price after inspection' },
-]
-
 function PricingCard({
   pkg,
   isMobile,
@@ -133,7 +128,7 @@ function PricingCard({
     <motion.article
       variants={staggerItem}
       whileHover={cardHover}
-      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={CARD_TRANSITION}
       className="relative flex flex-col rounded-card border border-border-default bg-premium-slate/90 p-5 sm:p-7 transition-colors duration-300 hover:border-premium-graphite hover:bg-premium-slate"
     >
       <div className="flex-1">
@@ -185,7 +180,7 @@ function PricingCard({
 function useTranslatedPackages(
   packages: PricingPackage[],
   t: (key: string) => string,
-  packagesMessages: Record<string, { name?: string; price?: string; description?: string; features?: string[] }>
+  packagesMessages: PricingPackagesMessages
 ): PricingPackage[] {
   return useMemo(
     () =>
@@ -205,7 +200,7 @@ function useTranslatedPackages(
 
 export default function Pricing() {
   const t = useTranslations('pricing')
-  const messages = useMessages() as { pricing?: { packages?: Record<string, { features?: string[] }> } }
+  const messages = useMessages() as { pricing?: { packages?: PricingPackagesMessages } }
   const packagesMessages = messages?.pricing?.packages ?? {}
   const translatedCleaning = useTranslatedPackages(carCleaningPackages, t, packagesMessages)
   const translatedDetailing = useTranslatedPackages(carDetailingPackages, t, packagesMessages)
@@ -220,14 +215,14 @@ export default function Pricing() {
     return () => mq.removeEventListener('change', update)
   }, [])
 
-  const toggleExpanded = (id: string) => {
+  const toggleExpanded = useCallback((id: string) => {
     setExpandedIds((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
       return next
     })
-  }
+  }, [])
 
   return (
     <SectionEntrance

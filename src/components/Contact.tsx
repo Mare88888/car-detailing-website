@@ -10,6 +10,21 @@ import { carCleaningPackages, carDetailingPackages } from './Pricing'
 
 const PACKAGE_CUSTOM_ID = 'custom'
 
+const INITIAL_FORM_VALUES: Record<string, string> = {
+  name: '',
+  email: '',
+  phone: '',
+  carType: '',
+  serviceCategory: '',
+  service: '',
+  locationType: '',
+  distance: '',
+  date: '',
+  message: '',
+}
+
+const FORM_FIELD_KEYS = Object.keys(INITIAL_FORM_VALUES) as (keyof FormErrors)[]
+
 function getPackagesForType(serviceType: string) {
   if (serviceType === 'cleaning') return carCleaningPackages
   if (serviceType === 'detailing') return carDetailingPackages
@@ -43,18 +58,7 @@ export default function Contact() {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [errors, setErrors] = useState<FormErrors>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
-  const [values, setValues] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    carType: '',
-    serviceCategory: '',
-    service: '',
-    locationType: '',
-    distance: '',
-    date: '',
-    message: '',
-  })
+  const [values, setValues] = useState<Record<string, string>>({ ...INITIAL_FORM_VALUES })
 
   const serviceTypes = useMemo(
     () => [
@@ -122,12 +126,10 @@ export default function Contact() {
 
   function validateAll(): FormErrors {
     const next: FormErrors = {}
-      ; (Object.keys(values) as (keyof FormErrors)[]).forEach((key) => {
-        if (key === 'name' || key === 'email' || key === 'phone' || key === 'carType' || key === 'serviceCategory' || key === 'service' || key === 'locationType' || key === 'distance' || key === 'date' || key === 'message') {
-          const err = validateField(key, values[key])
-          if (err) next[key] = err
-        }
-      })
+    FORM_FIELD_KEYS.forEach((key) => {
+      const err = validateField(key, values[key])
+      if (err) next[key] = err
+    })
     setErrors(next)
     return next
   }

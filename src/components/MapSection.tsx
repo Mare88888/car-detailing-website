@@ -4,23 +4,50 @@ import { useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
 import { useTranslations } from 'next-intl'
 import { SectionEntrance } from '@/components/MotionSection'
+import { GEO } from '@/config/site'
 
-const MAP_CENTER = { lat: 46.56174661845999, lng: 15.717263781943037 } // Celestrina 19, Malečnik, Slovenia (fallback)
+const MAP_CENTER = { lat: GEO.latitude, lng: GEO.longitude }
+const GEOCODE_ADDRESS = 'Celestrina 19, Malečnik, Slovenia'
+
 // Largest first so smallest is on top: red 200km, blue 100km, green 50km
 const CIRCLE_CONFIGS = [
   { radius: 200000, fillColor: '#e53935', km: 200, priceKey: 'perKm' as const, priceValue: '0.40€' },
   { radius: 100000, fillColor: '#1e88e5', km: 100, priceKey: 'perKm' as const, priceValue: '0.50€' },
   { radius: 50000, fillColor: '#43a047', km: 50, priceKey: 'free' as const, priceValue: '' },
-]
+] as const
+const LEGEND_CONFIGS = [...CIRCLE_CONFIGS].reverse()
 const FILL_OPACITY = 0.2
+
+const MAP_OPTIONS: google.maps.MapOptions = {
+  center: MAP_CENTER,
+  zoom: 9,
+  disableDefaultUI: false,
+  zoomControl: true,
+  mapTypeControl: true,
+  scaleControl: true,
+  streetViewControl: false,
+  fullscreenControl: true,
+  styles: [
+    { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+    { featureType: 'transit', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  ],
+}
+
+type LatLng = { lat: number; lng: number }
+
+function getGeocodeLocation(
+  result: google.maps.GeocoderResult
+): LatLng | null {
+  const loc = result.geometry?.location
+  return loc ? { lat: loc.lat(), lng: loc.lng() } : null
+}
 
 export default function MapSection() {
   const t = useTranslations('map')
   const containerRef = useRef<HTMLDivElement>(null)
-  const mapRef = useRef<object | null>(null)
+  const mapRef = useRef<google.maps.Map | null>(null)
   const [scriptLoaded, setScriptLoaded] = useState(false)
 
-  // If script was already loaded (e.g. after locale switch), mark as loaded so map initializes
   useEffect(() => {
     if (typeof google !== 'undefined' && google.maps) {
       setScriptLoaded(true)
@@ -32,23 +59,10 @@ export default function MapSection() {
     const container = containerRef.current
     if (!container) return
 
-    const map = new google.maps.Map(container, {
-      center: MAP_CENTER,
-      zoom: 9,
-      disableDefaultUI: false,
-      zoomControl: true,
-      mapTypeControl: true,
-      scaleControl: true,
-      streetViewControl: false,
-      fullscreenControl: true,
-      styles: [
-        { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-        { featureType: 'transit', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-      ],
-    })
+    const map = new google.maps.Map(container, MAP_OPTIONS)
     mapRef.current = map
 
-    const placeMarkerAndCircles = (center: { lat: number; lng: number }) => {
+    const placeMarkerAndCircles = (center: LatLng) => {
       new google.maps.Marker({
         position: center,
         map,
@@ -69,20 +83,14 @@ export default function MapSection() {
       map.setCenter(center)
     }
 
-    // Geocode address so marker is exactly at Celestrina 19, Malečnik (requires Geocoding API enabled)
-    const geocoder = new (google.maps as unknown as { Geocoder: new () => { geocode: (r: { address: string }, cb: (r: unknown[], s: string) => void) => void } }).Geocoder()
-    geocoder.geocode(
-      { address: 'Celestrina 19, Malečnik, Slovenia' },
-      (results: unknown[], status: string) => {
-        const first = results?.[0] as { geometry: { location: { lat: () => number; lng: () => number } } } | undefined
-        if (status === 'OK' && first?.geometry?.location) {
-          const loc = first.geometry.location
-          placeMarkerAndCircles({ lat: loc.lat(), lng: loc.lng() })
-        } else {
-          placeMarkerAndCircles(MAP_CENTER)
-        }
-      }
-    )
+    const geocoder = new google.maps.Geocoder()
+    geocoder.geocode({ address: GEOCODE_ADDRESS }, (results, status) => {
+      const center =
+        status === 'OK' && results?.[0]
+          ? getGeocodeLocation(results[0])
+          : null
+      placeMarkerAndCircles(center ?? MAP_CENTER)
+    })
 
     return () => {
       mapRef.current = null
@@ -134,7 +142,7 @@ export default function MapSection() {
           <div className="mt-6 rounded-card border border-border-default bg-premium-slate/80 p-4 sm:p-5 text-center">
             <p className="text-body-sm font-semibold text-text-primary mb-3">{t('legendTitle')}</p>
             <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-x-8 text-body-sm text-text-secondary" role="list">
-              {[...CIRCLE_CONFIGS].reverse().map(({ fillColor, km, priceKey, priceValue }) => (
+              {LEGEND_CONFIGS.map(({ fillColor, km, priceKey, priceValue }) => (
                 <li key={km} className="flex items-center gap-2">
                   <span
                     className="h-4 w-4 rounded-full shrink-0 border border-white/20"

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
-import { staggerContainer, staggerItem, cardHover } from '@/lib/motion'
+import { staggerContainer, staggerItem, cardHover, ease } from '@/lib/motion'
 
 export interface GalleryItem {
   id: number
@@ -13,6 +13,11 @@ export interface GalleryItem {
   after: string
   label?: string
 }
+
+const SLIDER_DEFAULT_PCT = 50
+const CARD_IMAGE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+const LIGHTBOX_IMAGE_SIZES = '(max-width: 896px) 100vw, 896px'
+const CARD_TRANSITION = { duration: 0.2, ease }
 
 /* Placeholder pairs using picsum.photos (replace with your own /gallery/*.jpg paths) */
 const defaultItems: GalleryItem[] = [
@@ -24,19 +29,15 @@ const defaultItems: GalleryItem[] = [
   { id: 6, before: 'https://picsum.photos/seed/ba6a/800/600', after: 'https://picsum.photos/seed/ba6b/800/600', label: 'Wheels & arches' },
 ]
 
-function ComparisonCard({
-  item,
-  onClick,
-  ariaLabel,
-  beforeLabel,
-  afterLabel,
-}: {
+interface ComparisonCardProps {
   item: GalleryItem
   onClick: () => void
   ariaLabel: string
   beforeLabel: string
   afterLabel: string
-}) {
+}
+
+function ComparisonCard({ item, onClick, ariaLabel, beforeLabel, afterLabel }: ComparisonCardProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -46,7 +47,7 @@ function ComparisonCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       whileHover={cardHover}
-      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={CARD_TRANSITION}
       className="group relative aspect-[4/3] w-full overflow-hidden rounded-card border border-border-default bg-premium-slate transition-colors duration-300 hover:border-premium-accent/50 hover:shadow-xl hover:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black"
       aria-label={ariaLabel}
     >
@@ -57,11 +58,10 @@ function ComparisonCard({
           alt=""
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes={CARD_IMAGE_SIZES}
         />
       </div>
 
-      {/* After image (revealed on hover via clip-path) */}
       <div
         className="absolute inset-0 transition-[clip-path] duration-500 ease-out"
         style={{
@@ -73,7 +73,7 @@ function ComparisonCard({
           alt=""
           fill
           className="object-cover"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes={CARD_IMAGE_SIZES}
         />
       </div>
 
@@ -87,15 +87,7 @@ function ComparisonCard({
   )
 }
 
-function Lightbox({
-  item,
-  onClose,
-  beforeLabel,
-  afterLabel,
-  afterDragLabel,
-  closeLabel,
-  lightboxLabel,
-}: {
+interface LightboxProps {
   item: GalleryItem
   onClose: () => void
   beforeLabel: string
@@ -103,13 +95,15 @@ function Lightbox({
   afterDragLabel: string
   closeLabel: string
   lightboxLabel: string
-}) {
-  const [sliderPosition, setSliderPosition] = useState(50)
+}
+
+function Lightbox({ item, onClose, beforeLabel, afterLabel, afterDragLabel, closeLabel, lightboxLabel }: LightboxProps) {
+  const [sliderPosition, setSliderPosition] = useState(SLIDER_DEFAULT_PCT)
   const [isDragging, setIsDragging] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const afterClipRef = useRef<HTMLDivElement>(null)
   const sliderHandleRef = useRef<HTMLDivElement>(null)
-  const positionRef = useRef(50)
+  const positionRef = useRef(SLIDER_DEFAULT_PCT)
   const rafIdRef = useRef<number | null>(null)
 
   // Apply position to DOM only (no React re-render) for 60fps drag
@@ -176,10 +170,9 @@ function Lightbox({
     }
   }, [])
 
-  // Reset slider when opening a new image; keep positionRef in sync with state
   useEffect(() => {
-    setSliderPosition(50)
-    positionRef.current = 50
+    setSliderPosition(SLIDER_DEFAULT_PCT)
+    positionRef.current = SLIDER_DEFAULT_PCT
   }, [item.id])
 
   useEffect(() => {
@@ -207,11 +200,10 @@ function Lightbox({
             alt={beforeLabel}
             fill
             className="object-cover"
-            sizes="(max-width: 896px) 100vw, 896px"
+            sizes={LIGHTBOX_IMAGE_SIZES}
           />
         </div>
 
-        {/* After (clipped by slider) */}
         <div
           ref={afterClipRef}
           className="absolute inset-0 transition-none"
@@ -222,7 +214,7 @@ function Lightbox({
             alt={afterLabel}
             fill
             className="object-cover"
-            sizes="(max-width: 896px) 100vw, 896px"
+            sizes={LIGHTBOX_IMAGE_SIZES}
           />
         </div>
 
