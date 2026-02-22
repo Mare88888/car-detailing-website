@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Nav from '@/components/Nav'
-import Footer from '@/components/Footer'
-
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
@@ -79,11 +76,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col font-sans antialiased bg-premium-black text-text-primary">
-        <Nav />
-        <main className="flex-1" id="main-content">
-          {children}
-        </main>
-        <Footer />
+        {children}
       </body>
     </html>
   )

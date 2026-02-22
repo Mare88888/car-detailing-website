@@ -1,18 +1,23 @@
 'use client'
+
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+
 const sectionIds = ['services', 'gallery', 'pricing', 'map', 'testimonials', 'contact'] as const
 
-const navLinks = [
-  { href: '#services', label: 'Services', id: 'services' },
-  { href: '#gallery', label: 'Gallery', id: 'gallery' },
-  { href: '#pricing', label: 'Pricing', id: 'pricing' },
-  { href: '#map', label: 'Map', id: 'map' },
-  { href: '#testimonials', label: 'Testimonials', id: 'testimonials' },
+const navLinkKeys = [
+  { id: 'services' as const, key: 'services' },
+  { id: 'gallery' as const, key: 'gallery' },
+  { id: 'pricing' as const, key: 'pricing' },
+  { id: 'map' as const, key: 'map' },
+  { id: 'testimonials' as const, key: 'testimonials' },
 ] as const
 
 export default function Nav() {
+  const t = useTranslations('nav')
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeSection, setActiveSection] = useState<string | null>(null)
@@ -70,18 +75,19 @@ export default function Nav() {
         className="container-narrow px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4"
         aria-label="Main navigation"
       >
-        {/* Logo + brand — left; smooth scroll to top and clear active section */}
+        {/* Logo + brand — left */}
         <Link
           href="/"
-          onClick={(e) => {
-            if (window.location.pathname === '/') {
+          onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+            const path = window.location.pathname
+            if (path === '/' || path === '/en' || path === '/sl') {
               e.preventDefault()
               window.scrollTo({ top: 0, behavior: 'smooth' })
               setActiveSection(null)
             }
           }}
           className="flex items-center gap-3 text-h3 text-text-primary tracking-tight shrink-0 focus:outline-none focus:ring-0"
-          aria-label="Home"
+          aria-label={t('home')}
         >
           <Image
             src="/NavigationBarLogo.png"
@@ -96,50 +102,53 @@ export default function Nav() {
           <span>AShineMobile</span>
         </Link>
 
-        {/* Desktop: center links + right CTA */}
+        {/* Desktop: center links */}
         <ul className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => {
+          {navLinkKeys.map((link) => {
             const isActive = activeSection === link.id
             return (
               <li key={link.id}>
                 <Link
                   href="/"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault()
                     document.getElementById(link.id)?.scrollIntoView({ behavior: 'smooth' })
                   }}
                   className={`text-body font-medium transition-colors duration-200 hover:text-premium-accent-light ${isActive ? 'text-premium-accent' : 'text-text-secondary'
                     }`}
                 >
-                  {link.label}
+                  {t(link.key)}
                 </Link>
               </li>
             )
           })}
         </ul>
 
-        {/* Desktop: Book Now CTA — right */}
-        <div className="hidden md:block shrink-0">
+        {/* Desktop: language switcher + Book Now — top right */}
+        <div className="hidden md:flex items-center gap-3 shrink-0">
+          <LanguageSwitcher />
           <Link
             href="/"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
               e.preventDefault()
               document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
             }}
             className="btn-primary inline-flex items-center justify-center px-6 py-3 text-body-sm"
           >
-            Book Now
+            {t('bookNow')}
           </Link>
         </div>
 
-        {/* Mobile: hamburger ↔ X with crossfade */}
+        {/* Mobile: language switcher + hamburger */}
+        <div className="flex md:hidden items-center gap-2">
+          <LanguageSwitcher />
         <button
           type="button"
           className="md:hidden relative p-2 -mr-2 w-10 h-10 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black rounded"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-label={mobileOpen ? t('closeMenu') : t('openMenu')}
         >
           <svg className="w-6 h-6 absolute inset-0 m-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" aria-hidden>
             {/* Hamburger: three lines */}
@@ -155,6 +164,7 @@ export default function Nav() {
             </g>
           </svg>
         </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
@@ -166,13 +176,13 @@ export default function Nav() {
       >
         <div className="bg-premium-charcoal border-t border-border-default px-4 py-4 overflow-y-auto max-h-[85vh]">
           <ul className="flex flex-col gap-1">
-            {navLinks.map((link) => {
+            {navLinkKeys.map((link) => {
               const isActive = activeSection === link.id
               return (
                 <li key={link.id}>
                   <Link
                     href="/"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.preventDefault()
                       document.getElementById(link.id)?.scrollIntoView({ behavior: 'smooth' })
                       setMobileOpen(false)
@@ -182,7 +192,7 @@ export default function Nav() {
                       : 'text-text-secondary hover:text-premium-accent-light hover:bg-premium-slate'
                       }`}
                   >
-                    {link.label}
+                    {t(link.key)}
                   </Link>
                 </li>
               )
@@ -190,14 +200,14 @@ export default function Nav() {
             <li className="mt-2 pt-2 border-t border-border-default">
               <Link
                 href="/"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault()
                   document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
                   setMobileOpen(false)
                 }}
                 className="btn-primary flex items-center justify-center w-full py-3.5"
               >
-                Book Now
+                {t('bookNow')}
               </Link>
             </li>
           </ul>

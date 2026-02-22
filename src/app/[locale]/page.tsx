@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { setRequestLocale } from 'next-intl/server'
 import Hero from '@/components/Hero'
 import Services from '@/components/Services'
 import Gallery from '@/components/Gallery'
@@ -27,7 +28,12 @@ export const metadata: Metadata = {
   alternates: { canonical: siteUrl },
 }
 
-export default function Home() {
+type Props = { params: Promise<{ locale: string }> }
+
+export default async function Home({ params }: Props) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
   return (
     <>
       <JsonLd />

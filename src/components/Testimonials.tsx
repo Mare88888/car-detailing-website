@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
 import { testimonials } from '@/data/testimonials'
@@ -24,6 +25,7 @@ function CarouselCard({ testimonial }: { testimonial: Testimonial }) {
 }
 
 export default function Testimonials() {
+  const t = useTranslations('testimonials')
   const total = testimonials.length
   const maxIndex = Math.max(0, total - SLIDES_VISIBLE) // so we always have 3 cards to show (indices 0..maxIndex)
   const [index, setIndex] = useState(0)
@@ -63,12 +65,12 @@ export default function Testimonials() {
     >
       <div className="container-narrow">
         <header className="text-center mb-10 sm:mb-14">
-          <p className="text-premium-accent text-overline uppercase mb-2">Reviews</p>
+          <p className="text-premium-accent text-overline uppercase mb-2">{t('overline')}</p>
           <h2 id="testimonials-heading" className="text-h2 text-text-primary">
-            Testimonials
+            {t('heading')}
           </h2>
           <p className="mt-4 text-body text-text-secondary max-w-2xl mx-auto">
-            What our customers say about our detailing and valeting.
+            {t('subheading')}
           </p>
         </header>
 

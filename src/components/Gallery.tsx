@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
 import { staggerContainer, staggerItem, cardHover } from '@/lib/motion'
@@ -26,9 +27,15 @@ const defaultItems: GalleryItem[] = [
 function ComparisonCard({
   item,
   onClick,
+  ariaLabel,
+  beforeLabel,
+  afterLabel,
 }: {
   item: GalleryItem
   onClick: () => void
+  ariaLabel: string
+  beforeLabel: string
+  afterLabel: string
 }) {
   const [isHovered, setIsHovered] = useState(false)
 
@@ -41,7 +48,7 @@ function ComparisonCard({
       whileHover={cardHover}
       transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="group relative aspect-[4/3] w-full overflow-hidden rounded-card border border-border-default bg-premium-slate transition-colors duration-300 hover:border-premium-accent/50 hover:shadow-xl hover:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black"
-      aria-label={`View before and after: ${item.label ?? 'Gallery image'}`}
+      aria-label={ariaLabel}
     >
       {/* Before image (base layer) */}
       <div className="absolute inset-0">
@@ -72,8 +79,8 @@ function ComparisonCard({
 
       {/* Labels overlay — on hover, accent moves from After to Before */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-between p-3 bg-gradient-to-t from-black/80 to-transparent text-white/90">
-        <span className={`text-overline uppercase ${isHovered ? 'text-premium-accent' : ''}`}>Before</span>
-        <span className={`text-overline uppercase ${isHovered ? '' : 'text-premium-accent'}`}>After</span>
+        <span className={`text-overline uppercase ${isHovered ? 'text-premium-accent' : ''}`}>{beforeLabel}</span>
+        <span className={`text-overline uppercase ${isHovered ? '' : 'text-premium-accent'}`}>{afterLabel}</span>
       </div>
 
     </motion.button>
@@ -83,9 +90,19 @@ function ComparisonCard({
 function Lightbox({
   item,
   onClose,
+  beforeLabel,
+  afterLabel,
+  afterDragLabel,
+  closeLabel,
+  lightboxLabel,
 }: {
   item: GalleryItem
   onClose: () => void
+  beforeLabel: string
+  afterLabel: string
+  afterDragLabel: string
+  closeLabel: string
+  lightboxLabel: string
 }) {
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
@@ -176,7 +193,7 @@ function Lightbox({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Before and after comparison"
+      aria-label={lightboxLabel}
     >
       <div
         ref={containerRef}
@@ -187,7 +204,7 @@ function Lightbox({
         <div className="absolute inset-0">
           <Image
             src={item.before}
-            alt="Before"
+            alt={beforeLabel}
             fill
             className="object-cover"
             sizes="(max-width: 896px) 100vw, 896px"
@@ -202,7 +219,7 @@ function Lightbox({
         >
           <Image
             src={item.after}
-            alt="After"
+            alt={afterLabel}
             fill
             className="object-cover"
             sizes="(max-width: 896px) 100vw, 896px"
@@ -229,8 +246,8 @@ function Lightbox({
 
         {/* Labels in lightbox */}
         <div className="absolute bottom-0 left-0 right-0 flex justify-between p-4 bg-gradient-to-t from-black/90 to-transparent text-sm text-white/90">
-          <span>Before</span>
-          <span className="text-premium-accent">After — drag to compare</span>
+          <span>{beforeLabel}</span>
+          <span className="text-premium-accent">{afterDragLabel}</span>
         </div>
       </div>
 
@@ -238,7 +255,7 @@ function Lightbox({
         type="button"
         onClick={onClose}
         className="absolute top-4 right-4 p-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-premium-accent"
-        aria-label="Close"
+        aria-label={closeLabel}
       >
         <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -256,6 +273,7 @@ const MOBILE_BREAKPOINT = 640
 const MOBILE_INITIAL_COUNT = 2
 
 export default function Gallery({ items = defaultItems }: GalleryProps) {
+  const t = useTranslations('gallery')
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null)
   const [isMobile, setIsMobile] = useState(false)
   const [mobileExpanded, setMobileExpanded] = useState(false)
@@ -281,14 +299,13 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
       <div className="container-narrow">
         <header className="text-center mb-12 sm:mb-16">
           <p className="text-premium-accent text-overline uppercase mb-2">
-            Our work
+            {t('overline')}
           </p>
           <h2 id="gallery-heading" className="text-h2 text-text-primary">
-            Before & after
+            {t('heading')}
           </h2>
           <p className="mt-4 text-body text-text-secondary max-w-2xl mx-auto">
-            Real results from paint correction, ceramic coating, and full-detail
-            packages.
+            {t('subheading')}
           </p>
         </header>
 
@@ -303,6 +320,9 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
               <ComparisonCard
                 item={item}
                 onClick={() => setLightboxItem(item)}
+                ariaLabel={t('viewBeforeAfter', { label: item.label ?? 'Gallery image' })}
+                beforeLabel={t('before')}
+                afterLabel={t('after')}
               />
             </motion.div>
           ))}
@@ -316,7 +336,7 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
               whileTap={{ scale: 0.98 }}
               className="btn-primary px-8 py-3.5 text-body-sm font-semibold"
             >
-              See more
+              {t('seeMore')}
             </motion.button>
           </div>
         )}
@@ -326,6 +346,11 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
         <Lightbox
           item={lightboxItem}
           onClose={() => setLightboxItem(null)}
+          beforeLabel={t('before')}
+          afterLabel={t('after')}
+          afterDragLabel={t('afterDrag')}
+          closeLabel={t('close')}
+          lightboxLabel={t('lightboxLabel')}
         />
       )}
     </SectionEntrance>

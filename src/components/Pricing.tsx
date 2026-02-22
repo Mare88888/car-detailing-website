@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { useTranslations, useMessages } from 'next-intl'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
 import { staggerContainer, staggerItem, cardHover } from '@/lib/motion'
@@ -115,11 +116,15 @@ function PricingCard({
   isMobile,
   isExpanded,
   onToggle,
+  readMore,
+  readLess,
 }: {
   pkg: PricingPackage
   isMobile: boolean
   isExpanded: boolean
   onToggle: () => void
+  readMore: string
+  readLess: string
 }) {
   const showFeatures = !isMobile || isExpanded
   const showReadMoreButton = isMobile
@@ -168,7 +173,7 @@ function PricingCard({
               whileTap={{ scale: 0.98 }}
               className="text-body-sm font-semibold text-premium-accent hover:text-premium-accent-light transition-colors focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-slate rounded"
             >
-              {isExpanded ? 'Read less' : 'Read more'}
+              {isExpanded ? readLess : readMore}
             </motion.button>
           </div>
         )}
@@ -177,7 +182,33 @@ function PricingCard({
   )
 }
 
+function useTranslatedPackages(
+  packages: PricingPackage[],
+  t: (key: string) => string,
+  packagesMessages: Record<string, { name?: string; price?: string; description?: string; features?: string[] }>
+): PricingPackage[] {
+  return useMemo(
+    () =>
+      packages.map((pkg) => {
+        const msg = packagesMessages[pkg.id]
+        return {
+          ...pkg,
+          name: t(`packages.${pkg.id}.name`),
+          price: t(`packages.${pkg.id}.price`),
+          description: t(`packages.${pkg.id}.description`),
+          features: Array.isArray(msg?.features) ? msg.features : [],
+        }
+      }),
+    [packages, t, packagesMessages]
+  )
+}
+
 export default function Pricing() {
+  const t = useTranslations('pricing')
+  const messages = useMessages() as { pricing?: { packages?: Record<string, { features?: string[] }> } }
+  const packagesMessages = messages?.pricing?.packages ?? {}
+  const translatedCleaning = useTranslatedPackages(carCleaningPackages, t, packagesMessages)
+  const translatedDetailing = useTranslatedPackages(carDetailingPackages, t, packagesMessages)
   const [isMobile, setIsMobile] = useState(false)
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
 
@@ -207,20 +238,20 @@ export default function Pricing() {
       <div className="container-narrow">
         <header className="text-center mb-12 sm:mb-16">
           <p className="text-premium-accent text-overline uppercase mb-2">
-            Packages
+            {t('overline')}
           </p>
           <h2 id="pricing-heading" className="text-h2 text-text-primary">
-            Pricing
+            {t('heading')}
           </h2>
           <p className="mt-4 text-body text-text-secondary max-w-2xl mx-auto">
-            Transparent packages. Get a quote tailored to your car and goals.
+            {t('subheading')}
           </p>
         </header>
 
         {/* Car Cleaning – Service packages */}
         <section id="car-cleaning" className="mb-16 scroll-mt-20" aria-labelledby="cleaning-heading">
           <h3 id="cleaning-heading" className="text-h3 text-text-primary mb-6">
-            Car cleaning packages
+            {t('cleaningHeading')}
           </h3>
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-3 gap-6"
@@ -228,13 +259,15 @@ export default function Pricing() {
             initial="visible"
             animate="visible"
           >
-            {carCleaningPackages.map((pkg) => (
+            {translatedCleaning.map((pkg) => (
               <PricingCard
                 key={pkg.id}
                 pkg={pkg}
                 isMobile={isMobile}
                 isExpanded={expandedIds.has(pkg.id)}
                 onToggle={() => toggleExpanded(pkg.id)}
+                readMore={t('readMore')}
+                readLess={t('readLess')}
               />
             ))}
           </motion.div>
@@ -243,7 +276,7 @@ export default function Pricing() {
         {/* Car Detailing – Packages with prices */}
         <section id="car-detailing" className="mb-16 scroll-mt-20" aria-labelledby="detailing-heading">
           <h3 id="detailing-heading" className="text-h3 text-text-primary mb-6">
-            Car detailing packages
+            {t('detailingHeading')}
           </h3>
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-3 gap-6"
@@ -251,13 +284,15 @@ export default function Pricing() {
             initial="visible"
             animate="visible"
           >
-            {carDetailingPackages.map((pkg) => (
+            {translatedDetailing.map((pkg) => (
               <PricingCard
                 key={pkg.id}
                 pkg={pkg}
                 isMobile={isMobile}
                 isExpanded={expandedIds.has(pkg.id)}
                 onToggle={() => toggleExpanded(pkg.id)}
+                readMore={t('readMore')}
+                readLess={t('readLess')}
               />
             ))}
           </motion.div>

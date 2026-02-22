@@ -1,7 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { buttonHover, buttonTap } from '@/lib/motion'
 
@@ -25,13 +26,19 @@ export interface HeroProps {
 export default function Hero({
   backgroundImage,
   backgroundVideo = "/0205.mp4",
-  overline = 'Professional car care',
-  headline = 'Premium car detailing & valeting',
-  subheadline = 'Showroom finish. Ceramic coatings. Paint correction. We come to you.',
-  primaryCtaLabel = 'Book Now',
-  secondaryCtaLabel = 'View Services',
+  overline,
+  headline,
+  subheadline,
+  primaryCtaLabel,
+  secondaryCtaLabel,
 }: HeroProps) {
+  const t = useTranslations('hero')
   const hasMedia = Boolean(backgroundVideo || backgroundImage)
+  const overlineText = overline ?? t('overline')
+  const headlineText = headline ?? t('headline')
+  const subheadlineText = subheadline ?? t('subheadline')
+  const primaryCta = primaryCtaLabel ?? t('primaryCta')
+  const secondaryCta = secondaryCtaLabel ?? t('secondaryCta')
 
   return (
     <section
@@ -71,9 +78,9 @@ export default function Hero({
       />
       <div className="relative z-10 w-full px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="text-premium-accent text-overline uppercase mb-4">{overline}</p>
-          <h1 className="text-display text-text-primary max-w-4xl mx-auto">{headline}</h1>
-          <p className="mt-4 text-base text-text-secondary max-w-2xl mx-auto sm:mt-6 sm:text-lg">{subheadline}</p>
+          <p className="text-premium-accent text-overline uppercase mb-4">{overlineText}</p>
+          <h1 className="text-display text-text-primary max-w-4xl mx-auto">{headlineText}</h1>
+          <p className="mt-4 text-base text-text-secondary max-w-2xl mx-auto sm:mt-6 sm:text-lg">{subheadlineText}</p>
           <div className="mt-8 flex flex-col gap-4 justify-center sm:mt-10 sm:flex-row sm:gap-5">
             <motion.div whileHover={buttonHover} whileTap={buttonTap}>
               <Link
@@ -84,7 +91,7 @@ export default function Hero({
                 }}
                 className="btn-primary inline-flex items-center justify-center px-7 py-3.5 sm:px-8 sm:py-4"
               >
-                {primaryCtaLabel}
+                {primaryCta}
               </Link>
             </motion.div>
             <motion.div whileHover={buttonHover} whileTap={buttonTap}>
@@ -96,7 +103,7 @@ export default function Hero({
                 }}
                 className="btn-secondary inline-flex items-center justify-center px-7 py-3.5 sm:px-8 sm:py-4"
               >
-                {secondaryCtaLabel}
+                {secondaryCta}
               </Link>
             </motion.div>
           </div>

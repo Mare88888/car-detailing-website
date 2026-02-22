@@ -1,31 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
 import { buttonTap } from '@/lib/motion'
 import { EmailIcon, PhoneIcon } from './Footer'
 import { carCleaningPackages, carDetailingPackages } from './Pricing'
 
-const SERVICE_TYPES = [
-  { value: 'cleaning', label: 'Car cleaning services' },
-  { value: 'detailing', label: 'Car detailing services' },
-  { value: 'custom', label: 'Other / Custom' },
-] as const
-
 const PACKAGE_CUSTOM_ID = 'custom'
-const PACKAGE_CUSTOM_LABEL = 'Custom / Other'
-
-const LOCATION_OPTIONS = [
-  { value: 'our-location', label: 'At our location' },
-  { value: 'mobile', label: 'We come to you' },
-] as const
-
-const DISTANCE_OPTIONS = [
-  { value: '50', label: 'Up to 50 km' },
-  { value: '100', label: '50–100 km' },
-  { value: '200', label: '100–200 km' },
-] as const
 
 function getPackagesForType(serviceType: string) {
   if (serviceType === 'cleaning') return carCleaningPackages
@@ -53,6 +36,8 @@ const inputError = 'border-error focus:ring-error'
 const inputDefault = 'border-border-default'
 
 export default function Contact() {
+  const t = useTranslations('contact')
+  const tPricing = useTranslations('pricing')
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -71,40 +56,65 @@ export default function Contact() {
     message: '',
   })
 
+  const serviceTypes = useMemo(
+    () => [
+      { value: 'cleaning', label: t('serviceCleaning') },
+      { value: 'detailing', label: t('serviceDetailing') },
+      { value: 'custom', label: t('serviceCustom') },
+    ] as const,
+    [t]
+  )
+  const locationOptions = useMemo(
+    () => [
+      { value: 'our-location', label: t('locationOur') },
+      { value: 'mobile', label: t('locationMobile') },
+    ] as const,
+    [t]
+  )
+  const distanceOptions = useMemo(
+    () => [
+      { value: '50', label: t('distance50') },
+      { value: '100', label: t('distance100') },
+      { value: '200', label: t('distance200') },
+    ] as const,
+    [t]
+  )
+  const customPackageLabel = t('customPackage')
+
   function validateField(name: keyof FormErrors, value: string): string | undefined {
     const trimmed = value.trim()
     switch (name) {
       case 'name':
-        return trimmed.length < 2 ? 'Please enter your name' : undefined
+        return trimmed.length < 2 ? t('errors.name') : undefined
       case 'email': {
-        if (!trimmed) return 'Please enter your email'
+        if (!trimmed) return t('errors.email')
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        return !emailRegex.test(trimmed) ? 'Please enter a valid email address' : undefined
+        return !emailRegex.test(trimmed) ? t('errors.emailInvalid') : undefined
       }
       case 'phone':
         return undefined // optional
       case 'carType':
-        return !trimmed ? 'Please enter your car type or model' : undefined
+        return !trimmed ? t('errors.carType') : undefined
       case 'serviceCategory':
-        return !trimmed ? 'Please select a service type' : undefined
+        return !trimmed ? t('errors.serviceCategory') : undefined
       case 'service':
-        return !trimmed ? 'Please select a package' : undefined
+        return !trimmed ? t('errors.service') : undefined
       case 'locationType':
-        return !trimmed ? 'Please choose where the service will be' : undefined
+        return !trimmed ? t('errors.locationType') : undefined
       case 'distance':
-        return values.locationType === 'mobile' && !trimmed ? 'Please select distance' : undefined
+        return values.locationType === 'mobile' && !trimmed ? t('errors.distance') : undefined
       case 'date': {
-        if (!trimmed) return 'Please choose a preferred date'
+        if (!trimmed) return t('errors.date')
         const match = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
-        if (!match) return 'Use DD/MM/YYYY (e.g. 25/03/2025)'
+        if (!match) return t('errors.dateFormat')
         const [, d, m, y] = match.map(Number)
-        if (m < 1 || m > 12) return 'Month must be 01–12'
-        if (d < 1 || d > 31) return 'Day must be 01–31'
-        if (y < 2020 || y > 2040) return 'Enter a valid year'
+        if (m < 1 || m > 12) return t('errors.dateMonth')
+        if (d < 1 || d > 31) return t('errors.dateDay')
+        if (y < 2020 || y > 2040) return t('errors.dateYear')
         return undefined
       }
       case 'message':
-        return trimmed.length < 10 ? 'Please add a few more details (min 10 characters)' : undefined
+        return trimmed.length < 10 ? t('errors.message') : undefined
       default:
         return undefined
     }
@@ -172,14 +182,15 @@ export default function Contact() {
 
   function getServiceLabel(serviceCategory: string, packageId: string): string {
     if (serviceCategory === 'custom' || packageId === PACKAGE_CUSTOM_ID) {
-      if (serviceCategory === 'custom') return 'Other / Custom'
-      const categoryLabel = serviceCategory === 'cleaning' ? 'Car cleaning' : 'Car detailing'
-      return `${categoryLabel} – ${PACKAGE_CUSTOM_LABEL}`
+      if (serviceCategory === 'custom') return t('serviceCustom')
+      const categoryLabel = serviceCategory === 'cleaning' ? t('serviceCleaning') : t('serviceDetailing')
+      return `${categoryLabel} – ${customPackageLabel}`
     }
     const packages = getPackagesForType(serviceCategory)
     const pkg = packages.find((p) => p.id === packageId)
-    const categoryLabel = serviceCategory === 'cleaning' ? 'Car cleaning' : 'Car detailing'
-    return pkg ? `${categoryLabel} – ${pkg.name}` : packageId
+    const categoryLabel = serviceCategory === 'cleaning' ? t('serviceCleaning') : t('serviceDetailing')
+    const pkgName = pkg ? tPricing(`packages.${pkg.id}.name`) : packageId
+    return pkg ? `${categoryLabel} – ${pkgName}` : packageId
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -201,12 +212,12 @@ export default function Contact() {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        setSubmitError(data.error ?? 'Something went wrong. Please try again.')
+        setSubmitError(data.error ?? t('errors.submitError'))
         return
       }
       setSubmitted(true)
     } catch {
-      setSubmitError('Failed to send. Please check your connection and try again.')
+      setSubmitError(t('errors.networkError'))
     } finally {
       setSending(false)
     }
@@ -225,13 +236,13 @@ export default function Contact() {
       <div className="container-narrow">
         <header className="text-center mb-12 sm:mb-16">
           <p className="text-premium-accent text-overline uppercase mb-2">
-            Get in touch
+            {t('overline')}
           </p>
           <h2 id="contact-heading" className="text-h2 text-text-primary">
-            Book or enquire
+            {t('heading')}
           </h2>
           <p className="mt-4 text-body text-text-secondary max-w-2xl mx-auto">
-            Tell us your car, service, and preferred date. We’ll get back with a quote.
+            {t('subheading')}
           </p>
         </header>
 
@@ -241,10 +252,10 @@ export default function Contact() {
             {submitted ? (
               <div className="rounded-card bg-premium-slate border border-premium-accent/40 p-8 sm:p-10 text-center">
                 <p className="text-premium-accent font-semibold text-body-lg">
-                  Thanks for your message
+                  {t('thanksTitle')}
                 </p>
                 <p className="text-text-secondary mt-2 text-body-sm">
-                  We’ll be in touch soon to confirm your booking.
+                  {t('thanksBody')}
                 </p>
               </div>
             ) : (
@@ -256,7 +267,7 @@ export default function Contact() {
                 )}
                 <div>
                   <label htmlFor="contact-name" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Name <span className="text-error">*</span>
+                    {t('name')} <span className="text-error">*</span>
                   </label>
                   <input
                     id="contact-name"
@@ -266,7 +277,7 @@ export default function Contact() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={getInputClass('name')}
-                    placeholder="John Doe"
+                    placeholder={t('placeholderName')}
                     aria-invalid={!!errors.name}
                     aria-describedby={errors.name ? 'contact-name-error' : undefined}
                   />
@@ -279,7 +290,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="contact-email" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Email <span className="text-error">*</span>
+                    {t('email')} <span className="text-error">*</span>
                   </label>
                   <input
                     id="contact-email"
@@ -289,7 +300,7 @@ export default function Contact() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={getInputClass('email')}
-                    placeholder="john.doe@gmail.com"
+                    placeholder={t('placeholderEmail')}
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? 'contact-email-error' : undefined}
                   />
@@ -302,7 +313,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="contact-phone" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Phone number
+                    {t('phone')}
                   </label>
                   <input
                     id="contact-phone"
@@ -312,7 +323,7 @@ export default function Contact() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={getInputClass('phone')}
-                    placeholder="e.g. +386 70 123 456"
+                    placeholder={t('placeholderPhone')}
                     aria-invalid={!!errors.phone}
                     aria-describedby={errors.phone ? 'contact-phone-error' : undefined}
                   />
@@ -325,7 +336,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="contact-carType" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Car type / model <span className="text-error">*</span>
+                    {t('carType')} <span className="text-error">*</span>
                   </label>
                   <input
                     id="contact-carType"
@@ -335,7 +346,7 @@ export default function Contact() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={getInputClass('carType')}
-                    placeholder="e.g. BMW 3 Series, Audi A4"
+                    placeholder={t('placeholderCar')}
                     aria-invalid={!!errors.carType}
                     aria-describedby={errors.carType ? 'contact-carType-error' : undefined}
                   />
@@ -348,7 +359,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="contact-serviceCategory" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Service type <span className="text-error">*</span>
+                    {t('serviceType')} <span className="text-error">*</span>
                   </label>
                   <select
                     id="contact-serviceCategory"
@@ -360,8 +371,8 @@ export default function Contact() {
                     aria-invalid={!!errors.serviceCategory}
                     aria-describedby={errors.serviceCategory ? 'contact-serviceCategory-error' : undefined}
                   >
-                    <option value="" disabled hidden>Select a service type</option>
-                    {SERVICE_TYPES.map(({ value, label }) => (
+                    <option value="" disabled hidden>{t('selectServiceType')}</option>
+                    {serviceTypes.map(({ value, label }) => (
                       <option key={value} value={value}>
                         {label}
                       </option>
@@ -376,7 +387,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="contact-service" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Package <span className="text-error">*</span>
+                    {t('package')} <span className="text-error">*</span>
                   </label>
                   <select
                     id="contact-service"
@@ -390,18 +401,18 @@ export default function Contact() {
                     aria-describedby={errors.service ? 'contact-service-error' : undefined}
                   >
                     <option value="" disabled hidden>
-                      {values.serviceCategory ? 'Select a package' : 'Select service type first'}
+                      {values.serviceCategory ? t('selectPackage') : t('selectServiceFirst')}
                     </option>
                     {values.serviceCategory === 'custom' ? (
-                      <option value={PACKAGE_CUSTOM_ID}>{PACKAGE_CUSTOM_LABEL}</option>
+                      <option value={PACKAGE_CUSTOM_ID}>{customPackageLabel}</option>
                     ) : (
                       <>
                         {getPackagesForType(values.serviceCategory).map((pkg) => (
                           <option key={pkg.id} value={pkg.id}>
-                            {pkg.name} ({pkg.price})
+                            {tPricing(`packages.${pkg.id}.name`)} ({tPricing(`packages.${pkg.id}.price`)})
                           </option>
                         ))}
-                        <option value={PACKAGE_CUSTOM_ID}>{PACKAGE_CUSTOM_LABEL}</option>
+                        <option value={PACKAGE_CUSTOM_ID}>{customPackageLabel}</option>
                       </>
                     )}
                   </select>
@@ -414,7 +425,7 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Where should we do the service? <span className="text-error">*</span>
+                    {t('whereService')} <span className="text-error">*</span>
                   </label>
                   <div className="flex flex-wrap gap-4 items-start">
                     <div className="flex-1 min-w-[200px]">
@@ -428,8 +439,8 @@ export default function Contact() {
                         aria-invalid={!!errors.locationType}
                         aria-describedby={errors.locationType ? 'contact-locationType-error' : undefined}
                       >
-                        <option value="" disabled hidden>Choose location</option>
-                        {LOCATION_OPTIONS.map(({ value, label }) => (
+                        <option value="" disabled hidden>{t('chooseLocation')}</option>
+                        {locationOptions.map(({ value, label }) => (
                           <option key={value} value={value}>{label}</option>
                         ))}
                       </select>
@@ -441,7 +452,7 @@ export default function Contact() {
                     </div>
                     {values.locationType === 'mobile' && (
                       <div className="flex-1 min-w-[140px]">
-                        <label htmlFor="contact-distance" className="sr-only">Distance</label>
+                        <label htmlFor="contact-distance" className="sr-only">{t('distance')}</label>
                         <select
                           id="contact-distance"
                           name="distance"
@@ -452,9 +463,9 @@ export default function Contact() {
                           aria-invalid={!!errors.distance}
                           aria-describedby={errors.distance ? 'contact-distance-error' : undefined}
                         >
-                          <option value="" disabled hidden>Distance</option>
-                          {DISTANCE_OPTIONS.map(({ value, label }) => (
-                            <option key={value} value={value}>−{value} km</option>
+                          <option value="" disabled hidden>{t('distance')}</option>
+                          {distanceOptions.map(({ value, label }) => (
+                            <option key={value} value={value}>{label}</option>
                           ))}
                         </select>
                         {errors.distance && touched.distance && (
@@ -469,7 +480,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="contact-date" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Preferred date <span className="text-error">*</span>
+                    {t('preferredDate')} <span className="text-error">*</span>
                   </label>
                   <input
                     id="contact-date"
@@ -494,7 +505,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="contact-message" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    Message <span className="text-error">*</span>
+                    {t('message')} <span className="text-error">*</span>
                   </label>
                   <textarea
                     id="contact-message"
@@ -504,7 +515,7 @@ export default function Contact() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={`${getInputClass('message')} resize-none`}
-                    placeholder="Any extra details, location, or questions..."
+                    placeholder={t('placeholderMessage')}
                     aria-invalid={!!errors.message}
                     aria-describedby={errors.message ? 'contact-message-error' : undefined}
                   />
@@ -521,7 +532,7 @@ export default function Contact() {
                   whileTap={sending ? undefined : buttonTap}
                   className="btn-primary w-full py-4 text-body-sm font-semibold disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {sending ? 'Sending…' : 'Request booking'}
+                  {sending ? t('sending') : t('send')}
                 </motion.button>
               </form>
             )}
@@ -531,12 +542,12 @@ export default function Contact() {
           <div className="lg:w-72 lg:sticky lg:top-24">
             <div className="rounded-card bg-premium-slate border border-border-default p-6 sm:p-8">
               <h3 className="text-h4 text-text-primary font-semibold mb-4">
-                Contact details
+                {t('contactDetails')}
               </h3>
               <ul className="space-y-4 text-body-sm">
                 <li>
                   <span className="block text-text-muted uppercase tracking-wider text-caption mb-1">
-                    Phone
+                    {t('phone')}
                   </span>
                   <a
                     href="tel:+38670742363"
@@ -548,7 +559,7 @@ export default function Contact() {
                 </li>
                 <li>
                   <span className="block text-text-muted uppercase tracking-wider text-caption mb-1">
-                    Email
+                    {t('email')}
                   </span>
                   <a
                     href="mailto:AShineMobile@gmail.com"
@@ -560,7 +571,7 @@ export default function Contact() {
                 </li>
               </ul>
               <p className="mt-6 pt-6 border-t border-border-default text-body-sm text-text-secondary">
-                Prefer to call? We’re happy to discuss your car and recommend a package.
+                {t('preferCall')}
               </p>
             </div>
           </div>

@@ -2,26 +2,37 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
+import { useTranslations } from 'next-intl'
 import { SectionEntrance } from '@/components/MotionSection'
 
 const MAP_CENTER = { lat: 46.56174661845999, lng: 15.717263781943037 } // Celestrina 19, Malečnik, Slovenia (fallback)
 // Largest first so smallest is on top: red 200km, blue 100km, green 50km
 const CIRCLE_CONFIGS = [
-  { radius: 200000, fillColor: '#e53935', km: 200, price: '0.40€ per km' },   // red – 200 km
-  { radius: 100000, fillColor: '#1e88e5', km: 100, price: '0.50€ per km' },   // blue – 100 km
-  { radius: 50000, fillColor: '#43a047', km: 50, price: 'Free' },    // green – 50 km
+  { radius: 200000, fillColor: '#e53935', km: 200, priceKey: 'perKm' as const, priceValue: '0.40€' },
+  { radius: 100000, fillColor: '#1e88e5', km: 100, priceKey: 'perKm' as const, priceValue: '0.50€' },
+  { radius: 50000, fillColor: '#43a047', km: 50, priceKey: 'free' as const, priceValue: '' },
 ]
 const FILL_OPACITY = 0.2
 
 export default function MapSection() {
+  const t = useTranslations('map')
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<object | null>(null)
   const [scriptLoaded, setScriptLoaded] = useState(false)
 
+  // If script was already loaded (e.g. after locale switch), mark as loaded so map initializes
   useEffect(() => {
-    if (!scriptLoaded || !containerRef.current || typeof google === 'undefined') return
+    if (typeof google !== 'undefined' && google.maps) {
+      setScriptLoaded(true)
+    }
+  }, [])
 
-    const map = new google.maps.Map(containerRef.current, {
+  useEffect(() => {
+    if (!scriptLoaded || typeof google === 'undefined') return
+    const container = containerRef.current
+    if (!container) return
+
+    const map = new google.maps.Map(container, {
       center: MAP_CENTER,
       zoom: 9,
       disableDefaultUI: false,
@@ -41,7 +52,7 @@ export default function MapSection() {
       new google.maps.Marker({
         position: center,
         map,
-        title: 'Celestrina 19, Malečnik',
+        title: t('address'),
       })
       CIRCLE_CONFIGS.forEach(({ radius, fillColor }) => {
         new google.maps.Circle({
@@ -76,19 +87,19 @@ export default function MapSection() {
     return () => {
       mapRef.current = null
     }
-  }, [scriptLoaded])
+  }, [scriptLoaded, t])
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
   if (!apiKey) {
     return (
       <SectionEntrance id="map" className="section-padding bg-premium-charcoal" aria-labelledby="map-heading">
         <div className="container-narrow text-center py-16">
-          <h2 id="map-heading" className="text-h2 text-text-primary mb-2">Service area</h2>
+          <h2 id="map-heading" className="text-h2 text-text-primary mb-2">{t('noKeyHeading')}</h2>
           <p className="text-text-muted text-body-sm">
-            Add <code className="text-text-secondary">NEXT_PUBLIC_GOOGLE_MAPS_API_KEY</code> to your environment to show the map.
+            {t('noKeyHint')}
           </p>
           <p className="text-text-muted text-body-sm mt-2">
-            Celestrina 19, Malečnik
+            {t('address')}
           </p>
         </div>
       </SectionEntrance>
@@ -105,12 +116,12 @@ export default function MapSection() {
       <SectionEntrance id="map" className="section-padding bg-premium-charcoal" aria-labelledby="map-heading">
         <div className="container-narrow">
           <header className="text-center mb-8">
-            <p className="text-premium-accent text-overline uppercase mb-2">Service area</p>
+            <p className="text-premium-accent text-overline uppercase mb-2">{t('overline')}</p>
             <h2 id="map-heading" className="text-h2 text-text-primary">
-              Where we operate
+              {t('heading')}
             </h2>
             <p className="mt-3 text-body text-text-secondary max-w-xl mx-auto">
-              We come to you. Our service area is centered at Celestrina 19, Malečnik.
+              {t('subheading')}
             </p>
           </header>
           <div
@@ -121,9 +132,9 @@ export default function MapSection() {
 
           {/* Legend: color = distance + pricing */}
           <div className="mt-6 rounded-card border border-border-default bg-premium-slate/80 p-4 sm:p-5 text-center">
-            <p className="text-body-sm font-semibold text-text-primary mb-3">Service area & travel costs</p>
+            <p className="text-body-sm font-semibold text-text-primary mb-3">{t('legendTitle')}</p>
             <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-x-8 text-body-sm text-text-secondary" role="list">
-              {[...CIRCLE_CONFIGS].reverse().map(({ fillColor, km, price }) => (
+              {[...CIRCLE_CONFIGS].reverse().map(({ fillColor, km, priceKey, priceValue }) => (
                 <li key={km} className="flex items-center gap-2">
                   <span
                     className="h-4 w-4 rounded-full shrink-0 border border-white/20"
@@ -133,7 +144,9 @@ export default function MapSection() {
                   <span>
                     <strong className="text-text-primary">{km} km</strong>
                     <span className="mx-1.5 text-text-muted">—</span>
-                    <span className={price === 'Free' ? 'text-premium-accent font-medium' : ''}>{price}</span>
+                    <span className={priceKey === 'free' ? 'text-premium-accent font-medium' : ''}>
+                      {priceKey === 'free' ? t('free') : t('perKm', { price: priceValue })}
+                    </span>
                   </span>
                 </li>
               ))}

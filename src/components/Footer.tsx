@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
 /* Simple solid icons – light gray, before label */
 export function PhoneIcon({ className }: { className?: string }) {
@@ -34,12 +35,12 @@ function FacebookIcon({ className }: { className?: string }) {
   )
 }
 
-const navLinks = [
-  { sectionId: 'services', label: 'Services' },
-  { sectionId: 'gallery', label: 'Gallery' },
-  { sectionId: 'pricing', label: 'Pricing' },
-  { sectionId: 'testimonials', label: 'Testimonials' },
-  { sectionId: 'contact', label: 'Book Now' },
+const footerNavKeys = [
+  { sectionId: 'services' as const, key: 'services' as const },
+  { sectionId: 'gallery' as const, key: 'gallery' as const },
+  { sectionId: 'pricing' as const, key: 'pricing' as const },
+  { sectionId: 'testimonials' as const, key: 'testimonials' as const },
+  { sectionId: 'contact' as const, key: 'bookNow' as const },
 ]
 
 const socialLinks = [
@@ -48,6 +49,8 @@ const socialLinks = [
 ]
 
 export default function Footer() {
+  const t = useTranslations('footer')
+  const tNav = useTranslations('nav')
   return (
     <footer className="bg-premium-black border-t border-border-default">
       <div className="container-narrow section-padding">
@@ -55,10 +58,13 @@ export default function Footer() {
           <div>
             <Link
               href="/"
-              onClick={(e) => {
-                if (typeof window !== 'undefined' && window.location.pathname === '/') {
-                  e.preventDefault()
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                if (typeof window !== 'undefined') {
+                  const path = window.location.pathname
+                  if (path === '/' || path === '/en' || path === '/sl') {
+                    e.preventDefault()
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }
                 }
               }}
               className="text-h4 text-text-primary hover:text-premium-accent transition-colors"
@@ -66,30 +72,30 @@ export default function Footer() {
               AShineMobile
             </Link>
             <p className="mt-3 text-body-sm text-text-muted">
-              Professional car detailing and mobile valeting. Showroom finish, ceramic coatings, paint correction.
+              {t('tagline')}
             </p>
           </div>
           <div>
-            <h4 className="text-body-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Quick links</h4>
+            <h4 className="text-body-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">{t('quickLinks')}</h4>
             <ul className="space-y-2">
-              {navLinks.map((link) => (
+              {footerNavKeys.map((link) => (
                 <li key={link.sectionId}>
                   <Link
                     href="/"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.preventDefault()
                       document.getElementById(link.sectionId)?.scrollIntoView({ behavior: 'smooth' })
                     }}
                     className="text-text-muted hover:text-premium-accent transition-colors duration-ui text-body-sm"
                   >
-                    {link.label}
+                    {tNav(link.key)}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h4 className="text-body-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Contact</h4>
+            <h4 className="text-body-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">{t('contact')}</h4>
             <ul className="space-y-2 text-body-sm text-text-muted">
               <li>
                 <a href="tel:+38670742363" className="inline-flex items-center gap-2 hover:text-premium-accent transition-colors">
@@ -106,7 +112,7 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-body-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Follow</h4>
+            <h4 className="text-body-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">{t('follow')}</h4>
             <ul className="flex flex-col gap-2">
               {socialLinks.map((s) => (
                 <li key={s.href}>
@@ -126,22 +132,22 @@ export default function Footer() {
         </div>
         <div className="mt-12 pt-8 border-t border-border-default flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-            <p className="text-text-muted text-body-sm">© {new Date().getFullYear()} AShineMobile. All rights reserved.</p>
+            <p className="text-text-muted text-body-sm">© {new Date().getFullYear()} AShineMobile. {t('rights')}</p>
             <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-body-sm">
               <Link href="/privacy" className="text-text-muted hover:text-premium-accent transition-colors">
-                Privacy
+                {t('privacy')}
               </Link>
               <span className="text-text-disabled">·</span>
               <Link href="/terms" className="text-text-muted hover:text-premium-accent transition-colors">
-                Terms
+                {t('terms')}
               </Link>
               <span className="text-text-disabled">·</span>
               <Link href="/cookies" className="text-text-muted hover:text-premium-accent transition-colors">
-                Cookies
+                {t('cookies')}
               </Link>
             </nav>
           </div>
-          <p className="text-text-muted text-body-sm">Keep your car looking its best.</p>
+          <p className="text-text-muted text-body-sm">{t('taglineShort')}</p>
         </div>
       </div>
     </footer>

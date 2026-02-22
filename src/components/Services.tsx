@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { SectionEntrance } from '@/components/MotionSection'
 import { staggerContainer, staggerItem, cardHover, buttonTap } from '@/lib/motion'
@@ -56,12 +57,9 @@ function DetailingIcon({ className }: { className?: string }) {
 const categories = [
   {
     id: 'cleaning',
-    title: 'Cleaning Services',
-    description:
-      'Keep your car looking fresh with our valeting and deep-cleaning services. Exterior wash, interior vacuum, engine bay clean, and full valet packages.',
+    key: 'cleaning' as const,
     icon: CleaningIcon,
     href: '#car-cleaning',
-    /* Subtle background: soft gradient + low-opacity pattern */
     bgClass:
       'bg-gradient-to-br from-premium-slate via-premium-charcoal to-premium-black',
     patternClass:
@@ -69,9 +67,7 @@ const categories = [
   },
   {
     id: 'detailing',
-    title: 'Detailing Services',
-    description:
-      'Restore gloss and protect with paint correction, ceramic coatings, and full-detail packages. Showroom finish and long-lasting protection.',
+    key: 'detailing' as const,
     icon: DetailingIcon,
     href: '#car-detailing',
     bgClass:
@@ -82,6 +78,7 @@ const categories = [
 ]
 
 export default function Services() {
+  const t = useTranslations('services')
   return (
     <SectionEntrance
       id="services"
@@ -91,17 +88,16 @@ export default function Services() {
       <div className="container-narrow">
         <header className="text-center mb-12 sm:mb-16">
           <p className="text-premium-accent text-overline uppercase mb-2">
-            What we offer
+            {t('overline')}
           </p>
           <h2
             id="services-heading"
             className="text-h2 text-text-primary"
           >
-            Services
+            {t('heading')}
           </h2>
           <p className="mt-4 text-body text-text-secondary max-w-2xl mx-auto">
-            From a quick valet to full paint correction and ceramic coating —
-            choose the level of care your car deserves.
+            {t('subheading')}
           </p>
         </header>
 
@@ -121,14 +117,12 @@ export default function Services() {
                 transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
                 className="group relative overflow-hidden rounded-card border border-border-default bg-premium-slate transition-colors duration-300 hover:border-premium-accent/50 hover:shadow-xl hover:shadow-black/20"
               >
-                {/* Subtle background gradient / pattern */}
                 <div
                   className={`absolute inset-0 ${category.bgClass} ${category.patternClass}`}
                   aria-hidden
                 />
 
                 <div className="relative z-10 flex flex-col p-6 sm:p-8 lg:p-10 min-h-[280px] sm:min-h-[300px]">
-                  {/* Icon */}
                   <div className="mb-5 sm:mb-6">
                     <span className="inline-flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-card bg-premium-accent-muted text-premium-accent transition-all duration-card group-hover:scale-110 group-hover:bg-premium-accent/20">
                       <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
@@ -136,24 +130,24 @@ export default function Services() {
                   </div>
 
                   <h3 className="text-h3 text-text-primary mb-3 sm:mb-4">
-                    {category.title}
+                    {t(`${category.key}.title`)}
                   </h3>
                   <p className="text-body-sm text-text-secondary flex-1 max-w-lg">
-                    {category.description}
+                    {t(`${category.key}.description`)}
                   </p>
 
                   <div className="mt-6 sm:mt-8">
                     <motion.div whileTap={buttonTap}>
                       <Link
                         href="/"
-                        onClick={(e) => {
+                        onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                           e.preventDefault()
                           const id = category.href.replace(/^#/, '')
                           document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
                         }}
                         className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-body-sm transition-all duration-ui group-hover:border-premium-accent group-hover:text-premium-accent"
                       >
-                        View Packages
+                        {t(`${category.key}.viewPackages`)}
                         <svg
                           className="h-4 w-4 transition-transform duration-ui group-hover:translate-x-0.5"
                           fill="none"
