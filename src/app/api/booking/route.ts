@@ -6,18 +6,19 @@ const RESEND = new Resend(process.env.RESEND_API_KEY)
 const BOOKING_TO_EMAIL = 'marko.lempl4@gmail.com'
 const RATE_LIMIT_KEY_PREFIX = 'booking:'
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const REQUIRED_FIELDS = ['name', 'email', 'carType', 'service', 'date', 'message'] as const
+// Server-side required fields. Car type, date and message are now optional.
+const REQUIRED_FIELDS = ['name', 'email', 'service'] as const
 
 export type BookingPayload = {
   name: string
   email: string
   phone?: string
-  carType: string
+  carType?: string
   service: string
   locationType?: string
   distance?: string
-  date: string
-  message: string
+  date?: string
+  message?: string
 }
 
 function getLocationLabel(payload: { locationType?: string; distance?: string }): string {
@@ -61,18 +62,21 @@ export async function POST(request: Request) {
 
     const locationLabel = getLocationLabel({ locationType, distance })
     const phoneLine = phone?.trim() ? `<p><strong>Phone:</strong> ${escapeHtml(phone.trim())}</p>` : ''
+    const carLine = carType?.trim() ? `<p><strong>Car type / model:</strong> ${escapeHtml(carType.trim())}</p>` : ''
     const locationLine = locationLabel ? `<p><strong>Location:</strong> ${locationLabel}</p>` : ''
+    const messageSection = message?.trim()
+      ? `<p><strong>Message:</strong></p><p>${escapeHtml(message.trim()).replace(/\n/g, '<br>')}</p>`
+      : ''
     const html = `
       <h2>New booking request</h2>
       <p><strong>Name:</strong> ${escapeHtml(name)}</p>
       <p><strong>Email:</strong> ${escapeHtml(email)}</p>
       ${phoneLine}
-      <p><strong>Car type / model:</strong> ${escapeHtml(carType)}</p>
+      ${carLine}
       <p><strong>Service:</strong> ${escapeHtml(service)}</p>
       ${locationLine}
-      <p><strong>Preferred date:</strong> ${escapeHtml(date)}</p>
-      <p><strong>Message:</strong></p>
-      <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
+      ${date?.trim() ? `<p><strong>Preferred date:</strong> ${escapeHtml(date)}</p>` : ''}
+      ${messageSection}
     `.trim()
 
     const fromAddress = process.env.RESEND_FROM ?? 'Car Detailing Website <onboarding@resend.dev>'
@@ -98,9 +102,9 @@ export async function POST(request: Request) {
       <p><strong>Summary of your request:</strong></p>
       <ul>
         <li>Service: ${escapeHtml(service)}</li>
-        <li>Car: ${escapeHtml(carType)}</li>
+        ${carType?.trim() ? `<li>Car: ${escapeHtml(carType.trim())}</li>` : ''}
         ${locationLabel ? `<li>Location: ${escapeHtml(locationLabel)}</li>` : ''}
-        <li>Preferred date: ${escapeHtml(date)}</li>
+        ${date?.trim() ? `<li>Preferred date: ${escapeHtml(date)}</li>` : ''}
       </ul>
       <p>If you have any questions in the meantime, just reply to this email or give us a call.</p>
       <p>Best regards,<br>AShineMobile</p>

@@ -14,7 +14,6 @@ const INITIAL_FORM_VALUES: Record<string, string> = {
   name: '',
   email: '',
   phone: '',
-  carType: '',
   serviceCategory: '',
   service: '',
   locationType: '',
@@ -35,7 +34,6 @@ interface FormErrors {
   name?: string
   email?: string
   phone?: string
-  carType?: string
   serviceCategory?: string
   service?: string
   locationType?: string
@@ -97,20 +95,19 @@ export default function Contact() {
       }
       case 'phone':
         return undefined // optional
-      case 'carType':
-        return !trimmed ? t('errors.carType') : undefined
       case 'serviceCategory':
         return !trimmed ? t('errors.serviceCategory') : undefined
       case 'service':
         return !trimmed ? t('errors.service') : undefined
       case 'locationType':
-        return !trimmed ? t('errors.locationType') : undefined
+        return undefined // optional
       case 'distance':
         return values.locationType === 'mobile' && !trimmed ? t('errors.distance') : undefined
       case 'date':
-        return !trimmed ? t('errors.date') : undefined
+        return undefined // optional
       case 'message':
-        return trimmed.length < 10 ? t('errors.message') : undefined
+        // Optional: only validate length if user entered something
+        return trimmed && trimmed.length < 10 ? t('errors.message') : undefined
       default:
         return undefined
     }
@@ -169,7 +166,7 @@ export default function Contact() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitError(null)
-    setTouched({ name: true, email: true, phone: true, carType: true, serviceCategory: true, service: true, locationType: true, distance: true, date: true, message: true })
+    setTouched({ name: true, email: true, phone: true, serviceCategory: true, service: true, locationType: true, distance: true, date: true, message: true })
     const nextErrors = validateAll()
     if (Object.keys(nextErrors).length > 0) return
     setSending(true)
@@ -308,29 +305,6 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-carType" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('carType')} <span className="text-error">*</span>
-                  </label>
-                  <input
-                    id="contact-carType"
-                    name="carType"
-                    type="text"
-                    value={values.carType}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={getInputClass('carType')}
-                    placeholder={t('placeholderCar')}
-                    aria-invalid={!!errors.carType}
-                    aria-describedby={errors.carType ? 'contact-carType-error' : undefined}
-                  />
-                  {errors.carType && touched.carType && (
-                    <p id="contact-carType-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                      {errors.carType}
-                    </p>
-                  )}
-                </div>
-
-                <div>
                   <label htmlFor="contact-serviceCategory" className="block text-body-sm font-medium text-text-secondary mb-2">
                     {t('serviceType')} <span className="text-error">*</span>
                   </label>
@@ -398,7 +372,7 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('whereService')} <span className="text-error">*</span>
+                    {t('whereService')}
                   </label>
                   <div className="flex flex-wrap gap-4 items-start">
                     <div className="flex-1 min-w-[200px]">
@@ -453,7 +427,7 @@ export default function Contact() {
 
                 <div>
                   <label htmlFor="contact-date" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('preferredDate')} <span className="text-error">*</span>
+                    {t('preferredDate')}
                   </label>
                   <input
                     id="contact-date"
