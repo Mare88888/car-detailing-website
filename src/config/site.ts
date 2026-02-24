@@ -6,7 +6,7 @@
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://example.com'
 
 export const BRAND = {
-  name: 'AShineMobile',
+  name: 'AShine',
   /** Tailwind premium-black equivalent */
   bg: '#08080a',
   /** Tailwind premium-accent equivalent */

@@ -1,5 +1,6 @@
 {
   "nav": {
+    "about": "About us",
     "services": "Services",
     "gallery": "Gallery",
     "pricing": "Pricing",
@@ -11,9 +12,9 @@
     "home": "Home"
   },
   "hero": {
-    "overline": "Professional car care",
-    "headline": "Premium car detailing & valeting",
-    "subheadline": "Showroom finish. Ceramic coatings. Paint correction. We come to you.",
+    "overline": "Detailing",
+    "headline": "Professional vehicle and space care",
+    "subheadline": "Thorough cleaning and protection with an eye for perfection.",
     "primaryCta": "Book Now",
     "secondaryCta": "View Services"
   },
@@ -28,18 +29,38 @@
     "cookies": "Cookies",
     "taglineShort": "Keep your car looking its best."
   },
+  "about": {
+    "overline": "Why A-Shine",
+    "heading": "About us",
+    "intro1": "Ashine is a company specialised in professional vehicle care and space cleaning.",
+    "intro2": "We combine precision, attention to detail and a passion for a well-kept appearance.",
+    "belief": "We believe that cleanliness is not just looks — it's a feeling.",
+    "offer": "We offer vehicle detailing and thorough cleaning of private and commercial spaces.",
+    "approach": "We approach every job individually, because every vehicle and every space is unique.",
+    "goal": "Our goal is not just cleaning, but a visible difference.",
+    "whyHeading": "Why choose us",
+    "why1": "Personal approach",
+    "why2": "Precise and careful execution",
+    "why3": "Professional equipment and products",
+    "why4": "Reliability and consistency",
+    "why5": "Results you can see",
+    "whyTagline": "Because we value quality over speed.",
+    "commitmentHeading": "Our commitment",
+    "commitment1": "We want to offer every client an experience that exceeds expectations.",
+    "commitment2": "We don't compromise on details — they are what create the perfect result."
+  },
   "services": {
     "overline": "What we offer",
     "heading": "Services",
     "subheading": "From a quick valet to full paint correction and ceramic coating — choose the level of care your car deserves.",
     "cleaning": {
-      "title": "Cleaning Services",
-      "description": "Keep your car looking fresh with our valeting and deep-cleaning services. Exterior wash, interior vacuum, engine bay clean, and full valet packages.",
+      "title": "Cleaning Service",
+      "description": "Professional cleaning of residential and commercial spaces.",
       "viewPackages": "View Packages"
     },
     "detailing": {
-      "title": "Detailing Services",
-      "description": "Restore gloss and protect with paint correction, ceramic coatings, and full-detail packages. Showroom finish and long-lasting protection.",
+      "title": "Vehicle Detailing",
+      "description": "Thorough cleaning, shine restoration and vehicle protection — we come to you.",
       "viewPackages": "View Packages"
     }
   },
@@ -74,47 +95,85 @@
   "pricing": {
     "overline": "Packages",
     "heading": "Pricing",
-    "subheading": "Transparent packages. Get a quote tailored to your car and goals.",
-    "cleaningHeading": "Car cleaning packages",
-    "detailingHeading": "Car detailing packages",
+    "subheading": "Transparent packages. We tailor the offer to your vehicle and goals.",
+    "detailingHeading": "Vehicle detailing",
+    "detailingIntro": "The price is adjustable and flexible.",
+    "detailingIntroFactor1": "For vehicles prices depend on:",
+    "detailingIntroFactor2": "type and size of the vehicle",
+    "detailingIntroFactor3": "level of dirt",
+    "detailingIntroFactor4": "extra requests",
+    "detailingIntroFactor5": "frequency and type of service",
+    "detailingExteriorHeading": "Exterior",
+    "detailingInteriorHeading": "Interior",
+    "detailingPackagesHeading": "Packages",
+    "detailingExterior1": "Basic exterior clean (pre-wash, hand wash, wheel clean, dry) — €30",
+    "detailingExterior2": "Paint decontamination — €30",
+    "detailingExterior3": "Machine polishing — €150",
+    "detailingExterior4": "Protective coatings (wax, ceramic) — on request",
+    "detailingExterior5": "Engine bay clean — €40",
+    "detailingExterior6": "Headlight restoration — €25 per light",
+    "detailingInterior1": "Basic interior (wipe-down and vacuum) — €45",
+    "detailingInterior2": "Deep interior (surfaces, brushing, blow-out and vacuum) — €60",
+    "detailingInterior3": "Chemical seat cleaning — €15 per seat",
+    "detailingInterior4": "Leather care and cleaning — €20",
+    "detailingInterior5": "Pet hair, sand removal — €20–40",
+    "detailingInterior6": "Steam disinfection / decontamination — €20",
+    "cleaningHeading": "Cleaning Service",
+    "cleaningIntroShort": "We offer regular and deep cleaning.",
+    "cleaningIntroLine2": "The price is adjustable and flexible.",
+    "cleaningServicesHeading": "We offer:",
+    "cleaningService1": "Airbnb, apartments and homes",
+    "cleaningService2": "Business premises and offices",
+    "cleaningService3": "Living and commercial spaces",
+    "cleaningPriceHeading": "Prices depend on:",
+    "cleaningPriceFactor1": "size of space",
+    "cleaningPriceFactor2": "type of surfaces",
+    "cleaningPriceFactor3": "frequency of cleaning",
+    "cleaningPriceFactor4": "level of dirt",
+    "cleaningCta": "Send enquiry",
+    "cleaningPriceOnRequest": "On request",
+    "cleaningAdditionalHeading": "Additional services",
+    "cleaningAdditional1": "Window and glass cleaning: €20–50",
+    "cleaningAdditional2": "Allergen dust removal / steam disinfection: on request",
+    "cleaningAdditional3": "Special deep decontamination: on request",
     "readMore": "Read more",
     "readLess": "Read less",
     "packages": {
       "cleaning-basic": {
-        "name": "Vehicle Refresh",
-        "price": "From 40€",
-        "description": "Essential care for regular vehicle maintenance. Ideal for regularly maintained vehicles.",
-        "features": ["Hand exterior wash", "Wheel cleaning", "Interior vacuuming", "Dusting & plastic wipe-down", "Interior window cleaning"]
+        "name": "BASIC – Standard cleaning",
+        "price": "On request",
+        "description": "Floor and carpet vacuuming, dusting tables and shelves, kitchen and bathroom cleaning, windows.",
+        "features": ["Floor and carpet vacuuming", "Dusting tables and shelves", "Kitchen and bathroom cleaning", "Window cleaning"]
       },
-      "cleaning-advanced": {
-        "name": "Deep Cleaning",
-        "price": "From 70€",
-        "description": "More thorough care for visibly dirty vehicles. For vehicles with a higher level of dirt.",
-        "features": ["Everything from the Basic Package", "Deep interior cleaning", "Detailed cleaning of vents & seams", "Basic stain removal", "Interior plastic protection", "Basic exterior decontamination"]
+      "cleaning-full": {
+        "name": "FULL CLEAN – Deep cleaning",
+        "price": "On request",
+        "description": "Everything in Basic, deep bathroom and kitchen clean, stain removal from textiles, steam clean floors or furniture.",
+        "features": ["Everything in Basic", "Deep bathroom and kitchen cleaning", "Stain removal from textiles", "Steam cleaning floors or furniture"]
       },
-      "cleaning-best": {
-        "name": "Premium Care",
-        "price": "From 100€",
-        "description": "Complete professional appearance restoration. Maximum gloss & long-lasting protection.",
-        "features": ["Everything from the Advanced Package", "Chemical seat cleaning", "Thorough paint decontamination", "Single-stage machine polishing", "Ceramic paint protection"]
+      "cleaning-premium": {
+        "name": "PREMIUM DEEP CLEAN – After build or special needs",
+        "price": "On request",
+        "description": "Everything in Full Clean, surface and air decontamination, stubborn stain removal, move-in or inspection ready.",
+        "features": ["Everything in Full Clean", "Surface and air decontamination", "Stubborn stain removal", "Move-in or inspection ready"]
       },
-      "detail-basic": {
-        "name": "Basic Refresh",
-        "price": "From €70",
-        "description": "For regularly maintained cars.",
-        "features": ["Exterior hand wash", "Wheel cleaning", "Quick interior vacuum", "Wipe dashboard & plastics", "Windows cleaned"]
+      "detail-standard": {
+        "name": "Standard / Quick Detail",
+        "price": "€70",
+        "description": "Pre-wash, wheels, vacuum, wipe-down.",
+        "features": ["Pre-wash", "Wheel cleaning", "Vacuum", "Surface wipe-down"]
       },
-      "detail-full": {
-        "name": "Full Detail",
-        "price": "From €180",
-        "description": "Most popular package.",
-        "features": ["Deep exterior wash + wax/sealant", "Deep interior vacuum", "Seat & carpet shampoo (extraction if needed)", "Plastic trim cleaning", "Door jambs", "Windows inside & out"]
+      "detail-deepshine": {
+        "name": "DeepShine Premium",
+        "price": "€130",
+        "description": "Everything in package 1, deep vacuum, detailed surface cleaning, leather care and protection, steam disinfection, waxing.",
+        "features": ["Everything in Standard", "Deep vacuum", "Detailed surface cleaning", "Leather care and protection", "Steam disinfection", "Waxing"]
       },
-      "detail-premium": {
-        "name": "Premium Protection",
-        "price": "From €450",
-        "description": "For people who care about paint & long-term protection.",
-        "features": ["Everything from Full Detail", "Paint decontamination", "Machine polish (1-step)", "6–12 month paint protection OR entry ceramic coating"]
+      "detail-showroom": {
+        "name": "Showroom Elite",
+        "price": "€300",
+        "description": "Everything in package 2, clay decontamination, machine polish, glass protection, ceramic coating.",
+        "features": ["Everything in DeepShine Premium", "Clay decontamination", "Machine polishing", "Glass protection", "Ceramic coating"]
       }
     }
   },
@@ -179,7 +238,7 @@
     "backToHome": "← Back to home",
     "title": "Privacy Policy",
     "description": "Privacy policy for AShineMobile – how we collect, use and protect your personal data.",
-    "lastUpdated": "Last updated: February 2025",
+    "lastUpdated": "Last updated: February 2026",
     "whoWeAreTitle": "1. Who we are",
     "whoWeAreBody": "AShineMobile (\"we\", \"us\") provides car detailing and mobile valeting services in Slovenia. Our website allows you to request bookings and get in touch. This policy explains how we handle your personal data.",
     "dataWeCollectTitle": "2. Data we collect",
@@ -209,7 +268,7 @@
     "backToHome": "← Back to home",
     "title": "Terms of Service",
     "description": "Terms and conditions for using AShineMobile website and booking our car detailing services.",
-    "lastUpdated": "Last updated: February 2025",
+    "lastUpdated": "Last updated: February 2026",
     "agreementTitle": "1. Agreement",
     "agreementBody": "By using the AShineMobile website and our services, you agree to these terms. If you do not agree, please do not use the site or our services.",
     "servicesTitle": "2. Services",
@@ -230,7 +289,7 @@
     "backToHome": "← Back to home",
     "title": "Cookie Policy",
     "description": "How AShineMobile uses cookies and similar technologies on this website.",
-    "lastUpdated": "Last updated: February 2025",
+    "lastUpdated": "Last updated: February 2026",
     "whatAreTitle": "1. What are cookies?",
     "whatAreBody": "Cookies are small text files stored on your device when you visit a website. They are widely used to make sites work properly, remember preferences, and understand how visitors use the site.",
     "howWeUseTitle": "2. How we use cookies",

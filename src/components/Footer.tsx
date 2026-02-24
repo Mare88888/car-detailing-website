@@ -36,6 +36,7 @@ function FacebookIcon({ className }: { className?: string }) {
 }
 
 const footerNavKeys = [
+  { sectionId: 'about' as const, key: 'about' as const },
   { sectionId: 'services' as const, key: 'services' as const },
   { sectionId: 'gallery' as const, key: 'gallery' as const },
   { sectionId: 'pricing' as const, key: 'pricing' as const },

@@ -1,5 +1,6 @@
 {
   "nav": {
+    "about": "O nas",
     "services": "Storitve",
     "gallery": "Galerija",
     "pricing": "Cene",
@@ -11,9 +12,9 @@
     "home": "Domov"
   },
   "hero": {
-    "overline": "Strokovna nega avtomobilov",
-    "headline": "Premijski avto detailing in valeting",
-    "subheadline": "Razstavni izgled. Keramične zaščite. Popravilo laka. Pridevamo do vas.",
+    "overline": "Detailing",
+    "headline": "Profesionalna nega vozil in prostorov",
+    "subheadline": "Detaljno čiščenje in zaščita z občutkom za popolnost.",
     "primaryCta": "Rezerviraj",
     "secondaryCta": "Poglej storitve"
   },
@@ -28,19 +29,39 @@
     "cookies": "Piškotki",
     "taglineShort": "Ohranjajte svoj avto v najboljši formi."
   },
+  "about": {
+    "overline": "Zakaj A-Shine",
+    "heading": "O nas",
+    "intro1": "Ashine je podjetje, specializirano za profesionalno nego vozil in čiščenje prostorov.",
+    "intro2": "Združujemo natančnost, občutek za detajle in strast do urejenega videza.",
+    "belief": "Verjamemo, da čistoča ni le videz — je občutek.",
+    "offer": "Ponujamo storitve avto detailinga ter temeljitega čiščenja zasebnih in poslovnih prostorov.",
+    "approach": "Vsaki storitvi pristopamo individualno, saj sta vsako vozilo in vsak prostor edinstvena.",
+    "goal": "Naš cilj ni le čiščenje, temveč vidna razlika.",
+    "whyHeading": "Zakaj izbrati nas",
+    "why1": "Osebni pristop",
+    "why2": "Natančna in skrbna izvedba",
+    "why3": "Profesionalna oprema in sredstva",
+    "why4": "Zanesljivost in doslednost",
+    "why5": "Rezultati, ki jih opazite",
+    "whyTagline": "Ker cenimo kakovost bolj kot hitrost.",
+    "commitmentHeading": "Naša zaveza",
+    "commitment1": "Vsaki stranki želimo ponuditi izkušnjo, ki presega pričakovanja.",
+    "commitment2": "Ne sklepamo kompromisov pri detajlih, saj prav ti ustvarijo popoln rezultat."
+  },
   "services": {
     "overline": "Kaj ponujamo",
     "heading": "Storitve",
     "subheading": "Od hitrega valetinga do popolnega popravila laka in keramične zaščite — izberite raven nege, ki jo vaš avto zasluži.",
     "cleaning": {
-      "title": "Storitve čiščenja",
-      "description": "Ohranjajte svoj avto svež z našimi valeting in globokim čiščenjem. Zunanje pranje, notranje sesanje, čiščenje motorja in paketi polnega valetinga.",
-      "viewPackages": "Poglej pakete"
+      "title": "Čistilni servis",
+      "description": "Profesionalno čiščenje stanovanjskih in poslovnih prostorov.",
+      "viewPackages": "Preberi več"
     },
     "detailing": {
-      "title": "Detailing storitve",
-      "description": "Povrnite sijaj in zaščitite s popravilom laka, keramičnimi zaščitami in paketi polnega detailinga. Razstavni izgled in dolgotrajna zaščita.",
-      "viewPackages": "Poglej pakete"
+      "title": "Detailing vozil",
+      "description": "Temeljito čiščenje, obnova sijaja in zaščita vozila tudi na domu.",
+      "viewPackages": "Preberi več"
     }
   },
   "gallery": {
@@ -73,48 +94,86 @@
   },
   "pricing": {
     "overline": "Paketi",
-    "heading": "Cene",
+    "heading": "Cenik",
     "subheading": "Pregledni paketi. Ponudbo prilagodimo vašemu avtu in ciljem.",
-    "cleaningHeading": "Paketi čiščenja avtomobilov",
-    "detailingHeading": "Paketi avto detailinga",
+    "detailingHeading": "Detailing vozil",
+    "detailingIntro": "Cena se lahko prilagaja in je fleksibilna.",
+    "detailingIntroFactor1": "Pri vozilih je odvisna od:",
+    "detailingIntroFactor2": "tipa in velikosti vozila",
+    "detailingIntroFactor3": "stopnje umazanosti",
+    "detailingIntroFactor4": "dodatnih zahtev",
+    "detailingIntroFactor5": "pogostosti in vrste storitve",
+    "detailingExteriorHeading": "Zunanjost",
+    "detailingInteriorHeading": "Notranjost",
+    "detailingPackagesHeading": "Paketi",
+    "detailingExterior1": "Osnovno čiščenje zunanjosti (predpranje, ročno pranje, čiščenje felg, sušenje) — 30€",
+    "detailingExterior2": "Dekontaminacija barve — 30€",
+    "detailingExterior3": "Strojno poliranje — 150€",
+    "detailingExterior4": "Zaščitni premazi (vosek, keramični premaz) — po dogovoru",
+    "detailingExterior5": "Čiščenje motornega prostora — 40€",
+    "detailingExterior6": "Obnova luči — 25€ na luč",
+    "detailingInterior1": "Osnovni čiščenje (prebrisavanje površin in sesanje) — 45€",
+    "detailingInterior2": "Globinsko čiščenje (površine s čistilom, krtačenje, ispihavanje in sesanje) — 60€",
+    "detailingInterior3": "Kemično čiščenje sedežev — 15€ na sedež",
+    "detailingInterior4": "Čiščenje in nega usnja — 20€",
+    "detailingInterior5": "Odstranjevanje dlak, peska — 20–40€",
+    "detailingInterior6": "Parna dezinfekcija / dekontaminacija — 20€",
+    "cleaningHeading": "Čistilni servis",
+    "cleaningIntroShort": "Ponujamo redno in globinsko čiščenje.",
+    "cleaningIntroLine2": "Cena se lahko prilagaja in je fleksibilna.",
+    "cleaningServicesHeading": "Ponujamo:",
+    "cleaningService1": "Airbnb, stanovanja in domovi",
+    "cleaningService2": "Poslovni prostori in pisarne",
+    "cleaningService3": "Stanovanjski in poslovni prostori",
+    "cleaningPriceHeading": "Cene so odvisne od:",
+    "cleaningPriceFactor1": "velikosti prostora",
+    "cleaningPriceFactor2": "vrste površin",
+    "cleaningPriceFactor3": "pogostosti čiščenja",
+    "cleaningPriceFactor4": "stopnje umazanosti",
+    "cleaningCta": "Pošlji povpraševanje",
+    "cleaningPriceOnRequest": "Po dogovoru",
+    "cleaningAdditionalHeading": "Dodatne storitve",
+    "cleaningAdditional1": "Čiščenje stekel in vitrin: 20–50€",
+    "cleaningAdditional2": "Odstranjevanje alergenskega prahu / parna dezinfekcija: po dogovoru",
+    "cleaningAdditional3": "Posebna globinska dekontaminacija: po dogovoru",
     "readMore": "Več",
     "readLess": "Manj",
     "packages": {
       "cleaning-basic": {
-        "name": "Osvežitev vozila",
-        "price": "Od 40€",
-        "description": "Bistvena nega za redno vzdrževanje vozila. Idealno za redno vzdrževana vozila.",
-        "features": ["Ročno zunanje pranje", "Čiščenje koles", "Notranje sesanje", "Brisanje in čiščenje plastike", "Čiščenje notranjih oken"]
+        "name": "BASIC – Osnovno čiščenje",
+        "price": "Po dogovoru",
+        "description": "Sesanje tal in preprog, brisanje prahu z miz in polic, čiščenje kuhinje in sanitarij, čiščenje stekel.",
+        "features": ["Sesanje tal in preprog", "Brisanje prahu z miz in polic", "Čiščenje kuhinje in sanitarij", "Čiščenje stekel"]
       },
-      "cleaning-advanced": {
-        "name": "Globoko čiščenje",
-        "price": "Od 70€",
-        "description": "Bolj temeljita nega za vidno umazana vozila. Za vozila z večjo stopnjo umazanije.",
-        "features": ["Vse iz osnovnega paketa", "Globoko čiščenje notranjosti", "Podrobno čiščenje ventilov in šivov", "Osnovno odstranjevanje madežev", "Zaščita notranje plastike", "Osnovna zunanja dekontaminacija"]
+      "cleaning-full": {
+        "name": "FULL CLEAN – Poglobljeno čiščenje",
+        "price": "Po dogovoru",
+        "description": "Vse iz Basic, globinsko čiščenje kopalnice in kuhinje, odstranjevanje madežev z tekstila, parno čiščenje tal ali pohištva.",
+        "features": ["Vse iz Basic", "Globinsko čiščenje kopalnice in kuhinje", "Odstranjevanje madežev z tekstila", "Parno čiščenje tal ali pohištva"]
       },
-      "cleaning-best": {
-        "name": "Premijska nega",
-        "price": "Od 100€",
-        "description": "Popolna strokovna obnova videza. Maksimalen sijaj in dolgotrajna zaščita.",
-        "features": ["Vse iz naprednega paketa", "Kemično čiščenje sedežev", "Temeljita dekontaminacija laka", "Enostopenjsko strojno poliranje", "Keramična zaščita laka"]
+      "cleaning-premium": {
+        "name": "PREMIUM DEEP CLEAN – Po gradnji ali posebne potrebe",
+        "price": "Po dogovoru",
+        "description": "Vse iz Full Clean, dekontaminacija površin in zraka, čiščenje trdovratnih madežev, priprava prostorov za vselitev ali poslovni pregled.",
+        "features": ["Vse iz Full Clean", "Dekontaminacija površin in zraka", "Čiščenje trdovratnih madežev", "Priprava prostorov za vselitev ali poslovni pregled"]
       },
-      "detail-basic": {
-        "name": "Osnovna osvežitev",
-        "price": "Od 70€",
-        "description": "Za redno vzdrževane avtomobile.",
-        "features": ["Zunanje ročno pranje", "Čiščenje koles", "Hitro notranje sesanje", "Brisanje armaturn plošče in plastike", "Očiščena okna"]
+      "detail-standard": {
+        "name": "Standard / Quick Detail",
+        "price": "70€",
+        "description": "Predpranje, platišča, sesanje, prebrisavanje.",
+        "features": ["Predpranje", "Čiščenje platišč (felg)", "Sesanje", "Prebrisavanje površin"]
       },
-      "detail-full": {
-        "name": "Polni detail",
-        "price": "Od 180€",
-        "description": "Najbolj priljubljen paket.",
-        "features": ["Globoko zunanje pranje + vosek/ščitek", "Globoko notranje sesanje", "Šamponiranje sedežev in preproge (ekstrakcija po potrebi)", "Čiščenje plastičnih oblog", "Pragovi vrat", "Okna znotraj in zunaj"]
+      "detail-deepshine": {
+        "name": "DeepShine Premium",
+        "price": "130€",
+        "description": "Vse iz 1. paketa, globinsko sesanje, detaljno čiščenje površin, nega in zaščita usnja, parna dezinfekcija, voskanje.",
+        "features": ["Vse iz Standard paketa", "Globinsko sesanje", "Detaljno čiščenje površin", "Nega in zaščita usnja", "Parna dezinfekcija", "Voskanje"]
       },
-      "detail-premium": {
-        "name": "Premijska zaščita",
-        "price": "Od 450€",
-        "description": "Za ljubitelje laka in dolgoročne zaščite.",
-        "features": ["Vse iz polnega detaila", "Dekontaminacija laka", "Strojno poliranje (1 korak)", "6–12 mesečna zaščita laka ALI začetna keramična zaščita"]
+      "detail-showroom": {
+        "name": "Showroom Elite",
+        "price": "300€",
+        "description": "Vse iz 2. paketa, dekontaminacija z glino, strojno poliranje, zaščita stekel, keramična zaščita.",
+        "features": ["Vse iz DeepShine Premium", "Dekontaminacija z glino", "Strojno poliranje", "Zaščita stekel", "Keramična zaščita"]
       }
     }
   },
@@ -178,10 +237,10 @@
   "privacy": {
     "backToHome": "← Nazaj na domov",
     "title": "Pravilnik o zasebnosti",
-    "description": "Pravilnik o zasebnosti AShineMobile – kako zbiramo, uporabljamo in ščitimo vaše osebne podatke.",
-    "lastUpdated": "Zadnja posodobitev: februar 2025",
+    "description": "Pravilnik o zasebnosti AShine – kako zbiramo, uporabljamo in ščitimo vaše osebne podatke.",
+    "lastUpdated": "Zadnja posodobitev: februar 2026",
     "whoWeAreTitle": "1. Kdo smo",
-    "whoWeAreBody": "AShineMobile (\"mi\", \"nas\") ponuja storitve avto detailinga in mobilnega valetinga v Sloveniji. Spletna stran omogoča oddajo zahtevkov za rezervacijo in stik. Ta pravilnik pojasnjuje, kako ravnamo z vašimi osebnimi podatki.",
+    "whoWeAreBody": "AShine ponuja storitve mobilnega detailinga in čiščenja prostorov v Sloveniji. Spletna stran omogoča oddajo zahtevkov za rezervacijo in stik. Ta pravilnik pojasnjuje, kako ravnamo z vašimi osebnimi podatki.",
     "dataWeCollectTitle": "2. Podatki, ki jih zbiramo",
     "dataWeCollectIntro": "Ko uporabite obrazec za rezervacijo ali nas kontaktirate, lahko zbiramo:",
     "dataWeCollect1": "Ime in e-poštni naslov",
@@ -208,10 +267,10 @@
   "terms": {
     "backToHome": "← Nazaj na domov",
     "title": "Pogoji uporabe",
-    "description": "Pogoji in določila za uporabo spletne strani AShineMobile in rezervacijo storitev avto detailinga.",
-    "lastUpdated": "Zadnja posodobitev: februar 2025",
+    "description": "Pogoji in določila za uporabo spletne strani AShine in rezervacijo storitev avto detailinga.",
+    "lastUpdated": "Zadnja posodobitev: februar 2026",
     "agreementTitle": "1. Dogovor",
-    "agreementBody": "Z uporabo spletne strani in storitev AShineMobile se strinjate s temi pogoji. Če se ne strinjate, strani ali storitev ne uporabljajte.",
+    "agreementBody": "Z uporabo spletne strani in storitev AShine se strinjate s temi pogoji. Če se ne strinjate, strani ali storitev ne uporabljajte.",
     "servicesTitle": "2. Storitve",
     "servicesBody": "AShineMobile ponuja storitve avto detailinga in mobilnega valetinga v Sloveniji. Območja storitve, paketi in cene so opisani na naši spletni strani. Pridržujemo si pravico do zavrnitve rezervacije ali prilagoditve storitev in cen. Rezervacija je potrjena šele, ko se z vami dogovorimo (npr. po e-pošti ali telefonu).",
     "bookingsTitle": "3. Rezervacije in plačilo",
@@ -230,7 +289,7 @@
     "backToHome": "← Nazaj na domov",
     "title": "Pravilnik o piškotkih",
     "description": "Kako AShineMobile uporablja piškotke in podobne tehnologije na tej spletni strani.",
-    "lastUpdated": "Zadnja posodobitev: februar 2025",
+    "lastUpdated": "Zadnja posodobitev: februar 2026",
     "whatAreTitle": "1. Kaj so piškotki?",
     "whatAreBody": "Piškotki so majhne besedilne datoteke, ki se ob obisku spletne strani shranijo na vašo napravo. Pogosto se uporabljajo za pravilno delovanje strani, pomnjenje nastavitev in razumevanje, kako obiskovalci uporabljajo stran.",
     "howWeUseTitle": "2. Kako uporabljamo piškotke",

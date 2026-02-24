@@ -19,91 +19,43 @@ export interface PricingPackage {
   features: string[]
 }
 
-/** Car cleaning – service packages (prices on request) */
+// Visual tier styling for packages – from "worst" (muted) → middle (darker) → "best" (accent)
+const PACKAGE_STYLE_BY_ID: Record<string, string> = {
+  // Cleaning – basic → full → premium
+  'cleaning-basic':
+    'border-border-default bg-premium-slate/80 shadow-none',
+  'cleaning-full':
+    'border-premium-graphite bg-premium-charcoal shadow-md shadow-black/40',
+  'cleaning-premium':
+    'border-premium-accent bg-premium-accent-muted shadow-lg shadow-black/50',
+
+  // Detailing – standard → DeepShine → Showroom
+  'detail-standard':
+    'border-border-default bg-premium-slate/80 shadow-none',
+  'detail-deepshine':
+    'border-premium-graphite bg-premium-charcoal shadow-md shadow-black/40',
+  'detail-showroom':
+    'border-premium-accent bg-premium-accent-muted shadow-lg shadow-black/50',
+}
+
+const DETAILING_FACTOR_KEYS = ['detailingIntroFactor2', 'detailingIntroFactor3', 'detailingIntroFactor4', 'detailingIntroFactor5'] as const
+const CLEANING_SERVICE_KEYS = ['cleaningService1', 'cleaningService2', 'cleaningService3'] as const
+const CLEANING_PRICE_FACTOR_KEYS = ['cleaningPriceFactor1', 'cleaningPriceFactor2', 'cleaningPriceFactor3', 'cleaningPriceFactor4'] as const
+const EXTERIOR_KEYS = ['detailingExterior1', 'detailingExterior2', 'detailingExterior3', 'detailingExterior4', 'detailingExterior5', 'detailingExterior6'] as const
+const INTERIOR_KEYS = ['detailingInterior1', 'detailingInterior2', 'detailingInterior3', 'detailingInterior4', 'detailingInterior5', 'detailingInterior6'] as const
+
+/** Cleaning service – packages (price on request) */
 export const carCleaningPackages: PricingPackage[] = [
-  {
-    id: 'cleaning-basic',
-    name: 'Vehicle Refresh',
-    price: 'From 40€',
-    description: 'Essential care for regular vehicle maintenance. Ideal for regularly maintained vehicles.',
-    features: [
-      'Hand exterior wash',
-      'Wheel cleaning',
-      'Interior vacuuming',
-      'Dusting & plastic wipe-down',
-      'Interior window cleaning',
-    ],
-  },
-  {
-    id: 'cleaning-advanced',
-    name: 'Deep Cleaning',
-    price: 'From 70€',
-    description: 'More thorough care for visibly dirty vehicles. For vehicles with a higher level of dirt.',
-    features: [
-      'Everything from the Basic Package',
-      'Deep interior cleaning',
-      'Detailed cleaning of vents & seams',
-      'Basic stain removal',
-      'Interior plastic protection',
-      'Basic exterior decontamination',
-    ],
-  },
-  {
-    id: 'cleaning-best',
-    name: 'Premium Care',
-    price: 'From 100€',
-    description: 'Complete professional appearance restoration. Maximum gloss & long-lasting protection.',
-    features: [
-      'Everything from the Advanced Package',
-      'Chemical seat cleaning',
-      'Thorough paint decontamination',
-      'Single-stage machine polishing',
-      'Ceramic paint protection',
-    ],
-  },
+  { id: 'cleaning-basic', name: '', price: '', description: '', features: [] },
+  { id: 'cleaning-full', name: '', price: '', description: '', features: [] },
+  { id: 'cleaning-premium', name: '', price: '', description: '', features: [] },
 ]
 
-/** Car detailing – packages with prices */
+/** Vehicle detailing – packages with prices */
 export const carDetailingPackages: PricingPackage[] = [
-  {
-    id: 'detail-basic',
-    name: 'Basic Refresh',
-    price: 'From €70',
-    description: 'For regularly maintained cars.',
-    features: [
-      'Exterior hand wash',
-      'Wheel cleaning',
-      'Quick interior vacuum',
-      'Wipe dashboard & plastics',
-      'Windows cleaned',
-    ],
-  },
-  {
-    id: 'detail-full',
-    name: 'Full Detail',
-    price: 'From €180',
-    description: 'Most popular package.',
-    features: [
-      'Deep exterior wash + wax/sealant',
-      'Deep interior vacuum',
-      'Seat & carpet shampoo (extraction if needed)',
-      'Plastic trim cleaning',
-      'Door jambs',
-      'Windows inside & out',
-    ],
-  },
-  {
-    id: 'detail-premium',
-    name: 'Premium Protection',
-    price: 'From €450',
-    description: 'For people who care about paint & long-term protection.',
-    features: [
-      'Everything from Full Detail',
-      'Paint decontamination',
-      'Machine polish (1-step)',
-      '6–12 month paint protection OR entry ceramic coating',
-    ],
-  },
+  { id: 'detail-standard', name: '', price: '', description: '', features: [] },
+  { id: 'detail-deepshine', name: '', price: '', description: '', features: [] },
+  { id: 'detail-showroom', name: '', price: '', description: '', features: [] },
 ]
 
 function PricingCard({
@@ -129,7 +81,7 @@ function PricingCard({
       variants={staggerItem}
       whileHover={cardHover}
       transition={CARD_TRANSITION}
-      className="relative flex flex-col rounded-card border border-border-default bg-premium-slate/90 p-5 sm:p-7 transition-colors duration-300 hover:border-premium-graphite hover:bg-premium-slate"
+      className={`relative flex flex-col rounded-card border p-5 sm:p-7 transition-colors duration-300 hover:border-premium-graphite hover:bg-premium-slate ${PACKAGE_STYLE_BY_ID[pkg.id] ?? 'border-border-default bg-premium-slate/90'}`}
     >
       <div className="flex-1">
         <h3 className="text-h4 text-text-primary font-semibold">
@@ -224,6 +176,10 @@ export default function Pricing() {
     })
   }, [])
 
+  const scrollToContact = useCallback(() => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  }, [])
+
   return (
     <SectionEntrance
       id="pricing"
@@ -243,36 +199,40 @@ export default function Pricing() {
           </p>
         </header>
 
-        {/* Car Cleaning – Service packages */}
-        <section id="car-cleaning" className="mb-16 scroll-mt-20" aria-labelledby="cleaning-heading">
-          <h3 id="cleaning-heading" className="text-h3 text-text-primary mb-6">
-            {t('cleaningHeading')}
-          </h3>
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6"
-            variants={staggerContainer}
-            initial="visible"
-            animate="visible"
-          >
-            {translatedCleaning.map((pkg) => (
-              <PricingCard
-                key={pkg.id}
-                pkg={pkg}
-                isMobile={isMobile}
-                isExpanded={expandedIds.has(pkg.id)}
-                onToggle={() => toggleExpanded(pkg.id)}
-                readMore={t('readMore')}
-                readLess={t('readLess')}
-              />
-            ))}
-          </motion.div>
-        </section>
-
-        {/* Car Detailing – Packages with prices */}
+        {/* Vehicle Detailing – intro, packages, then exterior/interior breakdown */}
         <section id="car-detailing" className="mb-16 scroll-mt-20" aria-labelledby="detailing-heading">
-          <h3 id="detailing-heading" className="text-h3 text-text-primary mb-6">
+          <h3 id="detailing-heading" className="text-h3 text-text-primary mb-4 text-center">
             {t('detailingHeading')}
           </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-6 mb-8">
+            <div className="sm:col-span-4 sm:col-start-2">
+              <div className="rounded-card border border-border-default bg-premium-slate/80 p-5 sm:p-6 text-center">
+                <div className="mx-auto w-fit text-left text-body-sm text-text-secondary">
+                  <p className="text-text-primary font-medium block w-full">
+                    {t('detailingIntro')}
+                  </p>
+                  <br />
+                  <p className="font-medium">
+                    {t('detailingIntroFactor1')}
+                  </p>
+                  <ul className="mt-3 space-y-2" role="list">
+                    {DETAILING_FACTOR_KEYS.map((key) => (
+                      <li key={key} className="flex items-start gap-3">
+                        <span
+                          className="mt-1 h-1.5 w-1.5 rounded-full bg-premium-accent shrink-0"
+                          aria-hidden
+                        />
+                        <span>{t(key)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h4 className="text-h4 text-text-primary font-semibold mb-4">
+            {t('detailingPackagesHeading')}
+          </h4>
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-3 gap-6"
             variants={staggerContainer}
@@ -291,25 +251,112 @@ export default function Pricing() {
               />
             ))}
           </motion.div>
-
-          {/* Add-ons
-          <div className="mt-10 rounded-card border border-border-default bg-premium-slate/80 p-6 sm:p-8">
-            <h4 className="text-h4 text-text-primary font-semibold mb-4">
-              ➕ Add-ons
-            </h4>
-            <p className="text-body-sm text-text-secondary mb-4">
-              Extra profit options.
-            </p>
-            <ul className="space-y-2 text-body-sm text-text-secondary" role="list">
-              {detailingAddOns.map((addon) => (
-                <li key={addon.name} className="flex justify-between gap-4">
-                  <span>{addon.name}</span>
-                  <span className="text-premium-accent font-medium shrink-0">{addon.price}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="rounded-card border border-border-default bg-premium-slate/80 p-5 sm:p-6">
+              <h4 className="text-h4 text-text-primary font-semibold mb-4">
+                {t('detailingExteriorHeading')}
+              </h4>
+              <ul className="space-y-2 text-body-sm text-text-secondary" role="list">
+                {EXTERIOR_KEYS.map((key) => (
+                  <li key={key} className="flex justify-between gap-3">
+                    <span>{t(key)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-card border border-border-default bg-premium-slate/80 p-5 sm:p-6">
+              <h4 className="text-h4 text-text-primary font-semibold mb-4">
+                {t('detailingInteriorHeading')}
+              </h4>
+              <ul className="space-y-2 text-body-sm text-text-secondary" role="list">
+                {INTERIOR_KEYS.map((key) => (
+                  <li key={key} className="flex justify-between gap-3">
+                    <span>{t(key)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          */}
+        </section>
+
+        {/* Cleaning Service – intro, packages, additional, CTA */}
+        <section id="car-cleaning" className="mb-16 scroll-mt-20" aria-labelledby="cleaning-heading">
+          <h3 id="cleaning-heading" className="text-h3 text-text-primary mb-4 text-center">
+            {t('cleaningHeading')}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-6 mb-8">
+            <div className="sm:col-span-4 sm:col-start-2">
+              <div className="rounded-card border border-border-default bg-premium-slate/80 p-5 sm:p-6 text-center">
+                <div className="mx-auto max-w-md text-left text-body-sm text-text-secondary">
+                  <div className="w-fit mx-auto">
+                    <p className="text-text-primary font-medium">
+                      {t('cleaningIntroShort')}
+                    </p>
+                    <p className="mt-1 text-text-primary font-medium">
+                      {t('cleaningIntroLine2')}
+                    </p>
+                    <p className="mt-2 font-medium">
+                      {t('cleaningServicesHeading')}
+                    </p>
+                    <ul className="mt-2 space-y-2" role="list">
+                      {CLEANING_SERVICE_KEYS.map((key) => (
+                        <li key={key} className="flex items-start gap-3">
+                          <span
+                            className="mt-1 h-1.5 w-1.5 rounded-full bg-premium-accent shrink-0"
+                            aria-hidden
+                          />
+                          <span>{t(key)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-4 font-medium">
+                      {t('cleaningPriceHeading')}
+                    </p>
+                    <ul className="mt-2 space-y-2" role="list">
+                      {CLEANING_PRICE_FACTOR_KEYS.map((key) => (
+                        <li key={key} className="flex items-start gap-3">
+                          <span
+                            className="mt-1 h-1.5 w-1.5 rounded-full bg-premium-accent shrink-0"
+                            aria-hidden
+                          />
+                          <span>{t(key)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10"
+            variants={staggerContainer}
+            initial="visible"
+            animate="visible"
+          >
+            {translatedCleaning.map((pkg) => (
+              <PricingCard
+                key={pkg.id}
+                pkg={pkg}
+                isMobile={isMobile}
+                isExpanded={expandedIds.has(pkg.id)}
+                onToggle={() => toggleExpanded(pkg.id)}
+                readMore={t('readMore')}
+                readLess={t('readLess')}
+              />
+            ))}
+          </motion.div>
+          <div className="text-center">
+            <motion.button
+              type="button"
+              onClick={scrollToContact}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="btn-primary inline-flex items-center justify-center px-7 py-3.5"
+            >
+              {t('cleaningCta')}
+            </motion.button>
+          </div>
         </section>
       </div>
     </SectionEntrance>

@@ -6,8 +6,9 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
-const SECTION_IDS = ['services', 'gallery', 'pricing', 'map', 'testimonials', 'contact'] as const
+const SECTION_IDS = ['about', 'services', 'gallery', 'pricing', 'map', 'testimonials', 'contact'] as const
 const NAV_LINKS = [
+  { id: 'about' as const, key: 'about' },
   { id: 'services' as const, key: 'services' },
   { id: 'gallery' as const, key: 'gallery' },
   { id: 'pricing' as const, key: 'pricing' },
@@ -108,7 +109,7 @@ export default function Nav() {
           aria-label={t('home')}
         >
           <Image
-            src="/NavigationBarLogo.png"
+            src="/NavigationBarLogo1.png"
             alt="AShineMobile Logo"
             width={100}
             height={100}
