@@ -27,7 +27,7 @@ const FORM_FIELD_KEYS = Object.keys(INITIAL_FORM_VALUES) as (keyof FormErrors)[]
 function getPackagesForType(serviceType: string) {
   if (serviceType === 'cleaning') return carCleaningPackages
   if (serviceType === 'detailing') return carDetailingPackages
-  return [] // custom type: only "Custom / Other" option is shown in UI
+  return []
 }
 
 interface FormErrors {
@@ -42,11 +42,54 @@ interface FormErrors {
   message?: string
 }
 
+// Input base — no ring, clean border-color transition
 const inputBase =
-  'w-full px-4 py-3 bg-premium-slate border rounded-sharp text-text-primary placeholder-text-muted text-body-sm focus:outline-none focus:ring-2 focus:ring-premium-accent focus:border-transparent transition-colors duration-200'
+  'w-full px-4 py-3 bg-premium-black/40 border rounded-sharp text-text-primary placeholder-text-muted/50 text-body-sm focus:outline-none focus:border-premium-accent focus:bg-premium-black/60 transition-all duration-200'
+const inputError = 'border-error'
+const inputDefault = 'border-border-default hover:border-premium-graphite'
 
-const inputError = 'border-error focus:ring-error'
-const inputDefault = 'border-border-default'
+function ChevronDown({ className = '' }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 16 16"
+      fill="currentColor"
+      className={`w-4 h-4 ${className}`}
+      aria-hidden
+    >
+      <path
+        fillRule="evenodd"
+        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  )
+}
+
+function FieldLabel({ htmlFor, children, required }: { htmlFor?: string; children: React.ReactNode; required?: boolean }) {
+  return (
+    <label
+      htmlFor={htmlFor}
+      className="block text-[0.6875rem] font-semibold uppercase tracking-widest text-text-muted mb-2"
+    >
+      {children}
+      {required && <span className="text-error ml-1">*</span>}
+    </label>
+  )
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null
+  return (
+    <p id={id} className="mt-1.5 text-[0.75rem] text-error" role="alert">
+      {message}
+    </p>
+  )
+}
+
+function GroupSeparator() {
+  return <div className="border-t border-border-default/60 mt-6 pt-6" />
+}
 
 export default function Contact() {
   const t = useTranslations('contact')
@@ -94,19 +137,18 @@ export default function Contact() {
         return !emailRegex.test(trimmed) ? t('errors.emailInvalid') : undefined
       }
       case 'phone':
-        return undefined // optional
+        return undefined
       case 'serviceCategory':
         return !trimmed ? t('errors.serviceCategory') : undefined
       case 'service':
         return !trimmed ? t('errors.service') : undefined
       case 'locationType':
-        return undefined // optional
+        return undefined
       case 'distance':
         return values.locationType === 'mobile' && !trimmed ? t('errors.distance') : undefined
       case 'date':
-        return undefined // optional
+        return undefined
       case 'message':
-        // Optional: only validate length if user entered something
         return trimmed && trimmed.length < 10 ? t('errors.message') : undefined
       default:
         return undefined
@@ -125,19 +167,18 @@ export default function Contact() {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value } = e.target
-    const nextValue = value
     setValues((prev) => {
-      const next = { ...prev, [name]: nextValue }
+      const next = { ...prev, [name]: value }
       if (name === 'serviceCategory') {
-        next.service = nextValue === 'custom' ? PACKAGE_CUSTOM_ID : ''
+        next.service = value === 'custom' ? PACKAGE_CUSTOM_ID : ''
       }
       if (name === 'locationType') {
-        next.distance = nextValue === 'mobile' ? prev.distance : ''
+        next.distance = value === 'mobile' ? prev.distance : ''
       }
       return next
     })
     if (errors[name as keyof FormErrors]) {
-      setErrors((prev) => ({ ...prev, [name]: validateField(name as keyof FormErrors, nextValue) }))
+      setErrors((prev) => ({ ...prev, [name]: validateField(name as keyof FormErrors, value) }))
     }
     if (name === 'serviceCategory' && errors.service) {
       setErrors((prev) => ({ ...prev, service: undefined }))
@@ -197,6 +238,10 @@ export default function Contact() {
     return `${inputBase} ${errors[name] ? inputError : inputDefault}`
   }
 
+  function getSelectClass(name: keyof FormErrors, extra = '') {
+    return `${getInputClass(name)} appearance-none cursor-pointer pr-10 ${extra}`
+  }
+
   return (
     <SectionEntrance
       id="contact"
@@ -217,74 +262,76 @@ export default function Contact() {
         </header>
 
         <div className="grid lg:grid-cols-[1fr,auto] gap-10 lg:gap-16 lg:items-start">
-          {/* Form column */}
-          <div>
+
+          {/* ── Form column ── */}
+          <div className="rounded-card border border-border-default bg-premium-slate/20 p-6 sm:p-8">
             {submitted ? (
-              <div className="rounded-card bg-premium-slate border border-premium-accent/40 p-8 sm:p-10 text-center">
-                <p className="text-premium-accent font-semibold text-body-lg">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="py-8 text-center"
+              >
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-premium-accent/15 border border-premium-accent/30 mb-5">
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 text-premium-accent" aria-hidden>
+                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <p className="text-premium-accent font-semibold text-body">
                   {t('thanksTitle')}
                 </p>
                 <p className="text-text-secondary mt-2 text-body-sm">
                   {t('thanksBody')}
                 </p>
-              </div>
+              </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+              <form onSubmit={handleSubmit} noValidate>
+
                 {submitError && (
-                  <p className="text-body-sm text-error bg-error/10 border border-error/30 rounded-sharp px-4 py-3" role="alert">
+                  <p className="mb-6 text-body-sm text-error bg-error/8 border border-error/25 rounded-sharp px-4 py-3" role="alert">
                     {submitError}
                   </p>
                 )}
-                <div>
-                  <label htmlFor="contact-name" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('name')} <span className="text-error">*</span>
-                  </label>
-                  <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    value={values.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={getInputClass('name')}
-                    placeholder={t('placeholderName')}
-                    aria-invalid={!!errors.name}
-                    aria-describedby={errors.name ? 'contact-name-error' : undefined}
-                  />
-                  {errors.name && touched.name && (
-                    <p id="contact-name-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                      {errors.name}
-                    </p>
-                  )}
+
+                {/* ── Group 1: Personal details ── */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <FieldLabel htmlFor="contact-name" required>{t('name')}</FieldLabel>
+                    <input
+                      id="contact-name"
+                      name="name"
+                      type="text"
+                      value={values.name}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={getInputClass('name')}
+                      placeholder={t('placeholderName')}
+                      aria-invalid={!!errors.name}
+                      aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                    />
+                    <FieldError id="contact-name-error" message={touched.name ? errors.name : undefined} />
+                  </div>
+
+                  <div>
+                    <FieldLabel htmlFor="contact-email" required>{t('email')}</FieldLabel>
+                    <input
+                      id="contact-email"
+                      name="email"
+                      type="email"
+                      value={values.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={getInputClass('email')}
+                      placeholder={t('placeholderEmail')}
+                      aria-invalid={!!errors.email}
+                      aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                    />
+                    <FieldError id="contact-email-error" message={touched.email ? errors.email : undefined} />
+                  </div>
                 </div>
 
-                <div>
-                  <label htmlFor="contact-email" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('email')} <span className="text-error">*</span>
-                  </label>
-                  <input
-                    id="contact-email"
-                    name="email"
-                    type="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={getInputClass('email')}
-                    placeholder={t('placeholderEmail')}
-                    aria-invalid={!!errors.email}
-                    aria-describedby={errors.email ? 'contact-email-error' : undefined}
-                  />
-                  {errors.email && touched.email && (
-                    <p id="contact-email-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="contact-phone" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('phone')}
-                  </label>
+                <div className="mt-4">
+                  <FieldLabel htmlFor="contact-phone">{t('phone')}</FieldLabel>
                   <input
                     id="contact-phone"
                     name="phone"
@@ -297,138 +344,126 @@ export default function Contact() {
                     aria-invalid={!!errors.phone}
                     aria-describedby={errors.phone ? 'contact-phone-error' : undefined}
                   />
-                  {errors.phone && touched.phone && (
-                    <p id="contact-phone-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                      {errors.phone}
-                    </p>
-                  )}
+                  <FieldError id="contact-phone-error" message={touched.phone ? errors.phone : undefined} />
                 </div>
 
-                <div>
-                  <label htmlFor="contact-serviceCategory" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('serviceType')} <span className="text-error">*</span>
-                  </label>
-                  <select
-                    id="contact-serviceCategory"
-                    name="serviceCategory"
-                    value={values.serviceCategory}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`${getInputClass('serviceCategory')} appearance-none cursor-pointer bg-premium-slate`}
-                    aria-invalid={!!errors.serviceCategory}
-                    aria-describedby={errors.serviceCategory ? 'contact-serviceCategory-error' : undefined}
-                  >
-                    <option value="" disabled hidden>{t('selectServiceType')}</option>
-                    {serviceTypes.map(({ value, label }) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.serviceCategory && touched.serviceCategory && (
-                    <p id="contact-serviceCategory-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                      {errors.serviceCategory}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="contact-service" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('package')} <span className="text-error">*</span>
-                  </label>
-                  <select
-                    id="contact-service"
-                    name="service"
-                    value={values.service}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    disabled={!values.serviceCategory}
-                    className={`${getInputClass('service')} appearance-none cursor-pointer bg-premium-slate disabled:opacity-60 disabled:cursor-not-allowed`}
-                    aria-invalid={!!errors.service}
-                    aria-describedby={errors.service ? 'contact-service-error' : undefined}
-                  >
-                    <option value="" disabled hidden>
-                      {values.serviceCategory ? t('selectPackage') : t('selectServiceFirst')}
-                    </option>
-                    {values.serviceCategory === 'custom' ? (
-                      <option value={PACKAGE_CUSTOM_ID}>{customPackageLabel}</option>
-                    ) : (
-                      <>
-                        {getPackagesForType(values.serviceCategory).map((pkg) => (
-                          <option key={pkg.id} value={pkg.id}>
-                            {tPricing(`packages.${pkg.id}.name`)} ({tPricing(`packages.${pkg.id}.price`)})
-                          </option>
-                        ))}
-                        <option value={PACKAGE_CUSTOM_ID}>{customPackageLabel}</option>
-                      </>
-                    )}
-                  </select>
-                  {errors.service && touched.service && (
-                    <p id="contact-service-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                      {errors.service}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('whereService')}
-                  </label>
-                  <div className="flex flex-wrap gap-4 items-start">
-                    <div className="flex-1 min-w-[200px]">
+                {/* ── Group 2: Service ── */}
+                <GroupSeparator />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <FieldLabel htmlFor="contact-serviceCategory" required>{t('serviceType')}</FieldLabel>
+                    <div className="relative">
                       <select
-                        id="contact-locationType"
-                        name="locationType"
-                        value={values.locationType}
+                        id="contact-serviceCategory"
+                        name="serviceCategory"
+                        value={values.serviceCategory}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`${getInputClass('locationType')} appearance-none cursor-pointer bg-premium-slate`}
-                        aria-invalid={!!errors.locationType}
-                        aria-describedby={errors.locationType ? 'contact-locationType-error' : undefined}
+                        className={getSelectClass('serviceCategory')}
+                        aria-invalid={!!errors.serviceCategory}
+                        aria-describedby={errors.serviceCategory ? 'contact-serviceCategory-error' : undefined}
                       >
-                        <option value="" disabled hidden>{t('chooseLocation')}</option>
-                        {locationOptions.map(({ value, label }) => (
+                        <option value="" disabled hidden>{t('selectServiceType')}</option>
+                        {serviceTypes.map(({ value, label }) => (
                           <option key={value} value={value}>{label}</option>
                         ))}
                       </select>
-                      {errors.locationType && touched.locationType && (
-                        <p id="contact-locationType-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                          {errors.locationType}
-                        </p>
-                      )}
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted" />
                     </div>
-                    {values.locationType === 'mobile' && (
-                      <div className="flex-1 min-w-[140px]">
-                        <label htmlFor="contact-distance" className="sr-only">{t('distance')}</label>
+                    <FieldError id="contact-serviceCategory-error" message={touched.serviceCategory ? errors.serviceCategory : undefined} />
+                  </div>
+
+                  <div>
+                    <FieldLabel htmlFor="contact-service" required>{t('package')}</FieldLabel>
+                    <div className="relative">
+                      <select
+                        id="contact-service"
+                        name="service"
+                        value={values.service}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        disabled={!values.serviceCategory}
+                        className={getSelectClass('service', 'disabled:opacity-50 disabled:cursor-not-allowed')}
+                        aria-invalid={!!errors.service}
+                        aria-describedby={errors.service ? 'contact-service-error' : undefined}
+                      >
+                        <option value="" disabled hidden>
+                          {values.serviceCategory ? t('selectPackage') : t('selectServiceFirst')}
+                        </option>
+                        {values.serviceCategory === 'custom' ? (
+                          <option value={PACKAGE_CUSTOM_ID}>{customPackageLabel}</option>
+                        ) : (
+                          <>
+                            {getPackagesForType(values.serviceCategory).map((pkg) => (
+                              <option key={pkg.id} value={pkg.id}>
+                                {tPricing(`packages.${pkg.id}.name`)} ({tPricing(`packages.${pkg.id}.price`)})
+                              </option>
+                            ))}
+                            <option value={PACKAGE_CUSTOM_ID}>{customPackageLabel}</option>
+                          </>
+                        )}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted" />
+                    </div>
+                    <FieldError id="contact-service-error" message={touched.service ? errors.service : undefined} />
+                  </div>
+                </div>
+
+                {/* ── Group 3: Logistics ── */}
+                <GroupSeparator />
+                <div>
+                  <FieldLabel>{t('whereService')}</FieldLabel>
+                  <div className="flex flex-wrap gap-4 items-start">
+                    <div className="flex-1 min-w-[180px]">
+                      <div className="relative">
                         <select
-                          id="contact-distance"
-                          name="distance"
-                          value={values.distance}
+                          id="contact-locationType"
+                          name="locationType"
+                          value={values.locationType}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          className={`${getInputClass('distance')} appearance-none cursor-pointer bg-premium-slate`}
-                          aria-invalid={!!errors.distance}
-                          aria-describedby={errors.distance ? 'contact-distance-error' : undefined}
+                          className={getSelectClass('locationType')}
+                          aria-invalid={!!errors.locationType}
+                          aria-describedby={errors.locationType ? 'contact-locationType-error' : undefined}
                         >
-                          <option value="" disabled hidden>{t('distance')}</option>
-                          {distanceOptions.map(({ value, label }) => (
+                          <option value="" disabled hidden>{t('chooseLocation')}</option>
+                          {locationOptions.map(({ value, label }) => (
                             <option key={value} value={value}>{label}</option>
                           ))}
                         </select>
-                        {errors.distance && touched.distance && (
-                          <p id="contact-distance-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                            {errors.distance}
-                          </p>
-                        )}
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted" />
+                      </div>
+                      <FieldError id="contact-locationType-error" message={touched.locationType ? errors.locationType : undefined} />
+                    </div>
+                    {values.locationType === 'mobile' && (
+                      <div className="flex-1 min-w-[130px]">
+                        <label htmlFor="contact-distance" className="sr-only">{t('distance')}</label>
+                        <div className="relative">
+                          <select
+                            id="contact-distance"
+                            name="distance"
+                            value={values.distance}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={getSelectClass('distance')}
+                            aria-invalid={!!errors.distance}
+                            aria-describedby={errors.distance ? 'contact-distance-error' : undefined}
+                          >
+                            <option value="" disabled hidden>{t('distance')}</option>
+                            {distanceOptions.map(({ value, label }) => (
+                              <option key={value} value={value}>{label}</option>
+                            ))}
+                          </select>
+                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted" />
+                        </div>
+                        <FieldError id="contact-distance-error" message={touched.distance ? errors.distance : undefined} />
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="contact-date" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('preferredDate')}
-                  </label>
+                <div className="mt-4">
+                  <FieldLabel htmlFor="contact-date">{t('preferredDate')}</FieldLabel>
                   <input
                     id="contact-date"
                     name="date"
@@ -441,17 +476,13 @@ export default function Contact() {
                     aria-invalid={!!errors.date}
                     aria-describedby={errors.date ? 'contact-date-error' : undefined}
                   />
-                  {errors.date && touched.date && (
-                    <p id="contact-date-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                      {errors.date}
-                    </p>
-                  )}
+                  <FieldError id="contact-date-error" message={touched.date ? errors.date : undefined} />
                 </div>
 
+                {/* ── Group 4: Message ── */}
+                <GroupSeparator />
                 <div>
-                  <label htmlFor="contact-message" className="block text-body-sm font-medium text-text-secondary mb-2">
-                    {t('message')} <span className="text-error">*</span>
-                  </label>
+                  <FieldLabel htmlFor="contact-message">{t('message')}</FieldLabel>
                   <textarea
                     id="contact-message"
                     name="message"
@@ -464,62 +495,74 @@ export default function Contact() {
                     aria-invalid={!!errors.message}
                     aria-describedby={errors.message ? 'contact-message-error' : undefined}
                   />
-                  {errors.message && touched.message && (
-                    <p id="contact-message-error" className="mt-1.5 text-body-sm text-error" role="alert">
-                      {errors.message}
-                    </p>
-                  )}
+                  <FieldError id="contact-message-error" message={touched.message ? errors.message : undefined} />
                 </div>
 
-                <motion.button
-                  type="submit"
-                  disabled={sending}
-                  whileTap={sending ? undefined : buttonTap}
-                  className="btn-primary w-full py-4 text-body-sm font-semibold disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {sending ? t('sending') : t('send')}
-                </motion.button>
+                {/* ── Submit ── */}
+                <div className="mt-6">
+                  <motion.button
+                    type="submit"
+                    disabled={sending}
+                    whileTap={sending ? undefined : buttonTap}
+                    className="btn-primary w-full py-4 text-body-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {sending ? t('sending') : t('send')}
+                  </motion.button>
+                </div>
               </form>
             )}
           </div>
 
-          {/* Contact details column */}
+          {/* ── Contact details column ── */}
           <div className="lg:w-72 lg:sticky lg:top-24">
-            <div className="rounded-card bg-premium-slate border border-border-default p-6 sm:p-8">
-              <h3 className="text-h4 text-text-primary font-semibold mb-4">
+            <div className="relative overflow-hidden rounded-card bg-premium-slate border border-border-default p-6 sm:p-8">
+              {/* Cyan top line */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-premium-accent to-transparent"
+              />
+
+              <h3 className="text-h4 text-text-primary font-semibold mb-6">
                 {t('contactDetails')}
               </h3>
-              <ul className="space-y-4 text-body-sm">
+
+              <ul className="space-y-5 text-body-sm">
                 <li>
-                  <span className="block text-text-muted uppercase tracking-wider text-caption mb-1">
+                  <span className="block text-[0.6875rem] font-semibold uppercase tracking-widest text-text-muted mb-2">
                     {t('phone')}
                   </span>
                   <a
                     href="tel:+38670742363"
-                    className="inline-flex items-center gap-2 text-text-primary hover:text-premium-accent transition-colors font-medium"
+                    className="inline-flex items-center gap-2.5 text-text-primary hover:text-premium-accent transition-colors font-medium"
                   >
-                    <PhoneIcon className="shrink-0" />
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-premium-accent/10 border border-premium-accent/20 text-premium-accent shrink-0">
+                      <PhoneIcon />
+                    </span>
                     <span>+386 70 742 363</span>
                   </a>
                 </li>
                 <li>
-                  <span className="block text-text-muted uppercase tracking-wider text-caption mb-1">
+                  <span className="block text-[0.6875rem] font-semibold uppercase tracking-widest text-text-muted mb-2">
                     {t('email')}
                   </span>
                   <a
                     href="mailto:AShineMobile@gmail.com"
-                    className="inline-flex items-center gap-2 text-text-primary hover:text-premium-accent transition-colors font-medium break-all"
+                    className="inline-flex items-center gap-2.5 text-text-primary hover:text-premium-accent transition-colors font-medium break-all"
                   >
-                    <EmailIcon className="shrink-0" />
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-premium-accent/10 border border-premium-accent/20 text-premium-accent shrink-0">
+                      <EmailIcon />
+                    </span>
                     <span>AShineMobile@gmail.com</span>
                   </a>
                 </li>
               </ul>
-              <p className="mt-6 pt-6 border-t border-border-default text-body-sm text-text-secondary">
+
+              <p className="mt-6 pt-6 border-t border-border-default text-body-sm text-text-secondary leading-relaxed">
                 {t('preferCall')}
               </p>
             </div>
           </div>
+
         </div>
       </div>
     </SectionEntrance>
