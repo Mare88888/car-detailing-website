@@ -211,20 +211,32 @@ export default function Pricing() {
                     <h4 className="text-body-sm font-semibold text-text-primary mb-3 uppercase tracking-wide">
                       {t('detailingExteriorHeading')}
                     </h4>
-                    <ul className="space-y-1.5 text-body-sm text-text-secondary" role="list">
-                      {EXTERIOR_KEYS.map((key) => (
-                        <li key={key}>{t(key)}</li>
-                      ))}
+                    <ul className="space-y-2 text-body-sm" role="list">
+                      {EXTERIOR_KEYS.map((key) => {
+                        const [service, price] = t(key).split(' — ')
+                        return (
+                          <li key={key} className="flex items-baseline justify-between gap-4 border-b border-border-default/40 pb-2 last:border-0 last:pb-0">
+                            <span className="text-text-secondary">{service}</span>
+                            <span className="text-premium-accent font-medium shrink-0">{price}</span>
+                          </li>
+                        )
+                      })}
                     </ul>
                   </div>
                   <div className="p-5">
                     <h4 className="text-body-sm font-semibold text-text-primary mb-3 uppercase tracking-wide">
                       {t('detailingInteriorHeading')}
                     </h4>
-                    <ul className="space-y-1.5 text-body-sm text-text-secondary" role="list">
-                      {INTERIOR_KEYS.map((key) => (
-                        <li key={key}>{t(key)}</li>
-                      ))}
+                    <ul className="space-y-2 text-body-sm" role="list">
+                      {INTERIOR_KEYS.map((key) => {
+                        const [service, price] = t(key).split(' — ')
+                        return (
+                          <li key={key} className="flex items-baseline justify-between gap-4 border-b border-border-default/40 pb-2 last:border-0 last:pb-0">
+                            <span className="text-text-secondary">{service}</span>
+                            <span className="text-premium-accent font-medium shrink-0">{price}</span>
+                          </li>
+                        )
+                      })}
                     </ul>
                   </div>
                 </div>
