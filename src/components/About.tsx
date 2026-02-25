@@ -38,19 +38,20 @@ export default function About() {
 
             {/* Row 1: text left, image right */}
             <section className="grid lg:grid-cols-2 items-stretch">
-              <div className="bg-premium-slate/80 p-6 sm:p-8 space-y-4 text-body text-text-secondary">
+              <div className="bg-premium-slate/80 p-6 sm:p-8 space-y-4 text-body text-text-secondary flex flex-col justify-center">
                 <p>{t('intro1')}</p>
                 <p>{t('intro2')}</p>
                 <p className="text-text-primary font-medium">{t('belief')}</p>
                 <p>{t('offer')}</p>
               </div>
-              <div className="relative min-h-64 border-t lg:border-t-0 lg:border-l border-border-default">
+              <div className="border-t lg:border-t-0 lg:border-l border-border-default flex items-center justify-center">
                 <Image
-                  src="/Logo.jpg"
-                  alt="AShine logo"
-                  fill
-                  className="object-contain p-6"
+                  src="/certificate.png"
+                  alt="AShine certificate"
+                  width={0}
+                  height={0}
                   sizes="(min-width: 1024px) 320px, 60vw"
+                  className="w-full h-auto"
                 />
               </div>
             </section>
