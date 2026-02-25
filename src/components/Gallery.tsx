@@ -21,12 +21,13 @@ const CARD_TRANSITION = { duration: 0.2, ease }
 
 /* Placeholder pairs using picsum.photos (replace with your own /gallery/*.jpg paths) */
 const defaultItems: GalleryItem[] = [
-  { id: 1, before: 'https://picsum.photos/seed/ba1a/800/600', after: 'https://picsum.photos/seed/ba1b/800/600', label: 'Paint correction' },
-  { id: 2, before: 'https://picsum.photos/seed/ba2a/800/600', after: 'https://picsum.photos/seed/ba2b/800/600', label: 'Headlight restore' },
-  { id: 3, before: 'https://picsum.photos/seed/ba3a/800/600', after: 'https://picsum.photos/seed/ba3b/800/600', label: 'Interior detail' },
-  { id: 4, before: 'https://picsum.photos/seed/ba4a/800/600', after: 'https://picsum.photos/seed/ba4b/800/600', label: 'Trim & plastics' },
-  { id: 5, before: 'https://picsum.photos/seed/ba5a/800/600', after: 'https://picsum.photos/seed/ba5b/800/600', label: 'Ceramic coating' },
-  { id: 6, before: 'https://picsum.photos/seed/ba6a/800/600', after: 'https://picsum.photos/seed/ba6b/800/600', label: 'Wheels & arches' },
+  { id: 1, before: '/before1.png', after: '/after1.png'},
+  { id: 2, before: '/before2.png', after: '/after2.png'},
+  { id: 3, before: '/before3.png', after: '/after3.png'},
+  { id: 4, before: '/before4.png', after: '/after4.png'},
+  { id: 5, before: '/before5.png', after: '/after5.png'},
+  { id: 6, before: '/before6.png', after: '/after6.png'},
+  { id: 7, before: '/before7.png', after: '/after7.png'},
 ]
 
 interface ComparisonCardProps {
@@ -51,10 +52,10 @@ function ComparisonCard({ item, onClick, ariaLabel, beforeLabel, afterLabel }: C
       className="group relative aspect-[4/3] w-full overflow-hidden rounded-card border border-border-default bg-premium-slate transition-colors duration-300 hover:border-premium-accent/50 hover:shadow-xl hover:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black"
       aria-label={ariaLabel}
     >
-      {/* Before image (base layer) */}
+      {/* After image (base layer) */}
       <div className="absolute inset-0">
         <Image
-          src={item.before}
+          src={item.after}
           alt=""
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -69,7 +70,7 @@ function ComparisonCard({ item, onClick, ariaLabel, beforeLabel, afterLabel }: C
         }}
       >
         <Image
-          src={item.after}
+          src={item.before}
           alt=""
           fill
           className="object-cover"
@@ -77,10 +78,10 @@ function ComparisonCard({ item, onClick, ariaLabel, beforeLabel, afterLabel }: C
         />
       </div>
 
-      {/* Labels overlay — on hover, accent moves from After to Before */}
+      {/* Labels overlay — on hover, accent moves from Before to After */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-between p-3 bg-gradient-to-t from-black/80 to-transparent text-white/90">
-        <span className={`text-overline uppercase ${isHovered ? 'text-premium-accent' : ''}`}>{beforeLabel}</span>
         <span className={`text-overline uppercase ${isHovered ? '' : 'text-premium-accent'}`}>{afterLabel}</span>
+        <span className={`text-overline uppercase ${isHovered ? 'text-premium-accent' : ''}`}>{beforeLabel}</span>
       </div>
 
     </motion.button>

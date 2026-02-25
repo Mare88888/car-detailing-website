@@ -44,9 +44,9 @@ export default async function Home({ params }: Props) {
     <>
       <JsonLd />
       <Hero backgroundVideo="/0205-web.mp4" />
-      <About />
       <Services />
       <Gallery />
+      <About />
       <Pricing />
       <MapSection />
       <Testimonials />
