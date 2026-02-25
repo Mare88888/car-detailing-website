@@ -232,7 +232,11 @@
       "message": "Dodajte še nekaj podrobnosti (min. 10 znakov)",
       "submitError": "Prišlo je do napake. Poskusite znova.",
       "networkError": "Pošiljanje ni uspelo. Preverite internetno povezavo in poskusite znova."
-    }
+    },
+    "trust1": "Odgovor v 24 urah",
+    "trust2": "100+ obdelanih vozil",
+    "trust3": "Mobilna storitev — pridemo k vam",
+    "trust4": "Profesionalna oprema in sredstva"
   },
   "privacy": {
     "backToHome": "← Nazaj na domov",

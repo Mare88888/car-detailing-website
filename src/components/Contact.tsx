@@ -261,6 +261,23 @@ export default function Contact() {
           </p>
         </header>
 
+        {/* Trust signals */}
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
+          {(['trust1', 'trust2', 'trust3', 'trust4'] as const).map((key) => (
+            <div
+              key={key}
+              className="inline-flex items-center gap-2 rounded-sharp border border-border-default bg-premium-slate/60 px-3.5 py-2 text-body-sm text-text-secondary"
+            >
+              <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-premium-accent/20 text-premium-accent" aria-hidden>
+                <svg viewBox="0 0 12 12" fill="currentColor" className="h-2.5 w-2.5">
+                  <path fillRule="evenodd" d="M10.157 3.843a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47 3.97-3.97a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+                </svg>
+              </span>
+              <span>{t(key)}</span>
+            </div>
+          ))}
+        </div>
+
         <div className="grid lg:grid-cols-[1fr,auto] gap-10 lg:gap-16 lg:items-start">
 
           {/* ── Form column ── */}

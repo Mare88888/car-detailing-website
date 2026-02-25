@@ -232,7 +232,11 @@
       "message": "Please add a few more details (min 10 characters)",
       "submitError": "Something went wrong. Please try again.",
       "networkError": "Failed to send. Please check your connection and try again."
-    }
+    },
+    "trust1": "Reply within 24 hours",
+    "trust2": "100+ vehicles detailed",
+    "trust3": "Mobile — we come to you",
+    "trust4": "Professional equipment & products"
   },
   "privacy": {
     "backToHome": "← Back to home",
