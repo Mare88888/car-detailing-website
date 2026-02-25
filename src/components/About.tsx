@@ -33,68 +33,69 @@ export default function About() {
           initial="visible"
           animate="visible"
         >
-          {/* Row 1: text left, image right */}
-          <motion.section
-            variants={staggerItem}
-            className="grid lg:grid-cols-2 items-stretch overflow-hidden rounded-card border border-border-default"
-          >
-            <div className="bg-premium-slate/80 p-6 sm:p-8 space-y-4 text-body text-text-secondary">
-              <p>{t('intro1')}</p>
-              <p>{t('intro2')}</p>
-              <p className="text-text-primary font-medium">{t('belief')}</p>
-              <p>{t('offer')}</p>
-            </div>
-            <div className="relative min-h-64">
-              <Image
-                src="/Logo.jpg"
-                alt="AShineMobile logo"
-                fill
-                className="object-contain p-6"
-                sizes="(min-width: 1024px) 320px, 60vw"
-              />
-            </div>
-          </motion.section>
+          {/* Rows 1 & 2: combined card, no gap between them */}
+          <motion.div variants={staggerItem} className="overflow-hidden rounded-card border border-border-default">
 
-          {/* Row 2: image left, why-text right */}
-          <motion.section
-            variants={staggerItem}
-            className="grid lg:grid-cols-2 items-stretch overflow-hidden rounded-card border border-border-default"
-            aria-labelledby="about-why-heading"
-          >
-            <div className="order-last lg:order-first relative min-h-64">
-              <Image
-                src="/Logo.jpg"
-                alt="AShineMobile logo"
-                fill
-                className="object-contain p-6"
-                sizes="(min-width: 1024px) 320px, 60vw"
-              />
-            </div>
-            <div className="order-first lg:order-last bg-premium-slate/80 p-6 sm:p-8">
-              <h3 id="about-why-heading" className="text-h3 text-text-primary mb-4">
-                {t('whyHeading')}
-              </h3>
-              <ul className="space-y-3" role="list">
-                {WHY_KEYS.map((key) => (
-                  <li
-                    key={key}
-                    className="text-body text-text-secondary flex items-center gap-3"
-                  >
-                    <span
-                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-premium-accent/20 text-premium-accent text-body-sm font-semibold"
-                      aria-hidden
+            {/* Row 1: text left, image right */}
+            <section className="grid lg:grid-cols-2 items-stretch">
+              <div className="bg-premium-slate/80 p-6 sm:p-8 space-y-4 text-body text-text-secondary">
+                <p>{t('intro1')}</p>
+                <p>{t('intro2')}</p>
+                <p className="text-text-primary font-medium">{t('belief')}</p>
+                <p>{t('offer')}</p>
+              </div>
+              <div className="relative min-h-64 border-t lg:border-t-0 lg:border-l border-border-default">
+                <Image
+                  src="/Logo.jpg"
+                  alt="AShineMobile logo"
+                  fill
+                  className="object-contain p-6"
+                  sizes="(min-width: 1024px) 320px, 60vw"
+                />
+              </div>
+            </section>
+
+            {/* Divider */}
+            <div className="border-t border-border-default" />
+
+            {/* Row 2: image left, why-text right */}
+            <section className="grid lg:grid-cols-2 items-stretch" aria-labelledby="about-why-heading">
+              <div className="order-last lg:order-first relative min-h-64 border-t lg:border-t-0 lg:border-r border-border-default">
+                <Image
+                  src="/Logo.jpg"
+                  alt="AShineMobile logo"
+                  fill
+                  className="object-contain p-6"
+                  sizes="(min-width: 1024px) 320px, 60vw"
+                />
+              </div>
+              <div className="order-first lg:order-last bg-premium-slate/80 p-6 sm:p-8">
+                <h3 id="about-why-heading" className="text-h3 text-text-primary mb-4">
+                  {t('whyHeading')}
+                </h3>
+                <ul className="space-y-3" role="list">
+                  {WHY_KEYS.map((key) => (
+                    <li
+                      key={key}
+                      className="text-body text-text-secondary flex items-center gap-3"
                     >
-                      ✓
-                    </span>
-                    <span>{t(key)}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-body-sm text-premium-accent font-medium">
-                {t('whyTagline')}
-              </p>
-            </div>
-          </motion.section>
+                      <span
+                        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-premium-accent/20 text-premium-accent text-body-sm font-semibold"
+                        aria-hidden
+                      >
+                        ✓
+                      </span>
+                      <span>{t(key)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-body-sm text-premium-accent font-medium">
+                  {t('whyTagline')}
+                </p>
+              </div>
+            </section>
+
+          </motion.div>
 
           {/* Commitment strip below grid */}
           <motion.section
