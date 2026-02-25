@@ -68,8 +68,8 @@ export default async function CookiesPage({ params }: Props) {
             <h2 className="text-h4 text-text-primary mt-8 mb-3">{t('contactTitle')}</h2>
             <p>
               {t('contactPrefix')}
-              <a href="mailto:AShineMobile@gmail.com" className="text-premium-accent hover:underline">
-                AShineMobile@gmail.com
+              <a href="mailto:AShine@gmail.com" className="text-premium-accent hover:underline">
+                AShine@gmail.com
               </a>
               {t('contactSuffix')}
             </p>

@@ -70,8 +70,8 @@ export default async function PrivacyPage({ params }: Props) {
             <h2 className="text-h4 text-text-primary mt-8 mb-3">{t('yourRightsTitle')}</h2>
             <p>
               {t('yourRightsBody')}
-              <a href="mailto:AShineMobile@gmail.com" className="text-premium-accent hover:underline">
-                AShineMobile@gmail.com
+              <a href="mailto:AShine@gmail.com" className="text-premium-accent hover:underline">
+                AShine@gmail.com
               </a>
               {t('yourRightsSuffix')}
             </p>

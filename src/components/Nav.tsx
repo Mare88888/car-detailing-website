@@ -110,15 +110,15 @@ export default function Nav() {
         >
           <Image
             src="/NavigationBarLogo1.png"
-            alt="AShineMobile Logo"
+            alt="AShine Logo"
             width={100}
             height={100}
+            style={{ borderRadius: "5px"}}
             className="h-30 w-30 object-contain"
-            style={{ borderRadius: '5px' }}
             priority
             sizes="(max-width: 768px) 96px, 100px"
           />
-          <span>AShineMobile</span>
+          <span>AShine</span>
         </Link>
 
         <ul className="hidden md:flex items-center gap-8">

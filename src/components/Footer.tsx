@@ -74,7 +74,7 @@ export default function Footer() {
               onClick={scrollToTop}
               className="text-h4 text-text-primary hover:text-premium-accent transition-colors"
             >
-              AShineMobile
+              AShine
             </Link>
             <p className="mt-3 text-body-sm text-text-muted">
               {t('tagline')}
@@ -109,9 +109,9 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:AShineMobile@gmail.com" className="inline-flex items-center gap-2 hover:text-premium-accent transition-colors">
+                <a href="mailto:AShine@gmail.com" className="inline-flex items-center gap-2 hover:text-premium-accent transition-colors">
                   <EmailIcon className="shrink-0" />
-                  <span>AShineMobile@gmail.com</span>
+                  <span>AShine@gmail.com</span>
                 </a>
               </li>
             </ul>
@@ -137,7 +137,7 @@ export default function Footer() {
         </div>
         <div className="mt-12 pt-8 border-t border-border-default flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-            <p className="text-text-muted text-body-sm">© {new Date().getFullYear()} AShineMobile. {t('rights')}</p>
+            <p className="text-text-muted text-body-sm">© {new Date().getFullYear()} AShine. {t('rights')}</p>
             <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-body-sm">
               <Link href="/privacy" className="text-text-muted hover:text-premium-accent transition-colors">
                 {t('privacy')}

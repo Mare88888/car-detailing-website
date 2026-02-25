@@ -11,10 +11,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  applicationName: 'AShineMobile',
+  applicationName: 'AShine',
   title: {
-    default: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
-    template: '%s | AShineMobile',
+    default: 'AShine – Car Detailing & Mobile Valeting | Slovenia',
+    template: '%s | AShine',
   },
   description:
     'Professional car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction, full detail. We come to you – Celestrina 19, Malečnik. Book online.',
@@ -27,20 +27,20 @@ export const metadata: Metadata = {
     'valeting Malečnik',
     'car detailing Maribor',
   ],
-  authors: [{ name: 'AShineMobile', url: SITE_URL }],
-  creator: 'AShineMobile',
-  publisher: 'AShineMobile',
+  authors: [{ name: 'AShine', url: SITE_URL }],
+  creator: 'AShine',
+  publisher: 'AShine',
   openGraph: {
     type: 'website',
     locale: 'en_GB',
-    siteName: 'AShineMobile',
-    title: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
+    siteName: 'AShine',
+    title: 'AShine – Car Detailing & Mobile Valeting | Slovenia',
     description: 'Professional car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction. We come to you.',
     url: '/',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
+    title: 'AShine – Car Detailing & Mobile Valeting | Slovenia',
     description: 'Professional car detailing and mobile valeting in Slovenia. We come to you.',
   },
   robots: {

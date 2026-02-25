@@ -13,8 +13,8 @@ import { JsonLd } from '@/components'
 
 const PAGE_META = {
   title: 'Car Detailing & Mobile Valeting | Slovenia',
-  description: 'Book car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction, full detail. We come to you – service area 50–200 km from Malečnik. AShineMobile.',
-  ogTitle: 'AShineMobile – Car Detailing & Mobile Valeting | Slovenia',
+  description: 'Book car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction, full detail. We come to you – service area 50–200 km from Malečnik. AShine.',
+  ogTitle: 'AShine – Car Detailing & Mobile Valeting | Slovenia',
   ogDescription: 'Professional car detailing and mobile valeting in Slovenia. Ceramic coating, paint correction. We come to you. Book online.',
 } as const
 

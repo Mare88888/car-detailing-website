@@ -47,7 +47,7 @@ export default function About() {
               <div className="relative min-h-64 border-t lg:border-t-0 lg:border-l border-border-default">
                 <Image
                   src="/Logo.jpg"
-                  alt="AShineMobile logo"
+                  alt="AShine logo"
                   fill
                   className="object-contain p-6"
                   sizes="(min-width: 1024px) 320px, 60vw"
@@ -63,7 +63,7 @@ export default function About() {
               <div className="order-last lg:order-first relative min-h-64 border-t lg:border-t-0 lg:border-r border-border-default">
                 <Image
                   src="/Logo.jpg"
-                  alt="AShineMobile logo"
+                  alt="AShine logo"
                   fill
                   className="object-contain p-6"
                   sizes="(min-width: 1024px) 320px, 60vw"

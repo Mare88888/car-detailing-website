@@ -107,13 +107,13 @@ export async function POST(request: Request) {
         ${date?.trim() ? `<li>Preferred date: ${escapeHtml(date)}</li>` : ''}
       </ul>
       <p>If you have any questions in the meantime, just reply to this email or give us a call.</p>
-      <p>Best regards,<br>AShineMobile</p>
+      <p>Best regards,<br>AShine</p>
     `.trim()
 
     const confirmResult = await RESEND.emails.send({
       from: fromAddress,
       to: [email.trim()],
-      subject: `We received your booking request – AShineMobile`,
+      subject: `We received your booking request – AShine`,
       html: confirmationHtml,
     })
 

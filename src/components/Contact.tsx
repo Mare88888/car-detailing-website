@@ -546,13 +546,13 @@ export default function Contact() {
                     {t('email')}
                   </span>
                   <a
-                    href="mailto:AShineMobile@gmail.com"
+                    href="mailto:AShine@gmail.com"
                     className="inline-flex items-center gap-2.5 text-text-primary hover:text-premium-accent transition-colors font-medium break-all"
                   >
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-premium-accent/10 border border-premium-accent/20 text-premium-accent shrink-0">
                       <EmailIcon />
                     </span>
-                    <span>AShineMobile@gmail.com</span>
+                    <span>AShine@gmail.com</span>
                   </a>
                 </li>
               </ul>
