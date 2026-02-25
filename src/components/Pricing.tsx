@@ -126,6 +126,7 @@ export default function Pricing() {
   const translatedDetailing = useTranslatedPackages(carDetailingPackages, t, packagesMessages)
 
   const [activeTab, setActiveTab] = useState<'detailing' | 'cleaning'>('detailing')
+  const [showAlaCarte, setShowAlaCarte] = useState(false)
 
   const scrollToContact = useCallback(() => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
@@ -204,42 +205,71 @@ export default function Pricing() {
                 ))}
               </div>
 
-              {/* A la carte */}
+              {/* A la carte accordion */}
               <div className="rounded-card border border-border-default overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border-default">
-                  <div className="p-5">
-                    <h4 className="text-body-sm font-semibold text-text-primary mb-3 uppercase tracking-wide">
-                      {t('detailingExteriorHeading')}
-                    </h4>
-                    <ul className="space-y-2 text-body-sm" role="list">
-                      {EXTERIOR_KEYS.map((key) => {
-                        const [service, price] = t(key).split(' — ')
-                        return (
-                          <li key={key} className="flex items-baseline justify-between gap-4 border-b border-border-default/40 pb-2 last:border-0 last:pb-0">
-                            <span className="text-text-secondary">{service}</span>
-                            <span className="text-premium-accent font-medium shrink-0">{price}</span>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </div>
-                  <div className="p-5">
-                    <h4 className="text-body-sm font-semibold text-text-primary mb-3 uppercase tracking-wide">
-                      {t('detailingInteriorHeading')}
-                    </h4>
-                    <ul className="space-y-2 text-body-sm" role="list">
-                      {INTERIOR_KEYS.map((key) => {
-                        const [service, price] = t(key).split(' — ')
-                        return (
-                          <li key={key} className="flex items-baseline justify-between gap-4 border-b border-border-default/40 pb-2 last:border-0 last:pb-0">
-                            <span className="text-text-secondary">{service}</span>
-                            <span className="text-premium-accent font-medium shrink-0">{price}</span>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAlaCarte((v) => !v)}
+                  aria-expanded={showAlaCarte}
+                  className="w-full relative flex items-center justify-center px-5 py-3.5 text-body-sm text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-premium-accent"
+                >
+                  <span className="font-medium">{t('detailingExteriorHeading')} &amp; {t('detailingInteriorHeading')}</span>
+                  <motion.span
+                    animate={{ rotate: showAlaCarte ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-5 text-xs leading-none"
+                    aria-hidden
+                  >
+                    ▾
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {showAlaCarte && (
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: 'auto' }}
+                      exit={{ height: 0 }}
+                      transition={{ duration: 0.25, ease }}
+                      className="overflow-hidden"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border-default border-t border-border-default">
+                        <div className="p-5">
+                          <h4 className="text-body-sm font-semibold text-text-primary mb-3 uppercase tracking-wide">
+                            {t('detailingExteriorHeading')}
+                          </h4>
+                          <ul className="space-y-2 text-body-sm" role="list">
+                            {EXTERIOR_KEYS.map((key) => {
+                              const [service, price] = t(key).split(' — ')
+                              return (
+                                <li key={key} className="flex items-baseline justify-between gap-4 border-b border-border-default/40 pb-2 last:border-0 last:pb-0">
+                                  <span className="text-text-secondary">{service}</span>
+                                  <span className="text-premium-accent font-medium shrink-0">{price}</span>
+                                </li>
+                              )
+                            })}
+                          </ul>
+                        </div>
+                        <div className="p-5">
+                          <h4 className="text-body-sm font-semibold text-text-primary mb-3 uppercase tracking-wide">
+                            {t('detailingInteriorHeading')}
+                          </h4>
+                          <ul className="space-y-2 text-body-sm" role="list">
+                            {INTERIOR_KEYS.map((key) => {
+                              const [service, price] = t(key).split(' — ')
+                              return (
+                                <li key={key} className="flex items-baseline justify-between gap-4 border-b border-border-default/40 pb-2 last:border-0 last:pb-0">
+                                  <span className="text-text-secondary">{service}</span>
+                                  <span className="text-premium-accent font-medium shrink-0">{price}</span>
+                                </li>
+                              )
+                            })}
+                          </ul>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           ) : (
