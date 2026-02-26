@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
+import { motion } from 'framer-motion'
 
 /* Simple solid icons – light gray, before label */
 export function PhoneIcon({ className }: { className?: string }) {
@@ -61,13 +62,39 @@ function scrollToTop(e: React.MouseEvent<HTMLAnchorElement>) {
   }
 }
 
+function BackToTop() {
+  return (
+    <motion.button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.95 }}
+      aria-label="Back to top"
+      className="inline-flex items-center gap-1.5 text-body-sm text-text-muted hover:text-premium-accent transition-colors duration-200 group"
+    >
+      <svg
+        className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+      </svg>
+      Back to top
+    </motion.button>
+  )
+}
+
 export default function Footer() {
   const t = useTranslations('footer')
   const tNav = useTranslations('nav')
   return (
-    <footer className="bg-premium-black border-t border-border-default">
+    <footer className="bg-premium-black relative">
+      {/* Cyan top border */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-premium-accent to-transparent" aria-hidden />
       <div className="container-narrow section-padding">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <Link
               href="/"
@@ -135,7 +162,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-12 pt-8 border-t border-border-default flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="mt-10 pt-6 border-t border-border-default flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
             <p className="text-text-muted text-body-sm">© {new Date().getFullYear()} AShine. {t('rights')}</p>
             <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-body-sm">
@@ -152,7 +179,7 @@ export default function Footer() {
               </Link>
             </nav>
           </div>
-          <p className="text-text-muted text-body-sm">{t('taglineShort')}</p>
+          <BackToTop />
         </div>
       </div>
     </footer>
