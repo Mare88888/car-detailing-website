@@ -313,5 +313,11 @@
     "contactTitle": "6. Kontakt",
     "contactPrefix": "Za vprašanja o naši uporabi piškotkov nas kontaktirajte na ",
     "contactSuffix": "."
+  },
+  "stats": {
+    "vehicles": "Obdelanih vozil",
+    "radius": "Območje storitve",
+    "free": "Brezplačen prevoz",
+    "rating": "Zadovoljstvo strank"
   }
 }

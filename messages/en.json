@@ -313,5 +313,11 @@
     "contactTitle": "6. Contact",
     "contactPrefix": "If you have questions about our use of cookies, contact us at ",
     "contactSuffix": "."
+  },
+  "stats": {
+    "vehicles": "Vehicles Detailed",
+    "radius": "Service Radius",
+    "free": "Free Travel",
+    "rating": "Satisfaction"
   }
 }
