@@ -94,7 +94,7 @@ export default function Services() {
   return (
     <SectionEntrance
       id="services"
-      className="section-padding bg-premium-black scroll-mt-20"
+      className="section-padding bg-premium-charcoal scroll-mt-20"
       aria-labelledby="services-heading"
     >
       <div className="container-narrow">

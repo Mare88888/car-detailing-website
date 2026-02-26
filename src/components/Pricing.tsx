@@ -140,7 +140,7 @@ export default function Pricing() {
   return (
     <SectionEntrance
       id="pricing"
-      className="section-padding bg-premium-charcoal scroll-mt-20"
+      className="section-padding bg-premium-black scroll-mt-20"
       aria-labelledby="pricing-heading"
     >
       <div className="container-narrow">
