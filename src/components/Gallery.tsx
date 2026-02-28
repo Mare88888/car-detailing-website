@@ -1,45 +1,60 @@
-'use client'
+"use client";
 
-import { useState, useCallback, useEffect, useRef } from 'react'
-import Image from 'next/image'
-import { useTranslations } from 'next-intl'
-import { motion } from 'framer-motion'
-import { SectionEntrance } from '@/components/MotionSection'
-import { staggerContainer, staggerItem, cardHover, ease } from '@/lib/motion'
+import { useState, useCallback, useEffect, useRef } from "react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
+import { SectionEntrance } from "@/components/MotionSection";
+import { staggerContainer, staggerItem, cardHover, ease } from "@/lib/motion";
 
 export interface GalleryItem {
-  id: number
-  before: string
-  after: string
-  label?: string
+  id: number;
+  before: string;
+  after: string;
+  label?: string;
+  afterObjectPosition?: string;
 }
 
-const SLIDER_DEFAULT_PCT = 50
-const CARD_IMAGE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
-const LIGHTBOX_IMAGE_SIZES = '(max-width: 896px) 100vw, 896px'
-const CARD_TRANSITION = { duration: 0.2, ease }
+const SLIDER_DEFAULT_PCT = 50;
+const CARD_IMAGE_SIZES =
+  "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
+const LIGHTBOX_IMAGE_SIZES = "(max-width: 896px) 100vw, 896px";
+const CARD_TRANSITION = { duration: 0.2, ease };
 
 /* Placeholder pairs using picsum.photos (replace with your own /gallery/*.jpg paths) */
 const defaultItems: GalleryItem[] = [
-  { id: 1, before: '/before1.png', after: '/after1.png'},
-  { id: 2, before: '/before2.png', after: '/after2.png'},
-  { id: 3, before: '/before3.png', after: '/after3.png'},
-  { id: 4, before: '/before4.png', after: '/after4.png'},
-  { id: 5, before: '/before5.png', after: '/after5.png'},
-  { id: 6, before: '/before6.png', after: '/after6.png'},
-  { id: 7, before: '/before7.png', after: '/after7.png'},
-]
+  { id: 1, before: "/before1.png", after: "/after1.png" },
+  { id: 2, before: "/before2.png", after: "/after2.png" },
+  { id: 3, before: "/before3.png", after: "/after3.png" },
+  { id: 4, before: "/before4.png", after: "/after4.png" },
+  { id: 5, before: "/before5.png", after: "/after5.png" },
+  { id: 6, before: "/before6.png", after: "/after6.png" },
+  { id: 7, before: "/before7.png", after: "/after7.png" },
+  { id: 8, before: "/before8.png", after: "/after8.png" },
+  {
+    id: 9,
+    before: "/before9.png",
+    after: "/after9.png",
+    afterObjectPosition: "bottom",
+  },
+];
 
 interface ComparisonCardProps {
-  item: GalleryItem
-  onClick: () => void
-  ariaLabel: string
-  beforeLabel: string
-  afterLabel: string
+  item: GalleryItem;
+  onClick: () => void;
+  ariaLabel: string;
+  beforeLabel: string;
+  afterLabel: string;
 }
 
-function ComparisonCard({ item, onClick, ariaLabel, beforeLabel, afterLabel }: ComparisonCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
+function ComparisonCard({
+  item,
+  onClick,
+  ariaLabel,
+  beforeLabel,
+  afterLabel,
+}: ComparisonCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.button
@@ -59,6 +74,11 @@ function ComparisonCard({ item, onClick, ariaLabel, beforeLabel, afterLabel }: C
           alt=""
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
+          style={
+            item.afterObjectPosition
+              ? { objectPosition: item.afterObjectPosition }
+              : undefined
+          }
           sizes={CARD_IMAGE_SIZES}
         />
       </div>
@@ -66,7 +86,7 @@ function ComparisonCard({ item, onClick, ariaLabel, beforeLabel, afterLabel }: C
       <div
         className="absolute inset-0 transition-[clip-path] duration-500 ease-out"
         style={{
-          clipPath: isHovered ? 'inset(0 0 0 0)' : 'inset(0 0 0 100%)',
+          clipPath: isHovered ? "inset(0 0 0 0)" : "inset(0 0 0 100%)",
         }}
       >
         <Image
@@ -80,110 +100,125 @@ function ComparisonCard({ item, onClick, ariaLabel, beforeLabel, afterLabel }: C
 
       {/* Labels overlay — on hover, accent moves from Before to After */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-between p-3 bg-gradient-to-t from-black/80 to-transparent text-white/90">
-        <span className={`text-overline uppercase ${isHovered ? '' : 'text-premium-accent'}`}>{afterLabel}</span>
-        <span className={`text-overline uppercase ${isHovered ? 'text-premium-accent' : ''}`}>{beforeLabel}</span>
+        <span
+          className={`text-overline uppercase ${isHovered ? "" : "text-premium-accent"}`}
+        >
+          {afterLabel}
+        </span>
+        <span
+          className={`text-overline uppercase ${isHovered ? "text-premium-accent" : ""}`}
+        >
+          {beforeLabel}
+        </span>
       </div>
-
     </motion.button>
-  )
+  );
 }
 
 interface LightboxProps {
-  item: GalleryItem
-  onClose: () => void
-  beforeLabel: string
-  afterLabel: string
-  afterDragLabel: string
-  closeLabel: string
-  lightboxLabel: string
+  item: GalleryItem;
+  onClose: () => void;
+  beforeLabel: string;
+  afterLabel: string;
+  afterDragLabel: string;
+  closeLabel: string;
+  lightboxLabel: string;
 }
 
-function Lightbox({ item, onClose, beforeLabel, afterLabel, afterDragLabel, closeLabel, lightboxLabel }: LightboxProps) {
-  const [sliderPosition, setSliderPosition] = useState(SLIDER_DEFAULT_PCT)
-  const [isDragging, setIsDragging] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const afterClipRef = useRef<HTMLDivElement>(null)
-  const sliderHandleRef = useRef<HTMLDivElement>(null)
-  const positionRef = useRef(SLIDER_DEFAULT_PCT)
-  const rafIdRef = useRef<number | null>(null)
+function Lightbox({
+  item,
+  onClose,
+  beforeLabel,
+  afterLabel,
+  afterDragLabel,
+  closeLabel,
+  lightboxLabel,
+}: LightboxProps) {
+  const [sliderPosition, setSliderPosition] = useState(SLIDER_DEFAULT_PCT);
+  const [isDragging, setIsDragging] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const afterClipRef = useRef<HTMLDivElement>(null);
+  const sliderHandleRef = useRef<HTMLDivElement>(null);
+  const positionRef = useRef(SLIDER_DEFAULT_PCT);
+  const rafIdRef = useRef<number | null>(null);
 
   // Apply position to DOM only (no React re-render) for 60fps drag
   const applyPositionToDOM = useCallback((pct: number) => {
-    const clip = afterClipRef.current
-    const handle = sliderHandleRef.current
-    if (clip) clip.style.clipPath = `inset(0 ${100 - pct}% 0 0)`
-    if (handle) handle.style.left = `${pct}%`
-  }, [])
+    const clip = afterClipRef.current;
+    const handle = sliderHandleRef.current;
+    if (clip) clip.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    if (handle) handle.style.left = `${pct}%`;
+  }, []);
 
   const handleMove = useCallback(
     (clientX: number, rect: DOMRect) => {
-      const x = clientX - rect.left
-      const pct = Math.max(0, Math.min(100, (x / rect.width) * 100))
-      positionRef.current = pct
+      const x = clientX - rect.left;
+      const pct = Math.max(0, Math.min(100, (x / rect.width) * 100));
+      positionRef.current = pct;
       if (rafIdRef.current === null) {
         rafIdRef.current = requestAnimationFrame(() => {
-          applyPositionToDOM(positionRef.current)
-          rafIdRef.current = null
-        })
+          applyPositionToDOM(positionRef.current);
+          rafIdRef.current = null;
+        });
       }
     },
-    [applyPositionToDOM]
-  )
+    [applyPositionToDOM],
+  );
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    setIsDragging(true)
-      ; (e.target as HTMLElement).setPointerCapture?.(e.pointerId)
-  }, [])
+    setIsDragging(true);
+    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+  }, []);
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
-      if (!isDragging) return
-      const container = containerRef.current
-      if (!container) return
-      const rect = container.getBoundingClientRect()
-      handleMove(e.clientX, rect)
+      if (!isDragging) return;
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      handleMove(e.clientX, rect);
     },
-    [isDragging, handleMove]
-  )
+    [isDragging, handleMove],
+  );
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
-    ; (e.target as HTMLElement).releasePointerCapture?.(e.pointerId)
+    (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
     if (rafIdRef.current !== null) {
-      cancelAnimationFrame(rafIdRef.current)
-      rafIdRef.current = null
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
     }
-    setSliderPosition(positionRef.current)
-    setIsDragging(false)
-  }, [])
+    setSliderPosition(positionRef.current);
+    setIsDragging(false);
+  }, []);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onClose])
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = ''
-    }
-  }, [])
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   useEffect(() => {
-    setSliderPosition(SLIDER_DEFAULT_PCT)
-    positionRef.current = SLIDER_DEFAULT_PCT
-  }, [item.id])
+    setSliderPosition(SLIDER_DEFAULT_PCT);
+    positionRef.current = SLIDER_DEFAULT_PCT;
+  }, [item.id]);
 
   useEffect(() => {
-    if (!isDragging) positionRef.current = sliderPosition
-  }, [isDragging, sliderPosition])
+    if (!isDragging) positionRef.current = sliderPosition;
+  }, [isDragging, sliderPosition]);
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm opacity-0 animate-fade-in"
-      style={{ animationFillMode: 'forwards' }}
+      style={{ animationFillMode: "forwards" }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -215,6 +250,11 @@ function Lightbox({ item, onClose, beforeLabel, afterLabel, afterDragLabel, clos
             alt={afterLabel}
             fill
             className="object-cover"
+            style={
+              item.afterObjectPosition
+                ? { objectPosition: item.afterObjectPosition }
+                : undefined
+            }
             sizes={LIGHTBOX_IMAGE_SIZES}
           />
         </div>
@@ -231,8 +271,18 @@ function Lightbox({ item, onClose, beforeLabel, afterLabel, afterDragLabel, clos
         >
           <div className="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-white shadow-lg" />
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-premium-accent text-white shadow-lg">
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+              />
             </svg>
           </div>
         </div>
@@ -250,38 +300,37 @@ function Lightbox({ item, onClose, beforeLabel, afterLabel, afterDragLabel, clos
         className="absolute top-4 right-4 p-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-premium-accent"
         aria-label={closeLabel}
       >
-        <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <svg
+          className="h-8 w-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </button>
     </div>
-  )
+  );
 }
 
 interface GalleryProps {
-  items?: GalleryItem[]
+  items?: GalleryItem[];
 }
 
-const MOBILE_BREAKPOINT = 640
-const MOBILE_INITIAL_COUNT = 2
+const PAGE_SIZE = 9;
 
 export default function Gallery({ items = defaultItems }: GalleryProps) {
-  const t = useTranslations('gallery')
-  const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null)
-  const [isMobile, setIsMobile] = useState(false)
-  const [mobileExpanded, setMobileExpanded] = useState(false)
+  const t = useTranslations("gallery");
+  const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const update = () => setIsMobile(mq.matches)
-    update()
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
-  }, [])
-
-  const itemsToShow =
-    isMobile && !mobileExpanded ? items.slice(0, MOBILE_INITIAL_COUNT) : items
-  const hasMoreOnMobile = isMobile && items.length > MOBILE_INITIAL_COUNT && !mobileExpanded
+  const itemsToShow = items.slice(0, visibleCount);
+  const hasMore = visibleCount < items.length;
 
   return (
     <SectionEntrance
@@ -292,13 +341,13 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
       <div className="container-narrow">
         <header className="text-center mb-12 sm:mb-16">
           <p className="text-premium-accent text-overline uppercase mb-2">
-            {t('overline')}
+            {t("overline")}
           </p>
           <h2 id="gallery-heading" className="text-h2 text-text-primary">
-            {t('heading')}
+            {t("heading")}
           </h2>
           <p className="mt-4 text-body text-text-secondary max-w-2xl mx-auto">
-            {t('subheading')}
+            {t("subheading")}
           </p>
         </header>
 
@@ -313,23 +362,25 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
               <ComparisonCard
                 item={item}
                 onClick={() => setLightboxItem(item)}
-                ariaLabel={t('viewBeforeAfter', { label: item.label ?? 'Gallery image' })}
-                beforeLabel={t('before')}
-                afterLabel={t('after')}
+                ariaLabel={t("viewBeforeAfter", {
+                  label: item.label ?? "Gallery image",
+                })}
+                beforeLabel={t("before")}
+                afterLabel={t("after")}
               />
             </motion.div>
           ))}
         </motion.div>
 
-        {hasMoreOnMobile && (
-          <div className="mt-6 flex justify-center sm:hidden">
+        {hasMore && (
+          <div className="mt-8 flex justify-center">
             <motion.button
               type="button"
-              onClick={() => setMobileExpanded(true)}
+              onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
               whileTap={{ scale: 0.98 }}
               className="btn-primary px-8 py-3.5 text-body-sm font-semibold"
             >
-              {t('seeMore')}
+              {t("seeMore")}
             </motion.button>
           </div>
         )}
@@ -339,13 +390,13 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
         <Lightbox
           item={lightboxItem}
           onClose={() => setLightboxItem(null)}
-          beforeLabel={t('before')}
-          afterLabel={t('after')}
-          afterDragLabel={t('afterDrag')}
-          closeLabel={t('close')}
-          lightboxLabel={t('lightboxLabel')}
+          beforeLabel={t("before")}
+          afterLabel={t("after")}
+          afterDragLabel={t("afterDrag")}
+          closeLabel={t("close")}
+          lightboxLabel={t("lightboxLabel")}
         />
       )}
     </SectionEntrance>
-  )
+  );
 }

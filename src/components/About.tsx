@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import { useTranslations } from 'next-intl'
-import { motion } from 'framer-motion'
-import { SectionEntrance } from '@/components/MotionSection'
-import { staggerContainer, staggerItem } from '@/lib/motion'
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
+import { SectionEntrance } from "@/components/MotionSection";
+import { staggerContainer, staggerItem } from "@/lib/motion";
 
-const WHY_KEYS = ['why1', 'why2', 'why3', 'why4', 'why5'] as const
+const WHY_KEYS = ["why1", "why2", "why3", "why4", "why5"] as const;
 
 export default function About() {
-  const t = useTranslations('about')
+  const t = useTranslations("about");
 
   return (
     <SectionEntrance
@@ -20,10 +20,10 @@ export default function About() {
       <div className="container-narrow">
         <header className="text-center mb-12 sm:mb-16">
           <p className="text-premium-accent text-overline uppercase mb-2">
-            {t('overline')}
+            {t("overline")}
           </p>
           <h2 id="about-heading" className="text-h2 text-text-primary">
-            {t('heading')}
+            {t("heading")}
           </h2>
         </header>
 
@@ -34,15 +34,17 @@ export default function About() {
           animate="visible"
         >
           {/* Rows 1 & 2: combined card, no gap between them */}
-          <motion.div variants={staggerItem} className="overflow-hidden rounded-card border border-border-default">
-
+          <motion.div
+            variants={staggerItem}
+            className="overflow-hidden rounded-card border border-border-default"
+          >
             {/* Row 1: text left, image right */}
             <section className="grid lg:grid-cols-2 items-stretch">
               <div className="bg-premium-slate/80 p-6 sm:p-8 space-y-4 text-body text-text-secondary flex flex-col justify-center">
-                <p>{t('intro1')}</p>
-                <p>{t('intro2')}</p>
-                <p className="text-text-primary font-medium">{t('belief')}</p>
-                <p>{t('offer')}</p>
+                <p>{t("intro1")}</p>
+                <p>{t("intro2")}</p>
+                <p className="text-text-primary font-medium">{t("belief")}</p>
+                <p>{t("offer")}</p>
               </div>
               <div className="border-t lg:border-t-0 lg:border-l border-border-default flex items-center justify-center">
                 <Image
@@ -60,10 +62,13 @@ export default function About() {
             <div className="border-t border-border-default" />
 
             {/* Row 2: image left, why-text right */}
-            <section className="grid lg:grid-cols-2 items-stretch" aria-labelledby="about-why-heading">
+            <section
+              className="grid lg:grid-cols-2 items-stretch"
+              aria-labelledby="about-why-heading"
+            >
               <div className="order-last lg:order-first relative min-h-64 border-t lg:border-t-0 lg:border-r border-border-default">
                 <Image
-                  src="/Logo.jpg"
+                  src="/mercedes.png"
                   alt="AShine logo"
                   fill
                   className="object-contain p-6"
@@ -71,8 +76,11 @@ export default function About() {
                 />
               </div>
               <div className="order-first lg:order-last bg-premium-slate/80 p-6 sm:p-8">
-                <h3 id="about-why-heading" className="text-h3 text-text-primary mb-4">
-                  {t('whyHeading')}
+                <h3
+                  id="about-why-heading"
+                  className="text-h3 text-text-primary mb-4"
+                >
+                  {t("whyHeading")}
                 </h3>
                 <ul className="space-y-3" role="list">
                   {WHY_KEYS.map((key) => (
@@ -91,11 +99,10 @@ export default function About() {
                   ))}
                 </ul>
                 <p className="mt-4 text-body-sm text-premium-accent font-medium">
-                  {t('whyTagline')}
+                  {t("whyTagline")}
                 </p>
               </div>
             </section>
-
           </motion.div>
 
           {/* Commitment strip below grid */}
@@ -104,14 +111,19 @@ export default function About() {
             className="rounded-card border border-border-default bg-premium-slate/80 p-6 sm:p-8"
             aria-labelledby="about-commitment-heading"
           >
-            <h3 id="about-commitment-heading" className="text-h3 text-text-primary mb-4">
-              {t('commitmentHeading')}
+            <h3
+              id="about-commitment-heading"
+              className="text-h3 text-text-primary mb-4"
+            >
+              {t("commitmentHeading")}
             </h3>
-            <p className="text-body text-text-secondary">{t('commitment1')}</p>
-            <p className="mt-3 text-body text-text-secondary">{t('commitment2')}</p>
+            <p className="text-body text-text-secondary">{t("commitment1")}</p>
+            <p className="mt-3 text-body text-text-secondary">
+              {t("commitment2")}
+            </p>
           </motion.section>
         </motion.div>
       </div>
     </SectionEntrance>
-  )
+  );
 }

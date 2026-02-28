@@ -1,14 +1,21 @@
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
-import { motion } from 'framer-motion'
-import { SectionEntrance } from '@/components/MotionSection'
-import { staggerContainer, staggerItem, cardHover, buttonTap, ease } from '@/lib/motion'
+import Image from "next/image";
+import { useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { motion } from "framer-motion";
+import { SectionEntrance } from "@/components/MotionSection";
+import {
+  staggerContainer,
+  staggerItem,
+  cardHover,
+  buttonTap,
+  ease,
+} from "@/lib/motion";
 
 function scrollToSection(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
 /* Icons as inline SVG for no asset dependency */
@@ -36,7 +43,7 @@ function CleaningIcon({ className }: { className?: string }) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }
 
 function DetailingIcon({ className }: { className?: string }) {
@@ -56,40 +63,45 @@ function DetailingIcon({ className }: { className?: string }) {
         strokeLinecap="round"
       />
     </svg>
-  )
+  );
 }
 
 const categories = [
   {
-    id: 'cleaning',
-    key: 'cleaning' as const,
+    id: "cleaning",
+    key: "cleaning" as const,
     icon: CleaningIcon,
-    href: '#car-cleaning',
+    href: "#car-cleaning",
+    heroImage: "/cleaningServices.png",
     bgClass:
-      'bg-gradient-to-br from-premium-slate via-premium-charcoal to-premium-black',
+      "bg-gradient-to-br from-premium-slate via-premium-charcoal to-premium-black",
     patternClass:
       'before:content-[""] before:absolute before:inset-0 before:opacity-[0.03] before:bg-[radial-gradient(circle_at_30%_20%,rgba(0,184,219,0.4),transparent_50%)]',
   },
   {
-    id: 'detailing',
-    key: 'detailing' as const,
+    id: "detailing",
+    key: "detailing" as const,
     icon: DetailingIcon,
-    href: '#car-detailing',
+    href: "#car-detailing",
+    heroImage: "/vehicleDetailing.png",
     bgClass:
-      'bg-gradient-to-br from-premium-charcoal via-premium-slate to-premium-black',
+      "bg-gradient-to-br from-premium-charcoal via-premium-slate to-premium-black",
     patternClass:
       'before:content-[""] before:absolute before:inset-0 before:opacity-[0.03] before:bg-[radial-gradient(circle_at_70%_80%,rgba(0,184,219,0.4),transparent_50%)]',
   },
-]
+];
 
-const CARD_TRANSITION = { duration: 0.2, ease }
+const CARD_TRANSITION = { duration: 0.2, ease };
 
 export default function Services() {
-  const t = useTranslations('services')
-  const handleViewPackages = useCallback((sectionId: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    scrollToSection(sectionId)
-  }, [])
+  const t = useTranslations("services");
+  const handleViewPackages = useCallback(
+    (sectionId: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      scrollToSection(sectionId);
+    },
+    [],
+  );
 
   return (
     <SectionEntrance
@@ -100,16 +112,13 @@ export default function Services() {
       <div className="container-narrow">
         <header className="text-center mb-12 sm:mb-16">
           <p className="text-premium-accent text-overline uppercase mb-2">
-            {t('overline')}
+            {t("overline")}
           </p>
-          <h2
-            id="services-heading"
-            className="text-h2 text-text-primary"
-          >
-            {t('heading')}
+          <h2 id="services-heading" className="text-h2 text-text-primary">
+            {t("heading")}
           </h2>
           <p className="mt-4 text-body text-text-secondary max-w-2xl mx-auto">
-            {t('subheading')}
+            {t("subheading")}
           </p>
         </header>
 
@@ -120,7 +129,7 @@ export default function Services() {
           animate="visible"
         >
           {categories.map((category) => {
-            const Icon = category.icon
+            const Icon = category.icon;
             return (
               <motion.article
                 key={category.id}
@@ -129,10 +138,27 @@ export default function Services() {
                 transition={CARD_TRANSITION}
                 className="group relative overflow-hidden rounded-card border border-border-default bg-premium-slate transition-colors duration-300 hover:border-premium-accent/50 hover:shadow-xl hover:shadow-black/20"
               >
-                <div
-                  className={`absolute inset-0 ${category.bgClass} ${category.patternClass}`}
-                  aria-hidden
-                />
+                {category.heroImage ? (
+                  <>
+                    <Image
+                      src={category.heroImage}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      aria-hidden
+                    />
+                    <div
+                      className="absolute inset-0 bg-premium-black/80"
+                      aria-hidden
+                    />
+                  </>
+                ) : (
+                  <div
+                    className={`absolute inset-0 ${category.bgClass} ${category.patternClass}`}
+                    aria-hidden
+                  />
+                )}
 
                 <div className="relative z-10 flex flex-col p-6 sm:p-8 lg:p-10 min-h-[280px] sm:min-h-[300px]">
                   <div className="mb-5 sm:mb-6">
@@ -152,7 +178,9 @@ export default function Services() {
                     <motion.div whileTap={buttonTap}>
                       <Link
                         href="/"
-                        onClick={handleViewPackages(category.href.replace(/^#/, ''))}
+                        onClick={handleViewPackages(
+                          category.href.replace(/^#/, ""),
+                        )}
                         className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-body-sm transition-all duration-ui group-hover:border-premium-accent group-hover:text-premium-accent"
                       >
                         {t(`${category.key}.viewPackages`)}
@@ -175,10 +203,10 @@ export default function Services() {
                   </div>
                 </div>
               </motion.article>
-            )
+            );
           })}
         </motion.div>
       </div>
     </SectionEntrance>
-  )
+  );
 }
