@@ -57,6 +57,13 @@
 }
 
 /* Date input: white calendar icon (outside layer so it wins over utilities) */
+/* Push footer clear of the sticky mobile CTA bar */
+@media (max-width: 767px) {
+  #footer-root {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  }
+}
+
 .date-picker-white-icon {
   color-scheme: dark;
 }

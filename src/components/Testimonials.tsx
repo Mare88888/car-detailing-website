@@ -1,84 +1,112 @@
-'use client'
+"use client";
 
-import { useState, useCallback, useRef, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
-import { motion } from 'framer-motion'
-import { SectionEntrance } from '@/components/MotionSection'
-import { testimonials } from '@/data/testimonials'
-import type { Testimonial } from '@/data/testimonials'
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
+import { SectionEntrance } from "@/components/MotionSection";
+import { testimonials } from "@/data/testimonials";
+import type { Testimonial } from "@/data/testimonials";
 
-const SLIDES_DESKTOP = 3
-const SLIDES_MOBILE = 1
-const MOBILE_BREAKPOINT = 640
-const GAP_PX = 24
-const INITIAL_STEP_PX = 320
-const TRACK_BUFFER_PX = 4
-const MIN_CARD_WIDTH_PX = 200
+const SLIDES_DESKTOP = 3;
+const SLIDES_MOBILE = 1;
+const MOBILE_BREAKPOINT = 640;
+const GAP_PX = 24;
+const INITIAL_STEP_PX = 320;
+const TRACK_BUFFER_PX = 4;
+const MIN_CARD_WIDTH_PX = 200;
 
 const CAROUSEL_BTN_CLASS =
-  'absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-border-default bg-premium-charcoal text-text-primary hover:text-premium-accent hover:border-premium-accent transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black'
+  "absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-border-default bg-premium-charcoal text-text-primary hover:text-premium-accent hover:border-premium-accent transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black";
 const DOT_BASE_CLASS =
-  'w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black'
+  "w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black";
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div
+      className="flex items-center gap-0.5 mb-3"
+      aria-label={`${rating} out of 5 stars`}
+    >
+      {Array.from({ length: 5 }, (_, i) => (
+        <svg
+          key={i}
+          className={`h-4 w-4 ${i < rating ? "text-premium-accent" : "text-border-default"}`}
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
 
 function CarouselCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <blockquote className="flex flex-col h-full p-5 sm:p-6 rounded-card bg-premium-charcoal border border-border-default min-h-[200px] shrink-0">
-      <p className="flex-1 text-text-secondary italic text-body-sm sm:text-body">&ldquo;{testimonial.quote}&rdquo;</p>
+      <StarRating rating={testimonial.rating} />
+      <p className="flex-1 text-text-secondary italic text-body-sm sm:text-body">
+        &ldquo;{testimonial.quote}&rdquo;
+      </p>
       <footer className="mt-4 shrink-0">
-        <cite className="not-italic font-semibold text-text-primary text-body-sm">{testimonial.author}</cite>
-        <span className="text-text-muted text-body-sm block mt-0.5">{testimonial.role}</span>
+        <cite className="not-italic font-semibold text-text-primary text-body-sm">
+          {testimonial.author}
+        </cite>
+        <span className="text-text-muted text-body-sm block mt-0.5">
+          {testimonial.role}
+        </span>
       </footer>
     </blockquote>
-  )
+  );
 }
 
 export default function Testimonials() {
-  const t = useTranslations('testimonials')
-  const total = testimonials.length
-  const [index, setIndex] = useState(0)
-  const [stepPx, setStepPx] = useState(INITIAL_STEP_PX)
-  const [slidesVisible, setSlidesVisible] = useState(SLIDES_DESKTOP)
-  const trackRef = useRef<HTMLDivElement>(null)
-  const maxIndex = Math.max(0, total - slidesVisible)
+  const t = useTranslations("testimonials");
+  const total = testimonials.length;
+  const [index, setIndex] = useState(0);
+  const [stepPx, setStepPx] = useState(INITIAL_STEP_PX);
+  const [slidesVisible, setSlidesVisible] = useState(SLIDES_DESKTOP);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const maxIndex = Math.max(0, total - slidesVisible);
 
   useEffect(() => {
-    const el = trackRef.current
-    if (!el) return
-    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const el = trackRef.current;
+    if (!el) return;
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
 
     const update = () => {
-      const mobile = mq.matches
-      const vis = mobile ? SLIDES_MOBILE : SLIDES_DESKTOP
-      setSlidesVisible(vis)
+      const mobile = mq.matches;
+      const vis = mobile ? SLIDES_MOBILE : SLIDES_DESKTOP;
+      setSlidesVisible(vis);
 
-      const w = el.getBoundingClientRect().width
-      const contentWidth = Math.max(MIN_CARD_WIDTH_PX, w - TRACK_BUFFER_PX)
-      setStepPx((contentWidth + GAP_PX) / vis)
-    }
-    update()
+      const w = el.getBoundingClientRect().width;
+      const contentWidth = Math.max(MIN_CARD_WIDTH_PX, w - TRACK_BUFFER_PX);
+      setStepPx((contentWidth + GAP_PX) / vis);
+    };
+    update();
 
-    const ro = new ResizeObserver(update)
-    ro.observe(el)
-    mq.addEventListener('change', update)
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    mq.addEventListener("change", update);
     return () => {
-      ro.disconnect()
-      mq.removeEventListener('change', update)
-    }
-  }, [])
+      ro.disconnect();
+      mq.removeEventListener("change", update);
+    };
+  }, []);
 
   useEffect(() => {
-    if (index > maxIndex) setIndex(maxIndex)
-  }, [index, maxIndex])
+    if (index > maxIndex) setIndex(maxIndex);
+  }, [index, maxIndex]);
 
   const goTo = useCallback(
     (nextIndex: number) => {
-      setIndex(Math.max(0, Math.min(maxIndex, nextIndex)))
+      setIndex(Math.max(0, Math.min(maxIndex, nextIndex)));
     },
-    [maxIndex]
-  )
+    [maxIndex],
+  );
 
-  const goPrev = useCallback(() => goTo(index - 1), [index, goTo])
-  const goNext = useCallback(() => goTo(index + 1), [index, goTo])
+  const goPrev = useCallback(() => goTo(index - 1), [index, goTo]);
+  const goNext = useCallback(() => goTo(index + 1), [index, goTo]);
 
   return (
     <SectionEntrance
@@ -88,12 +116,14 @@ export default function Testimonials() {
     >
       <div className="container-narrow">
         <header className="text-center mb-10 sm:mb-14">
-          <p className="text-premium-accent text-overline uppercase mb-2">{t('overline')}</p>
+          <p className="text-premium-accent text-overline uppercase mb-2">
+            {t("overline")}
+          </p>
           <h2 id="testimonials-heading" className="text-h2 text-text-primary">
-            {t('heading')}
+            {t("heading")}
           </h2>
           <p className="mt-4 text-body text-text-secondary max-w-2xl mx-auto">
-            {t('subheading')}
+            {t("subheading")}
           </p>
         </header>
 
@@ -104,8 +134,18 @@ export default function Testimonials() {
             className={`left-0 -translate-x-2 sm:translate-x-0 ${CAROUSEL_BTN_CLASS}`}
             aria-label="Previous testimonials"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
 
@@ -115,8 +155,18 @@ export default function Testimonials() {
             className={`right-0 translate-x-2 sm:translate-x-0 ${CAROUSEL_BTN_CLASS}`}
             aria-label="Next testimonials"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
 
@@ -125,7 +175,7 @@ export default function Testimonials() {
             <div ref={trackRef} className="w-full overflow-hidden">
               <motion.div
                 className="flex gap-6 min-h-[240px] sm:min-h-[220px]"
-                style={{ width: 'max-content' }}
+                style={{ width: "max-content" }}
                 animate={{ x: -index * stepPx }}
                 transition={{
                   duration: 1,
@@ -149,7 +199,11 @@ export default function Testimonials() {
           </div>
 
           {/* Dots: one per slide position (always 3 reviews visible) */}
-          <div className="flex justify-center gap-2 mt-6 flex-wrap" role="tablist" aria-label="Testimonial navigation">
+          <div
+            className="flex justify-center gap-2 mt-6 flex-wrap"
+            role="tablist"
+            aria-label="Testimonial navigation"
+          >
             {Array.from({ length: maxIndex + 1 }, (_, i) => (
               <button
                 key={i}
@@ -158,12 +212,12 @@ export default function Testimonials() {
                 role="tab"
                 aria-selected={i === index}
                 aria-label={`Go to testimonials ${i + 1}`}
-                className={`${DOT_BASE_CLASS} ${i === index ? 'bg-premium-accent scale-110' : 'bg-premium-graphite hover:bg-premium-zinc'}`}
+                className={`${DOT_BASE_CLASS} ${i === index ? "bg-premium-accent scale-110" : "bg-premium-graphite hover:bg-premium-zinc"}`}
               />
             ))}
           </div>
         </div>
       </div>
     </SectionEntrance>
-  )
+  );
 }

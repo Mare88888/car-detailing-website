@@ -316,6 +316,19 @@
     "contactPrefix": "If you have questions about our use of cookies, contact us at ",
     "contactSuffix": "."
   },
+  "mobileCta": {
+    "ariaLabel": "Quick contact bar",
+    "callAriaLabel": "Call AShine",
+    "bookNow": "Book Now"
+  },
+  "cookieBanner": {
+    "ariaLabel": "Cookie consent",
+    "title": "We use cookies",
+    "message": "We use cookies to remember your language preference and understand how our site is used.",
+    "learnMore": "Cookie Policy",
+    "acceptAll": "Accept All",
+    "necessary": "Necessary Only"
+  },
   "stats": {
     "vehicles": "Vehicles Detailed",
     "radius": "Service Radius",

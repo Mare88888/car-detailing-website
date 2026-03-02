@@ -316,6 +316,19 @@
     "contactPrefix": "Za vprašanja o naši uporabi piškotkov nas kontaktirajte na ",
     "contactSuffix": "."
   },
+  "mobileCta": {
+    "ariaLabel": "Hitra kontaktna vrstica",
+    "callAriaLabel": "Pokliči AShine",
+    "bookNow": "Rezerviraj"
+  },
+  "cookieBanner": {
+    "ariaLabel": "Soglasje za piškotke",
+    "title": "Uporabljamo piškotke",
+    "message": "Piškotke uporabljamo za pomnjenje jezikovnih nastavitev in razumevanje uporabe naše strani.",
+    "learnMore": "Pravilnik o piškotkih",
+    "acceptAll": "Sprejmi vse",
+    "necessary": "Samo nujni"
+  },
   "stats": {
     "vehicles": "Obdelanih vozil",
     "radius": "Območje storitve",

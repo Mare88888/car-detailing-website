@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation'
 import { routing, type Locale } from '@/i18n/routing'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import CookieBanner from '@/components/CookieBanner'
+import MobileCTABar from '@/components/MobileCTABar'
 
 type Props = {
   children: React.ReactNode
@@ -31,6 +33,8 @@ export default async function LocaleLayout({ children, params }: Props) {
         {children}
       </main>
       <Footer />
+      <MobileCTABar />
+      <CookieBanner />
     </NextIntlClientProvider>
   )
 }

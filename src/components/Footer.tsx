@@ -90,7 +90,7 @@ export default function Footer() {
   const t = useTranslations('footer')
   const tNav = useTranslations('nav')
   return (
-    <footer className="bg-premium-black relative">
+    <footer id="footer-root" className="bg-premium-black relative">
       {/* Cyan top border */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-premium-accent to-transparent" aria-hidden />
       <div className="container-narrow section-padding">
