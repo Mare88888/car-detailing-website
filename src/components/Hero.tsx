@@ -30,7 +30,7 @@ export interface HeroProps {
 
 export default function Hero({
   backgroundImage,
-  backgroundVideo = "/0205.mp4",
+  backgroundVideo = "/0205-web.mp4",
   overline,
   headline,
   subheadline,
