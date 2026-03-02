@@ -7,9 +7,11 @@ import { SectionEntrance } from '@/components/MotionSection'
 import { testimonials } from '@/data/testimonials'
 import type { Testimonial } from '@/data/testimonials'
 
-const SLIDES_VISIBLE = 3
-const GAP_PX = 24 // gap-6
-const INITIAL_STEP_PX = 320 // hydration-safe; updated in useEffect
+const SLIDES_DESKTOP = 3
+const SLIDES_MOBILE = 1
+const MOBILE_BREAKPOINT = 640
+const GAP_PX = 24
+const INITIAL_STEP_PX = 320
 const TRACK_BUFFER_PX = 4
 const MIN_CARD_WIDTH_PX = 200
 
@@ -33,24 +35,40 @@ function CarouselCard({ testimonial }: { testimonial: Testimonial }) {
 export default function Testimonials() {
   const t = useTranslations('testimonials')
   const total = testimonials.length
-  const maxIndex = Math.max(0, total - SLIDES_VISIBLE) // so we always have 3 cards to show (indices 0..maxIndex)
   const [index, setIndex] = useState(0)
   const [stepPx, setStepPx] = useState(INITIAL_STEP_PX)
+  const [slidesVisible, setSlidesVisible] = useState(SLIDES_DESKTOP)
   const trackRef = useRef<HTMLDivElement>(null)
+  const maxIndex = Math.max(0, total - slidesVisible)
 
   useEffect(() => {
     const el = trackRef.current
     if (!el) return
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+
     const update = () => {
+      const mobile = mq.matches
+      const vis = mobile ? SLIDES_MOBILE : SLIDES_DESKTOP
+      setSlidesVisible(vis)
+
       const w = el.getBoundingClientRect().width
       const contentWidth = Math.max(MIN_CARD_WIDTH_PX, w - TRACK_BUFFER_PX)
-      setStepPx((contentWidth + GAP_PX) / SLIDES_VISIBLE)
+      setStepPx((contentWidth + GAP_PX) / vis)
     }
     update()
+
     const ro = new ResizeObserver(update)
     ro.observe(el)
-    return () => ro.disconnect()
+    mq.addEventListener('change', update)
+    return () => {
+      ro.disconnect()
+      mq.removeEventListener('change', update)
+    }
   }, [])
+
+  useEffect(() => {
+    if (index > maxIndex) setIndex(maxIndex)
+  }, [index, maxIndex])
 
   const goTo = useCallback(
     (nextIndex: number) => {
