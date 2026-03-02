@@ -322,13 +322,27 @@ interface GalleryProps {
   items?: GalleryItem[];
 }
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE_DESKTOP = 9;
+const PAGE_SIZE_MOBILE = 3;
+const MOBILE_BREAKPOINT = 640;
 
 export default function Gallery({ items = defaultItems }: GalleryProps) {
   const t = useTranslations("gallery");
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_DESKTOP);
+  const [pagesLoaded, setPagesLoaded] = useState(1);
 
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const update = () => {
+      setPageSize(mq.matches ? PAGE_SIZE_MOBILE : PAGE_SIZE_DESKTOP);
+    };
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const visibleCount = pagesLoaded * pageSize;
   const itemsToShow = items.slice(0, visibleCount);
   const hasMore = visibleCount < items.length;
 
@@ -376,7 +390,7 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
           <div className="mt-8 flex justify-center">
             <motion.button
               type="button"
-              onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+              onClick={() => setPagesLoaded((prev) => prev + 1)}
               whileTap={{ scale: 0.98 }}
               className="btn-primary px-8 py-3.5 text-body-sm font-semibold"
             >
