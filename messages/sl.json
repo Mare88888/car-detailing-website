@@ -74,7 +74,8 @@
     "viewBeforeAfter": "Poglej pred in po: {label}",
     "close": "Zapri",
     "lightboxLabel": "Primerjava pred in po",
-    "afterDrag": "Po — povleci za primerjavo"
+    "afterDrag": "Povleci za primerjavo",
+    "tapToCompare": "Pritisni za primerjavo"
   },
   "map": {
     "overline": "Območje storitve",

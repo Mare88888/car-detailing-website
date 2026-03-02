@@ -45,6 +45,8 @@ interface ComparisonCardProps {
   ariaLabel: string;
   beforeLabel: string;
   afterLabel: string;
+  tapToCompareLabel: string;
+  isMobile: boolean;
 }
 
 function ComparisonCard({
@@ -53,65 +55,109 @@ function ComparisonCard({
   ariaLabel,
   beforeLabel,
   afterLabel,
+  tapToCompareLabel,
+  isMobile,
 }: ComparisonCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [showBefore, setShowBefore] = useState(false);
+
+  const showingBefore = isMobile ? showBefore : isHovered;
+
+  const handleClick = () => {
+    if (isMobile) {
+      setShowBefore((prev) => !prev);
+    } else {
+      onClick();
+    }
+  };
 
   return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      whileHover={cardHover}
-      transition={CARD_TRANSITION}
-      className="group relative aspect-[4/3] w-full overflow-hidden rounded-card border border-border-default bg-premium-slate transition-colors duration-300 hover:border-premium-accent/50 hover:shadow-xl hover:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black"
-      aria-label={ariaLabel}
-    >
-      {/* After image (base layer) */}
-      <div className="absolute inset-0">
-        <Image
-          src={item.after}
-          alt=""
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          style={
-            item.afterObjectPosition
-              ? { objectPosition: item.afterObjectPosition }
-              : undefined
-          }
-          sizes={CARD_IMAGE_SIZES}
-        />
-      </div>
-
-      <div
-        className="absolute inset-0 transition-[clip-path] duration-500 ease-out"
-        style={{
-          clipPath: isHovered ? "inset(0 0 0 0)" : "inset(0 0 0 100%)",
-        }}
+    <div className="relative">
+      <motion.button
+        type="button"
+        onClick={handleClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        whileHover={isMobile ? undefined : cardHover}
+        transition={CARD_TRANSITION}
+        className="group relative aspect-[4/3] w-full overflow-hidden rounded-card border border-border-default bg-premium-slate transition-colors duration-300 hover:border-premium-accent/50 hover:shadow-xl hover:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-premium-accent focus:ring-offset-2 focus:ring-offset-premium-black"
+        aria-label={ariaLabel}
       >
-        <Image
-          src={item.before}
-          alt=""
-          fill
-          className="object-cover"
-          sizes={CARD_IMAGE_SIZES}
-        />
-      </div>
+        {/* After image (base layer) */}
+        <div className="absolute inset-0">
+          <Image
+            src={item.after}
+            alt=""
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            style={
+              item.afterObjectPosition
+                ? { objectPosition: item.afterObjectPosition }
+                : undefined
+            }
+            sizes={CARD_IMAGE_SIZES}
+          />
+        </div>
 
-      {/* Labels overlay — on hover, accent moves from Before to After */}
-      <div className="absolute bottom-0 left-0 right-0 flex justify-between p-3 bg-gradient-to-t from-black/80 to-transparent text-white/90">
-        <span
-          className={`text-overline uppercase ${isHovered ? "" : "text-premium-accent"}`}
+        <div
+          className="absolute inset-0 transition-[clip-path] duration-500 ease-out"
+          style={{
+            clipPath: showingBefore ? "inset(0 0 0 0)" : "inset(0 0 0 100%)",
+          }}
         >
-          {afterLabel}
-        </span>
-        <span
-          className={`text-overline uppercase ${isHovered ? "text-premium-accent" : ""}`}
+          <Image
+            src={item.before}
+            alt=""
+            fill
+            className="object-cover"
+            sizes={CARD_IMAGE_SIZES}
+          />
+        </div>
+
+        {/* Labels overlay */}
+        <div className="absolute bottom-0 left-0 right-0 flex justify-between p-3 bg-gradient-to-t from-black/80 to-transparent text-white/90">
+          <span
+            className={`text-overline uppercase ${showingBefore ? "" : "text-premium-accent"}`}
+          >
+            {afterLabel}
+          </span>
+          {isMobile && (
+            <span className="text-overline uppercase text-text-secondary">
+              {tapToCompareLabel}
+            </span>
+          )}
+          <span
+            className={`text-overline uppercase ${showingBefore ? "text-premium-accent" : ""}`}
+          >
+            {beforeLabel}
+          </span>
+        </div>
+      </motion.button>
+
+      {/* Mobile expand button */}
+      {isMobile && (
+        <button
+          type="button"
+          onClick={onClick}
+          className="absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white/80 backdrop-blur-sm transition-colors hover:bg-black/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-premium-accent"
+          aria-label="Expand image"
         >
-          {beforeLabel}
-        </span>
-      </div>
-    </motion.button>
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5"
+            />
+          </svg>
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -288,9 +334,10 @@ function Lightbox({
         </div>
 
         {/* Labels in lightbox */}
-        <div className="absolute bottom-0 left-0 right-0 flex justify-between p-4 bg-gradient-to-t from-black/90 to-transparent text-sm text-white/90">
-          <span>{beforeLabel}</span>
+        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-gradient-to-t from-black/90 to-transparent text-sm text-white/90">
+          <span>{afterLabel}</span>
           <span className="text-premium-accent">{afterDragLabel}</span>
+          <span>{beforeLabel}</span>
         </div>
       </div>
 
@@ -342,6 +389,7 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
+  const isMobile = pageSize === PAGE_SIZE_MOBILE;
   const visibleCount = pagesLoaded * pageSize;
   const itemsToShow = items.slice(0, visibleCount);
   const hasMore = visibleCount < items.length;
@@ -381,6 +429,8 @@ export default function Gallery({ items = defaultItems }: GalleryProps) {
                 })}
                 beforeLabel={t("before")}
                 afterLabel={t("after")}
+                tapToCompareLabel={t("tapToCompare")}
+                isMobile={isMobile}
               />
             </motion.div>
           ))}

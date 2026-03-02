@@ -74,7 +74,8 @@
     "viewBeforeAfter": "View before and after: {label}",
     "close": "Close",
     "lightboxLabel": "Before and after comparison",
-    "afterDrag": "After — drag to compare"
+    "afterDrag": "Drag to compare",
+    "tapToCompare": "Tap to compare"
   },
   "map": {
     "overline": "Service area",
