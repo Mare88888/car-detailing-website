@@ -375,6 +375,19 @@ export default function Pricing() {
                   )}
                 </AnimatePresence>
               </div>
+
+              {/* CTA */}
+              <div className="text-center mt-8">
+                <motion.button
+                  type="button"
+                  onClick={scrollToContact}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="btn-primary inline-flex items-center justify-center px-7 py-3.5"
+                >
+                  {t("detailingCta")}
+                </motion.button>
+              </div>
             </motion.div>
           ) : (
             <motion.div
