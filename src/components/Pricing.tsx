@@ -173,6 +173,12 @@ export default function Pricing() {
     pricing?: { packages?: PricingPackagesMessages };
   };
   const packagesMessages = messages?.pricing?.packages ?? {};
+
+  const [activeTab, setActiveTab] = useState<"detailing" | "cleaning">(
+    "detailing",
+  );
+  const [showAlaCarte, setShowAlaCarte] = useState(false);
+
   const translatedCleaning = useTranslatedPackages(
     carCleaningPackages,
     t,
@@ -183,11 +189,6 @@ export default function Pricing() {
     t,
     packagesMessages,
   );
-
-  const [activeTab, setActiveTab] = useState<"detailing" | "cleaning">(
-    "detailing",
-  );
-  const [showAlaCarte, setShowAlaCarte] = useState(false);
 
   useEffect(() => {
     const handler = (e: Event) => {
