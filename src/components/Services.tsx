@@ -14,8 +14,14 @@ import {
   ease,
 } from "@/lib/motion";
 
-function scrollToSection(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+function scrollToPricingTab(tab: string) {
+  const el = document.getElementById("pricing");
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+    window.dispatchEvent(
+      new CustomEvent("pricing-tab", { detail: tab }),
+    );
+  }
 }
 
 /* Icons as inline SVG for no asset dependency */
@@ -96,9 +102,9 @@ const CARD_TRANSITION = { duration: 0.2, ease };
 export default function Services() {
   const t = useTranslations("services");
   const handleViewPackages = useCallback(
-    (sectionId: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    (tab: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
-      scrollToSection(sectionId);
+      scrollToPricingTab(tab);
     },
     [],
   );
@@ -178,9 +184,7 @@ export default function Services() {
                     <motion.div whileTap={buttonTap}>
                       <Link
                         href="/"
-                        onClick={handleViewPackages(
-                          category.href.replace(/^#/, ""),
-                        )}
+                        onClick={handleViewPackages(category.key)}
                         className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-body-sm transition-all duration-ui group-hover:border-premium-accent group-hover:text-premium-accent"
                       >
                         {t(`${category.key}.viewPackages`)}

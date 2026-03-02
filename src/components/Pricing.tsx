@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslations, useMessages } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionEntrance } from "@/components/MotionSection";
@@ -188,6 +188,15 @@ export default function Pricing() {
     "detailing",
   );
   const [showAlaCarte, setShowAlaCarte] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const tab = (e as CustomEvent).detail;
+      if (tab === "detailing" || tab === "cleaning") setActiveTab(tab);
+    };
+    window.addEventListener("pricing-tab", handler);
+    return () => window.removeEventListener("pricing-tab", handler);
+  }, []);
 
   const scrollToContact = useCallback(() => {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
